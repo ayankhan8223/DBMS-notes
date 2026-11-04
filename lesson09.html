@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en" data-kind="lesson" data-current="L09">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 9: SQL Joins, Subqueries, NULL, Views | GATE DA DBMS</title>
+<meta name="description" content="GATE DA 2027 DBMS and Data Warehousing study book in simple Hinglish">
+<meta name="color-scheme" content="light dark">
+<script>(function(){try{var q=/[?&]theme=(dark|light)/.exec(location.search);var t=q?q[1]:localStorage.getItem('gatedba.theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
+<link rel="stylesheet" href="assets/css/app.css">
+
+</head>
+<body class="k-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button type="button" id="menuBtn" class="ib" aria-label="Menu kholo" aria-controls="sidebar" aria-expanded="false">&#9776;</button>
+  <a class="brand" href="index.html"><span class="logo">DA</span><span class="bt">GATE DA &middot; DBMS</span></a>
+  <span class="grow"></span>
+  <button type="button" id="ansBtn" class="tbn" hidden>Show all answers</button>
+  <button type="button" id="searchBtn" class="tbn" aria-label="Search">&#128269;<span class="lbl"> Search</span> <kbd>/</kbd></button>
+  <button type="button" id="themeBtn" class="ib" aria-label="Dark / light mode">&#9680;</button>
+  <div class="readbar"><i id="readBar"></i></div>
+</header>
+<div class="layout">
+<nav id="sidebar" aria-label="Lessons"><div class="sb-head"><a class="sb-home" href="index.html">&#8962; Home / Learning map</a>
+<div class="sb-prog"><div class="bar"><i id="sbBar"></i></div><span id="sbTxt">0 / 22 done</span></div></div>
+<div class="sb-part"><div class="sb-pt"><b>Part A</b> &middot; ER Model</div>
+<a data-id="L01" href="lesson01.html"><span class="chk" aria-hidden="true"></span><span class="num">1</span><span class="tt">Entity, attribute, ER basics</span></a>
+<a data-id="L02" href="lesson02.html"><span class="chk" aria-hidden="true"></span><span class="num">2</span><span class="tt">Cardinality &amp; participation</span></a>
+<a data-id="L03" href="lesson03.html"><span class="chk" aria-hidden="true"></span><span class="num">3</span><span class="tt">Weak entity &amp; ER-to-table mapping</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part B</b> &middot; Relational Model</div>
+<a data-id="L04" href="lesson04.html"><span class="chk" aria-hidden="true"></span><span class="num">4</span><span class="tt">Rows, columns, schema, domain</span></a>
+<a data-id="L05" href="lesson05.html"><span class="chk" aria-hidden="true"></span><span class="num">5</span><span class="tt">Keys &amp; integrity constraints</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part C</b> &middot; Query Languages</div>
+<a data-id="L06" href="lesson06.html"><span class="chk" aria-hidden="true"></span><span class="num">6</span><span class="tt">Relational Algebra</span></a>
+<a data-id="L07" href="lesson07.html"><span class="chk" aria-hidden="true"></span><span class="num">7</span><span class="tt">Tuple Relational Calculus</span></a>
+<a data-id="L08" href="lesson08.html"><span class="chk" aria-hidden="true"></span><span class="num">8</span><span class="tt">SQL basics</span></a>
+<a class="cur" data-id="L09" href="lesson09.html"><span class="chk" aria-hidden="true"></span><span class="num">9</span><span class="tt">SQL joins, NULL, nested queries</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part D</b> &middot; Normalization</div>
+<a data-id="L10" href="lesson10.html"><span class="chk" aria-hidden="true"></span><span class="num">10</span><span class="tt">Functional Dependencies</span></a>
+<a data-id="L11" href="lesson11.html"><span class="chk" aria-hidden="true"></span><span class="num">11</span><span class="tt">1NF, 2NF, 3NF, BCNF</span></a>
+<a data-id="L12" href="lesson12.html"><span class="chk" aria-hidden="true"></span><span class="num">12</span><span class="tt">Lossless join &amp; dependency preservation</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part E</b> &middot; Storage &amp; Indexing</div>
+<a data-id="L13" href="lesson13.html"><span class="chk" aria-hidden="true"></span><span class="num">13</span><span class="tt">File organization</span></a>
+<a data-id="L14" href="lesson14.html"><span class="chk" aria-hidden="true"></span><span class="num">14</span><span class="tt">Single &amp; multilevel indexing</span></a>
+<a data-id="L15" href="lesson15.html"><span class="chk" aria-hidden="true"></span><span class="num">15</span><span class="tt">B-Tree &amp; B+ Tree</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part F</b> &middot; Data Transformation</div>
+<a data-id="L16" href="lesson16.html"><span class="chk" aria-hidden="true"></span><span class="num">16</span><span class="tt">Data types</span></a>
+<a data-id="L17" href="lesson17.html"><span class="chk" aria-hidden="true"></span><span class="num">17</span><span class="tt">Normalization &amp; discretization</span></a>
+<a data-id="L18" href="lesson18.html"><span class="chk" aria-hidden="true"></span><span class="num">18</span><span class="tt">Sampling &amp; compression</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part G</b> &middot; Data Warehousing</div>
+<a data-id="L19" href="lesson19.html"><span class="chk" aria-hidden="true"></span><span class="num">19</span><span class="tt">Data warehouse &amp; Star/Snowflake schemas</span></a>
+<a data-id="L20" href="lesson20.html"><span class="chk" aria-hidden="true"></span><span class="num">20</span><span class="tt">Data cubes &amp; concept hierarchies</span></a>
+<a data-id="L21" href="lesson21.html"><span class="chk" aria-hidden="true"></span><span class="num">21</span><span class="tt">Measures &amp; aggregations</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part H</b> &middot; Practice &amp; Revision</div>
+<a data-id="L22" href="lesson22.html"><span class="chk" aria-hidden="true"></span><span class="num">22</span><span class="tt">Mixed GATE practice &amp; all PYQs</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Back matter</b></div><a data-id="APP" href="appendix.html"><span class="chk" aria-hidden="true"></span><span class="num">A</span><span class="tt">Appendix &mdash; revision plan &amp; cheat sheet</span></a></div>
+<div class="sb-foot"><button type="button" id="resetProg">Progress reset</button></div></nav>
+<div id="scrim"></div>
+<main id="main" tabindex="-1">
+<article class="lesson-wrap" data-id="L09"><section class="lesson" id="L09"><style>#L09 pre.sql{font-family:Menlo,Monaco,'Courier New',monospace;font-size:12.9px;line-height:1.35;background:var(--card);border:1px solid var(--line);border-radius:7px;padding:6px 9px;margin:4px 0;white-space:pre-wrap;overflow:hidden}
+#L09 pre.sql b{color:var(--blue);font-weight:800}
+#L09 .l09-ex{display:grid;grid-template-columns:1.25fr 1fr;gap:10px;align-items:start;margin:6px 0}
+#L09 .l09-ex>div{min-width:0}
+#L09 .tb{break-inside:avoid}
+#L09 .l09-tt{border-collapse:collapse;margin:4px 0;font-size:14.1px}
+#L09 .l09-tt th{background:var(--thbg);color:#fff;padding:3px 10px}
+#L09 .l09-tt td{border:1px solid var(--line);padding:3px 10px;text-align:center;font-weight:700}
+#L09 .l09-T{background:var(--hrow);color:var(--greent)}
+#L09 .l09-F{background:var(--frow);color:var(--red)}
+#L09 .l09-U{background:var(--hxy);color:var(--yelt)}</style><div class="pb"></div><div class="lessonhead"><div class="k">LESSON 09 / 22</div><div class="n">SQL Joins, Subqueries, NULL, Views</div><div class="s">JOIN se tables jodna · subquery = query ke andar query · NULL ka 3-valued logic · EXISTS / division · views</div></div><div class="wbox" data-wbox="sql-joins"><div class="wlab">Interactive &middot; khud try karo</div><div data-widget="sql-joins"></div></div>
+<div class="two">
+<div class="box idea"><div class="t">Is lesson mein kya seekhenge</div><ul>
+<li>6 tarah ke joins: INNER, LEFT, RIGHT, FULL, NATURAL, CROSS (+ self-join)</li>
+<li>Join ke baad <b>kitni rows</b> aayengi (duplicates ke saath) — GATE ka favourite</li>
+<li>NULL aur <b>3-valued logic</b> (TRUE / FALSE / UNKNOWN) aur uske traps</li>
+<li>Subqueries: IN, NOT IN, ANY, ALL, EXISTS, correlated vs uncorrelated</li>
+<li>&ldquo;Sabhi ke liye&rdquo; wale sawaal = <b>double NOT EXISTS</b> (division)</li>
+<li>Views, aur real PYQs: <b>2024 Q31, 2025 Q33, 2026 Q51, Q60</b></li></ul></div><div class="box mem"><div class="t">Lesson 6 se connection</div><p>Relational Algebra mein jo <b>⋈</b>, <b>⟕ ⟖ ⟗</b>, <b>−</b>, <b>÷</b> padha tha, SQL mein wahi sab naye naam se milte hain:</p>
+<table class="r"><tr><th>RA</th><th>SQL</th></tr><tr><td>σ</td><td>WHERE</td></tr><tr><td>π</td><td>SELECT (DISTINCT ke bina duplicates rehte hain!)</td></tr><tr><td>⋈ , ⟕ ⟖ ⟗</td><td>JOIN … ON</td></tr><tr><td>∪ ∩ −</td><td>UNION, INTERSECT, EXCEPT</td></tr><tr><td>÷</td><td>double NOT EXISTS</td></tr></table></div>
+</div>
+<h3 id="L09-h1">Rasta (roadmap)</h3>
+<div class="fl"><span class="pill p-b">9.1 Practice tables</span><div class="ar">→</div><span class="pill p-g">9.2 INNER join</span><div class="ar">→</div><span class="pill p-t">9.3 Outer joins</span><div class="ar">→</div><span class="pill p-o">9.4 CROSS / NATURAL / self</span><div class="ar">→</div><span class="pill p-p">9.5 Row counting</span></div><div class="fl"><span class="pill p-r">9.6 NULL logic</span><div class="ar">→</div><span class="pill p-b">9.7 Subqueries</span><div class="ar">→</div><span class="pill p-g">9.8 IN / NOT IN / ANY / ALL</span><div class="ar">→</div><span class="pill p-t">9.9 EXISTS &amp; correlated</span><div class="ar">→</div><span class="pill p-o">9.10 Division</span></div><div class="fl"><span class="pill p-p">9.11 Scalar / derived</span><div class="ar">→</div><span class="pill p-r">9.12 Set ops</span><div class="ar">→</div><span class="pill p-b">9.13 Views</span><div class="ar">→</div><span class="pill p-g">9.14 PYQs</span><div class="ar">→</div><span class="pill p-o">9.15 Practice + cheat</span></div>
+<h2 id="L09-h2">9.1 · Practice tables <small>wahi purani STUDENT / COURSE / ENROLL</small></h2>
+<p>Lesson 6 ki teeno tables yahan bhi use hongi. Neha ne <b>koi course nahi</b> liya, aur Maths (C3) ko <b>koi student nahi</b> mila — ye jaan-bujhkar rakha hai, kyunki outer joins aur NOT EXISTS ke sawaal inhi &ldquo;akele&rdquo; rows se bante hain. Har result table <b>asli database (SQLite) se nikali gayi hai</b>, haath se nahi likhi.</p>
+<div class="avoid"><div class="fl top"><div class="tb"><span class="rn">STUDENT</span><table class="r"><tr><th class="">ID</th><th class="">Name</th><th class="">Dept</th><th class="">Age</th></tr><tr class=""><td class="">1</td><td class="">Rahul</td><td class="">CSE</td><td class="">20</td></tr><tr class=""><td class="">2</td><td class="">Aman</td><td class="">ECE</td><td class="">21</td></tr><tr class=""><td class="">3</td><td class="">Priya</td><td class="">CSE</td><td class="">19</td></tr><tr class=""><td class="">4</td><td class="">Neha</td><td class="">ME</td><td class="">22</td></tr></table></div><div class="tb"><span class="rn">COURSE</span><table class="r"><tr><th class="">CID</th><th class="">Title</th><th class="">Credits</th></tr><tr class=""><td class="">C1</td><td class="">DBMS</td><td class="">4</td></tr><tr class=""><td class="">C2</td><td class="">Python</td><td class="">3</td></tr><tr class=""><td class="">C3</td><td class="">Maths</td><td class="">4</td></tr></table></div><div class="tb"><span class="rn">ENROLL</span><table class="r"><tr><th class="">ID</th><th class="">CID</th></tr><tr class=""><td class="">1</td><td class="">C1</td></tr><tr class=""><td class="">1</td><td class="">C2</td></tr><tr class=""><td class="">2</td><td class="">C1</td></tr><tr class=""><td class="">3</td><td class="">C1</td></tr><tr class=""><td class="">3</td><td class="">C2</td></tr></table></div></div></div>
+<p>Kuch extra chhoti tables jo jaruri examples ke liye aayengi:</p>
+<div class="avoid"><div class="fl top"><div class="tb"><span class="rn">MARKS</span><table class="r"><tr><th class="">ID</th><th class="">Score</th></tr><tr class=""><td class="">1</td><td class="">80</td></tr><tr class=""><td class="">2</td><td class="nul">NULL</td></tr><tr class=""><td class="">3</td><td class="">60</td></tr><tr class=""><td class="">4</td><td class="">45</td></tr></table></div><div class="tb"><span class="rn">EMP</span><table class="r"><tr><th class="">EID</th><th class="">Name</th><th class="">MgrID</th></tr><tr class=""><td class="">1</td><td class="">Asha</td><td class="nul">NULL</td></tr><tr class=""><td class="">2</td><td class="">Bimal</td><td class="">1</td></tr><tr class=""><td class="">3</td><td class="">Chitra</td><td class="">1</td></tr><tr class=""><td class="">4</td><td class="">Deepak</td><td class="">2</td></tr></table></div><div class="tb"><span class="rn">REQUIRED</span><table class="r"><tr><th class="">CID</th></tr><tr class=""><td class="">C1</td></tr><tr class=""><td class="">C2</td></tr></table></div></div></div>
+<div class="two">
+<div class="box note"><div class="t">SQL aur Relational Algebra mein ek bada fark</div><p>RA = <b>set</b> (duplicates nahi). SQL = <b>bag / multiset</b> (duplicates rehte hain jab tak <code>DISTINCT</code> na lagao). Is lesson ka aadha trap isi se aata hai: join ke baad row <b>do baar</b> aa sakti hai.</p></div><div class="box tip"><div class="t">Query ka padhne ka order (logical)</div><p>Likhte <b>SELECT</b> pehle hain, par database <b>FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY</b> ke order mein sochta hai. Isliye WHERE mein SELECT ke naye naam (alias) kaam nahi karte, aur HAVING group ke baad chalti hai.</p></div>
+</div>
+
+<h2 id="L09-h3">9.2 · INNER JOIN <small>sirf match hone wali rows</small></h2>
+<h3 id="L09-h4">Analogy: shaadi ke cards ka milan</h3>
+<p>Ek list mein <b>log</b> hain, doosri list mein unke <b>invitation cards</b>. INNER JOIN wahi pairs deta hai jahan <b>naam match</b> kare. Jis ka card nahi, ya jis card ka banda nahi — dono list se gaayab.</p>
+<div class="fl"><div style="text-align:center;font-size:12.9px;width:112px"><svg width="112" height="64" viewBox="0 0 112 70"><defs><clipPath id="ai1"><circle cx="42" cy="35" r="26"/></clipPath><clipPath id="bi1"><circle cx="70" cy="35" r="26"/></clipPath></defs><circle cx="70" cy="35" r="26" fill="#14a06b" opacity=".75" clip-path="url(#ai1)"/><circle cx="42" cy="35" r="26" fill="none" stroke="#2f5bd8" stroke-width="1.8"/><circle cx="70" cy="35" r="26" fill="none" stroke="#e8730c" stroke-width="1.8"/><text x="22" y="39" font-size="11" font-weight="800" fill="#27325a">L</text><text x="88" y="39" font-size="11" font-weight="800" fill="#27325a">R</text></svg><br><b>INNER JOIN</b><br><span class="mut">sirf beech ka hissa</span></div><div style="text-align:center;font-size:12.9px;width:112px"><svg width="112" height="64" viewBox="0 0 112 70"><defs><clipPath id="al1"><circle cx="42" cy="35" r="26"/></clipPath><clipPath id="bl1"><circle cx="70" cy="35" r="26"/></clipPath></defs><circle cx="42" cy="35" r="26" fill="#14a06b" opacity=".75"/><circle cx="42" cy="35" r="26" fill="none" stroke="#2f5bd8" stroke-width="1.8"/><circle cx="70" cy="35" r="26" fill="none" stroke="#e8730c" stroke-width="1.8"/><text x="22" y="39" font-size="11" font-weight="800" fill="#27325a">L</text><text x="88" y="39" font-size="11" font-weight="800" fill="#27325a">R</text></svg><br><b>LEFT JOIN</b><br><span class="mut">left poora + match</span></div><div style="text-align:center;font-size:12.9px;width:112px"><svg width="112" height="64" viewBox="0 0 112 70"><defs><clipPath id="ar1"><circle cx="42" cy="35" r="26"/></clipPath><clipPath id="br1"><circle cx="70" cy="35" r="26"/></clipPath></defs><circle cx="70" cy="35" r="26" fill="#14a06b" opacity=".75"/><circle cx="42" cy="35" r="26" fill="none" stroke="#2f5bd8" stroke-width="1.8"/><circle cx="70" cy="35" r="26" fill="none" stroke="#e8730c" stroke-width="1.8"/><text x="22" y="39" font-size="11" font-weight="800" fill="#27325a">L</text><text x="88" y="39" font-size="11" font-weight="800" fill="#27325a">R</text></svg><br><b>RIGHT JOIN</b><br><span class="mut">right poora + match</span></div><div style="text-align:center;font-size:12.9px;width:112px"><svg width="112" height="64" viewBox="0 0 112 70"><defs><clipPath id="af1"><circle cx="42" cy="35" r="26"/></clipPath><clipPath id="bf1"><circle cx="70" cy="35" r="26"/></clipPath></defs><circle cx="42" cy="35" r="26" fill="#14a06b" opacity=".75"/><circle cx="70" cy="35" r="26" fill="#14a06b" opacity=".75"/><circle cx="42" cy="35" r="26" fill="none" stroke="#2f5bd8" stroke-width="1.8"/><circle cx="70" cy="35" r="26" fill="none" stroke="#e8730c" stroke-width="1.8"/><text x="22" y="39" font-size="11" font-weight="800" fill="#27325a">L</text><text x="88" y="39" font-size="11" font-weight="800" fill="#27325a">R</text></svg><br><b>FULL JOIN</b><br><span class="mut">dono poore</span></div><div style="text-align:center;font-size:12.9px;width:112px"><svg width="112" height="64" viewBox="0 0 112 70"><defs><clipPath id="ala1"><circle cx="42" cy="35" r="26"/></clipPath><clipPath id="bla1"><circle cx="70" cy="35" r="26"/></clipPath></defs><circle cx="42" cy="35" r="26" fill="#14a06b" opacity=".75"/><circle cx="70" cy="35" r="26" fill="#fff"/><circle cx="42" cy="35" r="26" fill="none" stroke="#2f5bd8" stroke-width="1.8"/><circle cx="70" cy="35" r="26" fill="none" stroke="#e8730c" stroke-width="1.8"/><text x="22" y="39" font-size="11" font-weight="800" fill="#27325a">L</text><text x="88" y="39" font-size="11" font-weight="800" fill="#27325a">R</text></svg><br><b>LEFT anti</b><br><span class="mut">left jo match nahi</span></div><div style="text-align:center;font-size:12.9px;width:112px"><svg width="112" height="64" viewBox="0 0 112 70"><defs><clipPath id="ara1"><circle cx="42" cy="35" r="26"/></clipPath><clipPath id="bra1"><circle cx="70" cy="35" r="26"/></clipPath></defs><circle cx="70" cy="35" r="26" fill="#14a06b" opacity=".75"/><circle cx="42" cy="35" r="26" fill="#fff"/><circle cx="42" cy="35" r="26" fill="none" stroke="#2f5bd8" stroke-width="1.8"/><circle cx="70" cy="35" r="26" fill="none" stroke="#e8730c" stroke-width="1.8"/><text x="22" y="39" font-size="11" font-weight="800" fill="#27325a">L</text><text x="88" y="39" font-size="11" font-weight="800" fill="#27325a">R</text></svg><br><b>RIGHT anti</b><br><span class="mut">right jo match nahi</span></div></div>
+<p class="cap">Hara = result mein aane wala hissa. L = left table, R = right table. &ldquo;Anti&rdquo; wale SQL mein <code>LEFT JOIN … WHERE right.key IS NULL</code> se bante hain (9.3).</p>
+<h3 id="L09-h5">Syntax aur step-by-step</h3>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name, E.CID
+<b>FROM</b> STUDENT S
+<b>INNER JOIN</b> ENROLL E
+   <b>ON</b> S.ID = E.ID;</pre></div><div><div class="tb"><span class="rn">5 rows</span><table class="r"><tr><th class="">Name</th><th class="">CID</th></tr><tr class="hr"><td class="">Rahul</td><td class="">C1</td></tr><tr class="hr"><td class="">Rahul</td><td class="">C2</td></tr><tr class="hr"><td class="">Aman</td><td class="">C1</td></tr><tr class="hr"><td class="">Priya</td><td class="">C1</td></tr><tr class="hr"><td class="">Priya</td><td class="">C2</td></tr></table><div class="cap">Neha gayab (ENROLL mein ID 4 hai hi nahi)</div></div></div></div>
+<ol class="steps"><li><b>FROM</b>: STUDENT (4 rows) aur ENROLL (5 rows) ka product socho = 20 pairs.</li><li><b>ON</b> condition (<code>S.ID = E.ID</code>) har pair par lagao; sirf TRUE pairs rakho.</li><li><b>SELECT</b>: bachi hui pairs mein se Name aur CID chuno.</li></ol>
+<ul>
+<li><code>INNER</code> likhna <b>optional</b> hai: <code>JOIN</code> = <code>INNER JOIN</code>.</li>
+<li><b>Alias</b> (<code>STUDENT S</code>) likhne se query chhoti ho jaati hai; self-join mein <b>zaroori</b> hai.</li>
+<li>Join ki condition <code>ON</code> mein, filter condition <code>WHERE</code> mein likhna achhi aadat hai (inner join mein dono same result dete hain; outer join mein <b>nahi</b> — 9.3).</li>
+</ul>
+<h3 id="L09-h6">Teen tables ka join</h3>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name, C.Title
+<b>FROM</b> STUDENT S
+<b>JOIN</b> ENROLL E <b>ON</b> S.ID  = E.ID
+<b>JOIN</b> COURSE C <b>ON</b> E.CID = C.CID;</pre></div><div><div class="tb"><span class="rn">5 rows</span><table class="r"><tr><th class="">Name</th><th class="">Title</th></tr><tr class="hr"><td class="">Rahul</td><td class="">DBMS</td></tr><tr class="hr"><td class="">Rahul</td><td class="">Python</td></tr><tr class="hr"><td class="">Aman</td><td class="">DBMS</td></tr><tr class="hr"><td class="">Priya</td><td class="">DBMS</td></tr><tr class="hr"><td class="">Priya</td><td class="">Python</td></tr></table><div class="cap">Maths aur Neha dono missing</div></div></div></div>
+<h3 id="L09-h7">Purani (comma) style = CROSS + WHERE</h3>
+<p>GATE ke purane sawaalon mein aksar &ldquo;<code>FROM A, B WHERE A.x = B.x</code>&rdquo; aata hai (2024 Q31, 2026 Q51 bhi). Ye <b>wahi</b> INNER JOIN hai: pehle product, phir WHERE se filter.</p>
+<div class="two">
+<div><pre class="sql"><b>SELECT</b> S.Name, E.CID
+<b>FROM</b> STUDENT S, ENROLL E
+<b>WHERE</b> S.ID = E.ID;</pre></div><div><pre class="sql"><b>SELECT</b> S.Name, E.CID
+<b>FROM</b> STUDENT S
+<b>JOIN</b> ENROLL E <b>ON</b> S.ID = E.ID;</pre></div></div>
+<p class="cap">Dono ka result bilkul same. Agar comma-style mein WHERE ki join condition <b>bhool</b> gaye to product (20 rows) milega.</p>
+<div class="box tip"><div class="t">USING keyword</div><p>Agar dono tables mein join column ka <b>naam same</b> ho to <code>JOIN ENROLL E USING (ID)</code> likh sakte ho. Result mein ID <b>ek hi baar</b> aata hai (natural join jaisa), par sirf <b>tum bataye</b> columns par match hota hai.</p></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> <code>STUDENT S JOIN ENROLL E ON S.ID = E.ID</code> mein Rahul kitni baar aayega?</p><p><b>Answer:</b> <b>2 baar</b> — ENROLL mein Rahul ki 2 rows (C1, C2) hain; har match ek alag output row.</p></div>
+<h2 id="L09-h8">9.3 · OUTER JOINS: LEFT, RIGHT, FULL <small>unmatched ko bhi bachao</small></h2>
+<p>Inner join mein Neha aur Maths gaayab ho gaye. Agar sawaal ho &ldquo;<b>sab</b> students dikhao, aur unke courses bhi (jinke nahi hain unka khali)&rdquo; to <b>OUTER JOIN</b> chahiye. Jahan match nahi mila wahan doosri table ke columns mein <b>NULL</b> aata hai.</p>
+<h3 id="L09-h9">LEFT JOIN</h3>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name, E.CID
+<b>FROM</b> STUDENT S
+<b>LEFT JOIN</b> ENROLL E
+   <b>ON</b> S.ID = E.ID;</pre></div><div><div class="tb"><span class="rn">6 rows</span><table class="r"><tr><th class="">Name</th><th class="">CID</th></tr><tr class="hr"><td class="">Rahul</td><td class="">C1</td></tr><tr class="hr"><td class="">Rahul</td><td class="">C2</td></tr><tr class="hr"><td class="">Aman</td><td class="">C1</td></tr><tr class="hr"><td class="">Priya</td><td class="">C1</td></tr><tr class="hr"><td class="">Priya</td><td class="">C2</td></tr><tr class=""><td class="">Neha</td><td class="hx nul">NULL</td></tr></table><div class="cap">5 inner rows + Neha (CID = NULL)</div></div></div></div>
+<h3 id="L09-h10">RIGHT JOIN</h3>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> E.ID, C.Title
+<b>FROM</b> ENROLL E
+<b>RIGHT JOIN</b> COURSE C
+   <b>ON</b> E.CID = C.CID;</pre></div><div><div class="tb"><span class="rn">6 rows</span><table class="r"><tr><th class="">ID</th><th class="">Title</th></tr><tr class="hr"><td class="">1</td><td class="">DBMS</td></tr><tr class="hr"><td class="">1</td><td class="">Python</td></tr><tr class="hr"><td class="">2</td><td class="">DBMS</td></tr><tr class="hr"><td class="">3</td><td class="">DBMS</td></tr><tr class="hr"><td class="">3</td><td class="">Python</td></tr><tr class=""><td class="hx nul">NULL</td><td class="">Maths</td></tr></table><div class="cap">Maths ko koi nahi mila → ID = NULL</div></div></div></div>
+<p><code>A RIGHT JOIN B</code> = <code>B LEFT JOIN A</code> (bas table ki jagah badal gayi). GATE mein zyada tar LEFT hi aata hai.</p>
+<h3 id="L09-h11">FULL OUTER JOIN</h3>
+<p>Dono taraf ke unmatched rows. Tables A(ID) = {1,1,2,NULL}, B(ID) = {1,1,1,3,NULL} par dekho:</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> A.ID <b>AS</b> aID, B.ID <b>AS</b> bID
+<b>FROM</b> A
+<b>FULL OUTER JOIN</b> B
+   <b>ON</b> A.ID = B.ID;</pre></div><div><div class="tb"><span class="rn">FULL JOIN</span><table class="r"><tr><th class="">aID</th><th class="">bID</th></tr><tr class="hr"><td class="">1</td><td class="">1</td></tr><tr class="hr"><td class="">1</td><td class="">1</td></tr><tr class="hr"><td class="">1</td><td class="">1</td></tr><tr class="hr"><td class="">1</td><td class="">1</td></tr><tr class="hr"><td class="">1</td><td class="">1</td></tr><tr class="hr"><td class="">1</td><td class="">1</td></tr><tr class=""><td class="">2</td><td class="hx nul">NULL</td></tr><tr class=""><td class="hx nul">NULL</td><td class="hx nul">NULL</td></tr><tr class=""><td class="hx nul">NULL</td><td class="">3</td></tr><tr class=""><td class="hx nul">NULL</td><td class="hx nul">NULL</td></tr></table><div class="cap">6 matches (2×3) · phir (2, NULL) = A ka 2 · (NULL, NULL) = A ki NULL row · (NULL, 3) = B ka 3 · (NULL, NULL) = B ki NULL row. Total 6+2+2 = 10</div></div></div></div>
+<div class="box idea"><div class="t">Formula</div><p><b>FULL = LEFT ∪ RIGHT</b> &nbsp;·&nbsp; inner ⊆ left ⊆ full &nbsp;·&nbsp; <b>left ≥ |L|</b> hamesha (har left row kam se kam ek baar aati hai).</p></div>
+<h3 id="L09-h12">Anti-join: &ldquo;jinka match nahi hai&rdquo; nikalna</h3>
+<p>Trick: LEFT JOIN karo, phir right ki <b>key</b> par <code>IS NULL</code> lagao. Jo rows match nahi hui unka right-side NULL hoga.</p>
+<div class="two">
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name
+<b>FROM</b> STUDENT S
+<b>LEFT JOIN</b> ENROLL E <b>ON</b> S.ID = E.ID
+<b>WHERE</b> E.ID <b>IS NULL</b>;</pre></div><div><div class="tb"><span class="rn">Students, no course</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Neha</td></tr></table></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> C.Title
+<b>FROM</b> COURSE C
+<b>LEFT JOIN</b> ENROLL E <b>ON</b> C.CID = E.CID
+<b>WHERE</b> E.CID <b>IS NULL</b>;</pre></div><div><div class="tb"><span class="rn">Courses, no student</span><table class="r"><tr><th class="">Title</th></tr><tr class="hr"><td class="">Maths</td></tr></table></div></div></div></div></div>
+<h3 id="L09-h13">⚠ ON vs WHERE — outer join ka sabse bada trap</h3>
+<p>Maan lo: &ldquo;sab students dikhao, aur agar unhone <b>Python (C2)</b> liya hai to wo dikhao.&rdquo; Filter ko <code>ON</code> mein rakho ya <code>WHERE</code> mein — result alag hai!</p>
+<div class="two">
+<div><h4>Filter ON mein</h4><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name, E.CID
+<b>FROM</b> STUDENT S <b>LEFT JOIN</b> ENROLL E
+  <b>ON</b> S.ID = E.ID <b>AND</b> E.CID = 'C2';</pre></div><div><div class="tb"><span class="rn">4 rows (sab students)</span><table class="r"><tr><th class="">Name</th><th class="">CID</th></tr><tr class="hr"><td class="">Rahul</td><td class="">C2</td></tr><tr class=""><td class="">Aman</td><td class="hx nul">NULL</td></tr><tr class="hr"><td class="">Priya</td><td class="">C2</td></tr><tr class=""><td class="">Neha</td><td class="hx nul">NULL</td></tr></table></div></div></div></div>
+<div><h4>Filter WHERE mein</h4><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name, E.CID
+<b>FROM</b> STUDENT S <b>LEFT JOIN</b> ENROLL E
+  <b>ON</b> S.ID = E.ID
+<b>WHERE</b> E.CID = 'C2';</pre></div><div><div class="tb"><span class="rn">2 rows only</span><table class="r"><tr><th class="">Name</th><th class="">CID</th></tr><tr class="hr"><td class="">Rahul</td><td class="">C2</td></tr><tr class="hr"><td class="">Priya</td><td class="">C2</td></tr></table></div></div></div></div></div>
+<p><b>Kyun?</b> ON condition <i>match decide karti hai</i> — match nahi hua to row NULL ke saath <b>phir bhi aati hai</b>. WHERE join ke <b>baad</b> chalti hai: Aman aur Neha ka <code>E.CID</code> NULL hai, <code>NULL = 'C2'</code> UNKNOWN → row hat gayi. Matlab WHERE ne LEFT JOIN ko <b>INNER JOIN bana diya</b>.</p>
+<div class="box trap"><div class="t">Trap: COUNT(*) vs COUNT(column) outer join ke baad</div><p>&ldquo;Har student ke kitne courses?&rdquo; Neha ke 0 courses honge, par <code>COUNT(*)</code> Neha ki NULL-wali row ko bhi ginta hai → <b>1</b> deta hai. <code>COUNT(E.CID)</code> NULL ignore karta hai → <b>0</b>.</p></div>
+<div class="two">
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name, <b>COUNT</b>(E.CID) <b>AS</b> n
+<b>FROM</b> STUDENT S <b>LEFT JOIN</b> ENROLL E
+  <b>ON</b> S.ID = E.ID
+<b>GROUP BY</b> S.ID, S.Name;</pre></div><div><div class="tb"><span class="rn">COUNT(E.CID) ✔</span><table class="r"><tr><th class="">Name</th><th class="">n</th></tr><tr class="hr"><td class="">Rahul</td><td class="">2</td></tr><tr class="hr"><td class="">Aman</td><td class="">1</td></tr><tr class="hr"><td class="">Priya</td><td class="">2</td></tr><tr class="hr"><td class="">Neha</td><td class="hx">0</td></tr></table></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name, <b>COUNT</b>(*) <b>AS</b> n
+<b>FROM</b> STUDENT S <b>LEFT JOIN</b> ENROLL E
+  <b>ON</b> S.ID = E.ID
+<b>GROUP BY</b> S.ID, S.Name;</pre></div><div><div class="tb"><span class="rn">COUNT(*) ✘ (Neha = 1)</span><table class="r"><tr><th class="">Name</th><th class="">n</th></tr><tr class=""><td class="">Rahul</td><td class="">2</td></tr><tr class=""><td class="">Aman</td><td class="">1</td></tr><tr class=""><td class="">Priya</td><td class="">2</td></tr><tr class="fr"><td class="">Neha</td><td class="hx">1</td></tr></table></div></div></div></div></div>
+<div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> <code>STUDENT LEFT JOIN ENROLL ON … WHERE E.CID IS NULL</code> aur <code>… ON … AND E.CID IS NULL</code> — dono ka result kya?</p><p><b>Answer:</b> Pehla = {Neha}. Doosre mein ON me condition false (CID NULL kisi match mein nahi) → <b>har</b> student NULL ke saath aata hai = 4 rows.</p></div>
+<h2 id="L09-h14">9.4 · CROSS JOIN, NATURAL JOIN, SELF JOIN</h2>
+<h3 id="L09-h15">CROSS JOIN = Cartesian product</h3>
+<p>Har row × har row, koi condition nahi. Rows = |L| × |R|, columns = jodo.</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> <b>COUNT</b>(*) <b>AS</b> rows_
+<b>FROM</b> STUDENT <b>CROSS JOIN</b> COURSE;</pre></div><div><div class="tb"><span class="rn">4 × 3</span><table class="r"><tr><th class="">rows_</th></tr><tr class=""><td class="">12</td></tr></table></div></div></div>
+<p>Ye <code>FROM STUDENT, COURSE</code> (WHERE ke bina) ke barabar hai.</p>
+<h3 id="L09-h16">NATURAL JOIN = same naam wale <i>sab</i> columns par equality</h3>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> *
+<b>FROM</b> STUDENT <b>NATURAL JOIN</b> ENROLL;</pre></div><div><div class="tb"><span class="rn">common col: ID</span><table class="r"><tr><th class="">ID</th><th class="">Name</th><th class="">Dept</th><th class="">Age</th><th class="">CID</th></tr><tr class="hr"><td class="">1</td><td class="">Rahul</td><td class="">CSE</td><td class="">20</td><td class="">C1</td></tr><tr class="hr"><td class="">1</td><td class="">Rahul</td><td class="">CSE</td><td class="">20</td><td class="">C2</td></tr><tr class="hr"><td class="">2</td><td class="">Aman</td><td class="">ECE</td><td class="">21</td><td class="">C1</td></tr><tr class="hr"><td class="">3</td><td class="">Priya</td><td class="">CSE</td><td class="">19</td><td class="">C1</td></tr><tr class="hr"><td class="">3</td><td class="">Priya</td><td class="">CSE</td><td class="">19</td><td class="">C2</td></tr></table><div class="cap">ID ek hi baar aata hai</div></div></div></div>
+<div class="box trap"><div class="t">Natural join ke 3 traps</div><ol>
+<li><b>Same naam = match</b>, chahe matlab alag ho. Agar STUDENT aur COURSE dono mein <code>Name</code> hota to wo bhi compare hota.</li>
+<li><b>Koi common column nahi</b> to natural join = <b>CROSS JOIN</b>. Jaise <code>STUDENT NATURAL JOIN COURSE</code> → 4 × 3 = <b>12 rows</b> (STUDENT: ID,Name,Dept,Age; COURSE: CID,Title,Credits — common kuch nahi).</li>
+<li>Baad mein koi column add/rename ho gaya to query ka matlab <b>chupchaap</b> badal jaata hai — isliye real life mein avoid karte hain.</li></ol></div>
+<h3 id="L09-h17">SELF JOIN — table ko khud se jodna</h3>
+<p>Ek hi table ki <b>do copies</b> (alag alias) — jab ek row ko usi table ki doosri row se compare karna ho.</p>
+<p><b>Example 1:</b> Employee aur uska manager (manager bhi isi table mein hai — MgrID, EID ko refer karta hai).</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> E.Name <b>AS</b> Employee, M.Name <b>AS</b> Manager
+<b>FROM</b> EMP E
+<b>LEFT JOIN</b> EMP M <b>ON</b> E.MgrID = M.EID;</pre></div><div><div class="tb"><span class="rn">Employee → Manager</span><table class="r"><tr><th class="">Employee</th><th class="">Manager</th></tr><tr class=""><td class="">Asha</td><td class="hx nul">NULL</td></tr><tr class="hr"><td class="">Bimal</td><td class="">Asha</td></tr><tr class="hr"><td class="">Chitra</td><td class="">Asha</td></tr><tr class="hr"><td class="">Deepak</td><td class="">Bimal</td></tr></table><div class="cap">Asha ka koi manager nahi → LEFT JOIN se bachi</div></div></div></div>
+<p><b>Example 2:</b> Same department ke student pairs. <code>S1.ID &lt; S2.ID</code> isliye lagaya ki (Rahul, Priya) aur (Priya, Rahul) <b>do baar</b> na aaye, aur koi apne aap se pair na ho.</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S1.Name <b>AS</b> A, S2.Name <b>AS</b> B
+<b>FROM</b> STUDENT S1, STUDENT S2
+<b>WHERE</b> S1.Dept = S2.Dept
+  <b>AND</b> S1.ID &lt; S2.ID;</pre></div><div><div class="tb"><span class="rn">Same dept pairs</span><table class="r"><tr><th class="">A</th><th class="">B</th></tr><tr class="hr"><td class="">Rahul</td><td class="">Priya</td></tr></table></div></div></div>
+<p><b>Example 3:</b> &ldquo;Sabse bada age&rdquo; self-join se — jis student se koi <b>bada nahi</b> hai.</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT
+<b>WHERE</b> ID <b>NOT</b> <b>IN</b>
+  (<b>SELECT</b> S1.ID
+   <b>FROM</b> STUDENT S1, STUDENT S2
+   <b>WHERE</b> S1.Age &lt; S2.Age);</pre></div><div><div class="tb"><span class="rn">Oldest</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Neha</td></tr></table><div class="cap">Jo kisi se chhota nikla wo bahar; bacha Neha (22)</div></div></div></div>
+<div class="box mem"><div class="t">Join types ek nazar mein</div><table class="g" style="margin:2px 0"><tr><th>Join</th><th>Unmatched left?</th><th>Unmatched right?</th><th>Rows (kam–zyada)</th></tr>
+<tr><td>INNER</td><td>nahi</td><td>nahi</td><td>0 … |L|·|R|</td></tr>
+<tr><td>LEFT</td><td><b>haan</b> (NULL)</td><td>nahi</td><td>|L| … max(|L|, |L|·|R|)</td></tr>
+<tr><td>RIGHT</td><td>nahi</td><td><b>haan</b></td><td>|R| … max(|R|, |L|·|R|)</td></tr>
+<tr><td>FULL</td><td>haan</td><td>haan</td><td>max(|L|,|R|) … max(|L|·|R|, |L|+|R|)</td></tr>
+<tr><td>CROSS</td><td colspan="2">condition hi nahi</td><td>|L|·|R| exactly</td></tr></table>
+<p class="cap">FULL max: ya to sab rows ek hi key par match (|L|·|R|), ya koi match nahi (|L|+|R|) — dono mein se jo bada.</p></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> EMP table par <code>SELECT E.Name FROM EMP E, EMP M WHERE E.MgrID = M.EID AND M.Name = 'Asha'</code> kya deta hai?</p><p><b>Answer:</b> Asha ke direct reports: <b>Bimal, Chitra</b>.</p></div>
+<h2 id="L09-h18">9.5 · Join ke baad kitni rows? <small>duplicates ke saath counting</small></h2>
+<p>GATE ka sabse common pattern. <b>Ek hi rule</b> poora sawaal solve kar deta hai:</p>
+<div class="exbig">Har key value k ke liye: &nbsp; (L mein k kitni baar) × (R mein k kitni baar)</div>
+<p>Phir saare k ka <b>jod</b> = inner join ki rows. Outer joins mein unmatched rows upar se jodo.</p>
+<h3 id="L09-h19">Worked example: A.ID = {1, 1, 2, NULL},  B.ID = {1, 1, 1, 3, NULL}</h3>
+<div class="fl top"><div class="avoid"><div class="fl top"><div class="tb"><span class="rn">A</span><table class="r"><tr><th class="">ID</th></tr><tr class=""><td class="">1</td></tr><tr class=""><td class="">1</td></tr><tr class=""><td class="">2</td></tr><tr class=""><td class="nul">NULL</td></tr></table></div></div></div><div class="avoid"><div class="fl top"><div class="tb"><span class="rn">B</span><table class="r"><tr><th class="">ID</th></tr><tr class=""><td class="">1</td></tr><tr class=""><td class="">1</td></tr><tr class=""><td class="">1</td></tr><tr class=""><td class="">3</td></tr><tr class=""><td class="nul">NULL</td></tr></table></div></div></div></div>
+<div class="tb"><span class="rn">key-wise gunaa</span><table class="r"><tr><th class="">key</th><th class="">count in A</th><th class="">count in B</th><th class="">pairs (A×B)</th><th class="">comment</th></tr><tr class="hr"><td class="">1</td><td class="">2</td><td class="">3</td><td class="">2×3 = 6</td><td class="">match hui</td></tr><tr class=""><td class="">2</td><td class="">1</td><td class="">0</td><td class="">0</td><td class="">A-only (left outer mein 1 row)</td></tr><tr class=""><td class="">3</td><td class="">0</td><td class="">1</td><td class="">0</td><td class="">B-only (right outer mein 1 row)</td></tr><tr class=""><td class="nul">NULL</td><td class="">1</td><td class="">1</td><td class="">0</td><td class="">NULL = NULL TRUE nahi hota → match nahi!</td></tr></table></div>
+<table class="g"><tr><th>Query</th><th>Hisaab</th><th>Rows</th></tr>
+<tr><td><code>A JOIN B ON A.ID = B.ID</code></td><td>6</td><td><b>6</b></td></tr>
+<tr><td><code>A LEFT JOIN B …</code></td><td>6 + (A ke unmatched: ID=2, NULL → 2)</td><td><b>8</b></td></tr>
+<tr><td><code>A RIGHT JOIN B …</code></td><td>6 + (B ke unmatched: ID=3, NULL → 2)</td><td><b>8</b></td></tr>
+<tr><td><code>A FULL JOIN B …</code></td><td>6 + 2 + 2</td><td><b>10</b></td></tr>
+<tr><td><code>A CROSS JOIN B</code></td><td>4 × 5</td><td><b>20</b></td></tr></table>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> <b>COUNT</b>(*) <b>AS</b> inner_rows
+<b>FROM</b> A <b>JOIN</b> B <b>ON</b> A.ID = B.ID;</pre></div><div><div class="tb"><span class="rn">check</span><table class="r"><tr><th class="">inner_rows</th></tr><tr class="hr"><td class="">6</td></tr></table></div></div></div>
+<h3 id="L09-h20">Min / max (jab data na diya ho)</h3>
+<table class="g"><tr><th>Situation</th><th>Min rows</th><th>Max rows</th></tr>
+<tr><td>R(m rows) JOIN S(n rows), koi bhi condition</td><td>0</td><td>m·n</td></tr>
+<tr><td>Common column <b>S ki primary key</b>, R mein <b>foreign key (NOT NULL)</b></td><td colspan="2" style="text-align:center"><b>exactly m</b> (har R-row ka S mein ek hi match)</td></tr>
+<tr><td>Same, par FK <b>NULL allowed</b></td><td>0</td><td>m</td></tr>
+<tr><td>R LEFT JOIN S</td><td>m</td><td>m·n (agar n ≥ 1)</td></tr>
+<tr><td>R FULL JOIN S</td><td>max(m, n)</td><td>max(m·n, m+n)  (sab match ya koi match nahi)</td></tr>
+<tr><td>R CROSS JOIN S</td><td colspan="2" style="text-align:center">m·n</td></tr></table>
+<div class="box trap"><div class="t">Traps</div><ul><li>NULL se NULL ka join <b>match nahi</b> hota (isliye upar NULL wali rows unmatched rahin).</li><li>&ldquo;Join key duplicate hai&rdquo; → rows <b>multiply</b> hoti hain, add nahi.</li><li>Join ke baad <code>COUNT(*)</code> aur <code>COUNT(DISTINCT col)</code> alag hote hain.</li><li>FULL JOIN ka max = (matches) + (left-only) + (right-only); sab ek saath nahi chahiye — sawaal ki shart dekho.</li></ul></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> R(X) = {1,1,2}, S(X) = {1,2,2,3}. <code>R JOIN S ON R.X = S.X</code> ki rows, aur <code>R FULL JOIN S</code> ki rows?</p><p><b>Answer:</b> key 1: 2×1 = 2; key 2: 1×2 = 2 → inner = <b>4</b>. R ka koi unmatched nahi; S ka 3 unmatched → full = 4 + 1 = <b>5</b>.</p></div>
+<h2 id="L09-h21">9.6 · NULL aur 3-valued logic <small>SQL ka sabse khatarnaak topic</small></h2>
+<h3 id="L09-h22">NULL kya hai?</h3>
+<p>NULL ka matlab <b>&ldquo;pata nahi / value hai hi nahi&rdquo;</b>. Ye <b>0 nahi</b> hai, <b>khali string nahi</b> hai. Socho: kisi ke <b>jeb mein kitne paise hain</b> — &ldquo;pata nahi&rdquo;. Kya wo ₹50 se zyada hai? <b>Pata nahi.</b> Kya wo kisi aur ke &ldquo;pata nahi&rdquo; paise ke barabar hai? Wo bhi <b>pata nahi</b>.</p>
+<div class="exbig">NULL ke saath har comparison (=, &lt;, &gt;, &lt;&gt;, …) ka answer = <b>UNKNOWN</b></div>
+<p>Isliye SQL mein <b>3 truth values</b> hain: <span class="tag tg-g">TRUE</span> <span class="tag tg-r">FALSE</span> <span class="tag tg-y">UNKNOWN</span>.</p>
+<h3 id="L09-h23">Truth tables</h3>
+<div class="two"><div><table class="l09-tt"><tr><th>p</th><th>q</th><th>p AND q</th><th>p OR q</th></tr><tr><td class="l09-T">TRUE</td><td class="l09-T">TRUE</td><td class="l09-T">TRUE</td><td class="l09-T">TRUE</td></tr><tr><td class="l09-T">TRUE</td><td class="l09-F">FALSE</td><td class="l09-F">FALSE</td><td class="l09-T">TRUE</td></tr><tr><td class="l09-T">TRUE</td><td class="l09-U">UNKNOWN</td><td class="l09-U">UNKNOWN</td><td class="l09-T">TRUE</td></tr><tr><td class="l09-F">FALSE</td><td class="l09-T">TRUE</td><td class="l09-F">FALSE</td><td class="l09-T">TRUE</td></tr><tr><td class="l09-F">FALSE</td><td class="l09-F">FALSE</td><td class="l09-F">FALSE</td><td class="l09-F">FALSE</td></tr><tr><td class="l09-F">FALSE</td><td class="l09-U">UNKNOWN</td><td class="l09-F">FALSE</td><td class="l09-U">UNKNOWN</td></tr><tr><td class="l09-U">UNKNOWN</td><td class="l09-T">TRUE</td><td class="l09-U">UNKNOWN</td><td class="l09-T">TRUE</td></tr><tr><td class="l09-U">UNKNOWN</td><td class="l09-F">FALSE</td><td class="l09-F">FALSE</td><td class="l09-U">UNKNOWN</td></tr><tr><td class="l09-U">UNKNOWN</td><td class="l09-U">UNKNOWN</td><td class="l09-U">UNKNOWN</td><td class="l09-U">UNKNOWN</td></tr></table></div><div><table class="l09-tt"><tr><th>p</th><th>NOT p</th></tr><tr><td class="l09-T">TRUE</td><td class="l09-F">FALSE</td></tr><tr><td class="l09-F">FALSE</td><td class="l09-T">TRUE</td></tr><tr><td class="l09-U">UNKNOWN</td><td class="l09-U">UNKNOWN</td></tr></table><div class="box mem"><div class="t">Yaad rakhne ki trick</div><p>TRUE = 1, FALSE = 0, UNKNOWN = ½.<br><b>AND = min</b>, <b>OR = max</b>, <b>NOT x = 1 − x</b>.<br>Isse poori table khud ban jaati hai. <br>Sirf ek exception-jaisa lagta hai: <b>NOT UNKNOWN = UNKNOWN</b> (1 − ½ = ½).</p></div></div></div>
+<div class="box idea"><div class="t">WHERE ka golden rule</div><p><code>WHERE</code> (aur <code>ON</code>, <code>HAVING</code>) sirf wahi rows rakhta hai jinki condition <b>TRUE</b> ho. <b>FALSE aur UNKNOWN dono reject.</b></p>
+<p><b>Ek ulti baat:</b> <code>CHECK</code> constraint mein UNKNOWN <b>pass</b> ho jaata hai (sirf FALSE reject). Isliye <code>CHECK (Age &gt; 0)</code> mein NULL age insert ho sakti hai.</p></div>
+<h3 id="L09-h24">MARKS table par dekho</h3>
+<div class="avoid"><div class="fl top"><div class="tb"><span class="rn">MARKS</span><table class="r"><tr><th class="">ID</th><th class="">Score</th></tr><tr class=""><td class="">1</td><td class="">80</td></tr><tr class=""><td class="">2</td><td class="nul">NULL</td></tr><tr class=""><td class="">3</td><td class="">60</td></tr><tr class=""><td class="">4</td><td class="">45</td></tr></table></div></div></div>
+<div class="two">
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> MARKS
+<b>WHERE</b> Score &gt;= 60;</pre></div><div><div class="tb"><span class="rn">≥ 60</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">1</td></tr><tr class="hr"><td class="">3</td></tr></table></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> MARKS
+<b>WHERE</b> Score &lt; 60;</pre></div><div><div class="tb"><span class="rn">< 60</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">4</td></tr></table></div></div></div></div></div>
+<p>Kul 4 students — 2 + 1 = 3 hi mile! ID 2 (NULL) <b>dono</b> mein nahi aaya: <code>NULL &gt;= 60</code> aur <code>NULL &lt; 60</code> dono UNKNOWN. Ye <b>excluded middle ka bhi toot jaana</b> hai:</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> MARKS
+<b>WHERE</b> Score &gt;= 60 <b>OR</b> Score &lt; 60;</pre></div><div><div class="tb"><span class="rn">Aaj bhi 3 rows</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">1</td></tr><tr class="hr"><td class="">3</td></tr><tr class="hr"><td class="">4</td></tr></table><div class="cap">UNKNOWN OR UNKNOWN = UNKNOWN</div></div></div></div>
+<div class="two">
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> MARKS
+<b>WHERE</b> Score = <b>NULL</b>;</pre></div><div><div class="tb"><span class="rn">Hamesha khali</span><table class="r"><tr><th class="">ID</th></tr></table><div class="cap">= NULL kabhi TRUE nahi</div></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> MARKS
+<b>WHERE</b> Score <b>IS NULL</b>;</pre></div><div><div class="tb"><span class="rn">Sahi tareeka</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">2</td></tr></table></div></div></div></div></div>
+<h3 id="L09-h25">NULL ke aur common traps</h3>
+<table class="g"><tr><th>Expression</th><th>Result</th><th>Kyun</th></tr>
+<tr><td><code>NULL = NULL</code></td><td>UNKNOWN</td><td>do &ldquo;pata nahi&rdquo; barabar hain? pata nahi. Sahi: <code>x IS NULL</code></td></tr>
+<tr><td><code>NULL &lt;&gt; 5</code>, <code>NOT (x = 5)</code> (x NULL)</td><td>UNKNOWN</td><td>NOT UNKNOWN = UNKNOWN. <code>WHERE Dept &lt;&gt; &#39;CSE&#39;</code> NULL Dept wali rows ko <b>nahi</b> laata</td></tr>
+<tr><td><code>5 + NULL</code>, <code>NULL * 0</code></td><td>NULL</td><td>arithmetic mein NULL <b>phailta</b> hai (NULL × 0 bhi NULL)</td></tr>
+<tr><td><code>TRUE OR NULL</code></td><td>TRUE</td><td>OR mein ek TRUE kaafi</td></tr>
+<tr><td><code>FALSE AND NULL</code></td><td>FALSE</td><td>AND mein ek FALSE kaafi</td></tr>
+<tr><td><code>COUNT(*)</code> vs <code>COUNT(col)</code></td><td>rows vs non-NULL</td><td>COUNT(*) NULL rows bhi ginta hai</td></tr>
+<tr><td><code>SUM / AVG / MAX / MIN</code></td><td>NULL ignore</td><td>sab NULL ho to result <b>NULL</b> (COUNT ko chhodkar, wo 0 deta hai)</td></tr>
+<tr><td><code>GROUP BY</code>, <code>DISTINCT</code>, <code>UNION</code></td><td>NULL = NULL (ek hi group)</td><td>yahan NULLs ko &ldquo;same&rdquo; maana jaata hai!</td></tr>
+<tr><td><code>UNIQUE</code> column</td><td>kai NULL allowed</td><td>standard SQL mein NULL ek doosre se &ldquo;alag&rdquo; maane jaate hain (kuch DBMS alag behave karte hain)</td></tr>
+<tr><td><code>PRIMARY KEY</code></td><td>NULL allowed nahi</td><td>entity integrity</td></tr></table>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> <b>COUNT</b>(*)      <b>AS</b> c_star,
+       <b>COUNT</b>(Score)  <b>AS</b> c_score,
+       <b>SUM</b>(Score)    <b>AS</b> total,
+       <b>AVG</b>(Score)    <b>AS</b> average
+<b>FROM</b> MARKS;</pre></div><div><div class="tb"><span class="rn">Aggregates on MARKS</span><table class="r"><tr><th class="">c_star</th><th class="">c_score</th><th class="">total</th><th class="">average</th></tr><tr class="hr"><td class="">4</td><td class="">3</td><td class="">185</td><td class="">61.67</td></tr></table><div class="cap">AVG = 185/3 = 61.67 (4 se nahi!)</div></div></div></div><div class="box trap"><div class="t">AVG ka trap</div><p>MARKS mein 4 rows hain par <code>AVG(Score)</code> = 185 / <b>3</b>, kyunki NULL na numerator mein na denominator mein aata hai. Agar NULL ko 0 maanna hai to <code>AVG(COALESCE(Score, 0))</code> = 185/4 = 46.25.</p></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> Table T(x) = {1, 2, NULL, 4}. <code>SELECT COUNT(*) FROM T WHERE x &gt; 1 OR x &lt;= 1</code> ?</p><p><b>Answer:</b> <b>3</b> (NULL wali row dono conditions mein UNKNOWN).</p></div>
+<h2 id="L09-h26">9.7 · Nested query / Subquery <small>query ke andar query</small></h2>
+<h3 id="L09-h27">Analogy</h3>
+<p>&ldquo;Class ke topper se zyada number laane wale dikhao&rdquo; — pehle <b>topper ka number</b> pata karna padega (andar wala sawaal), phir usse compare (bahar wala sawaal). Do chhote sawaal, ek ke jawab se doosra chalta hai.</p>
+<h3 id="L09-h28">Subquery kahan likh sakte ho</h3>
+<table class="g"><tr><th>Jagah</th><th>Kya return kare</th><th>Example</th></tr>
+<tr><td><b>WHERE</b> mein, comparison ke baad</td><td><b>scalar</b> (1 value)</td><td><code>Age &gt; (SELECT AVG(Age) …)</code></td></tr>
+<tr><td><b>WHERE</b> mein, <code>IN / ANY / ALL</code> ke baad</td><td>ek <b>column ki list</b></td><td><code>ID IN (SELECT ID FROM …)</code></td></tr>
+<tr><td><b>WHERE</b> mein, <code>EXISTS</code> ke baad</td><td>koi bhi table (sirf &ldquo;khali hai ya nahi&rdquo; dekha jaata hai)</td><td><code>EXISTS (SELECT 1 FROM …)</code></td></tr>
+<tr><td><b>FROM</b> mein (derived table)</td><td>poori table (alias <b>zaroori</b>)</td><td><code>FROM (SELECT …) AS B</code></td></tr>
+<tr><td><b>SELECT</b> mein</td><td><b>scalar</b></td><td><code>SELECT Name, (SELECT COUNT(*) …)</code></td></tr></table>
+<h3 id="L09-h29">Uncorrelated vs Correlated — sabse zaroori fark</h3>
+<div class="two">
+<div class="box idea"><div class="t">Uncorrelated (independent)</div><p>Inner query <b>akeli bhi chal sakti hai</b> — outer query ki kisi cheez ko use nahi karti.</p><p>Chalti hai <b>sirf ek baar</b>; uska result outer query ko de diya jaata hai.</p>
+<p class="mut">Execution: <b>andar se bahar</b> (inside-out).</p></div><div class="box tip"><div class="t">Correlated (dependent)</div><p>Inner query <b>outer ki current row</b> ka column use karti hai (jaise <code>E.ID = S.ID</code>). Akeli nahi chal sakti.</p><p>Chalti hai <b>outer ki har row ke liye ek baar</b> (logically). Optimizer andar se rewrite kar sakta hai par answer wahi aana chahiye.</p>
+<p class="mut">Execution: <b>bahar se andar, row-by-row</b> (nested loop).</p></div>
+</div>
+<h3 id="L09-h30">Uncorrelated example 1: scalar subquery</h3>
+<p><b>Sawaal:</b> Average se zyada age wale students.</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name
+<b>FROM</b> STUDENT
+<b>WHERE</b> Age &gt; (<b>SELECT</b> <b>AVG</b>(Age)
+             <b>FROM</b> STUDENT);</pre></div><div><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Aman</td></tr><tr class="hr"><td class="">Neha</td></tr></table></div></div></div>
+<ol class="steps"><li><b>Inner (ek baar):</b> <code>SELECT AVG(Age) FROM STUDENT</code> = (20+21+19+22)/4 = <b>20.5</b>.</li><li><b>Outer</b> ab ban gayi: <code>WHERE Age &gt; 20.5</code>.</li><li>Rows: Rahul 20 ✘, Aman 21 ✔, Priya 19 ✘, Neha 22 ✔.</li></ol>
+<h3 id="L09-h31">Uncorrelated example 2: IN, do level nested</h3>
+<p><b>Sawaal:</b> Python (C2) enroll karne wale students ke naam — <b>teen</b> levels.</p>
+<pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT
+<b>WHERE</b> ID <b>IN</b> (<b>SELECT</b> ID <b>FROM</b> ENROLL
+             <b>WHERE</b> CID <b>IN</b> (<b>SELECT</b> CID <b>FROM</b> COURSE
+                           <b>WHERE</b> Title = 'Python'));</pre>
+<div class="fl"><span class="pill p-o">COURSE: Title=Python → {C2}</span><div class="ar">→<small>CID IN</small></div><span class="pill p-t">ENROLL: CID in {C2} → IDs {1, 3}</span><div class="ar">→<small>ID IN</small></div><span class="pill p-g">STUDENT → Rahul, Priya</span></div>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT
+<b>WHERE</b> ID <b>IN</b> (<b>SELECT</b> ID <b>FROM</b> ENROLL
+             <b>WHERE</b> CID <b>IN</b> (<b>SELECT</b> CID <b>FROM</b> COURSE
+                           <b>WHERE</b> Title = 'Python'));</pre></div><div><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Rahul</td></tr><tr class="hr"><td class="">Priya</td></tr></table></div></div></div>
+<p>Sabse <b>andar wali</b> query pehle chali. Har level apna chhota set bana kar bahar bhej deti hai.</p>
+<div class="box tip"><div class="t">IN vs JOIN — duplicates ka fark</div><p>Join karne par Rahul <b>2 baar</b> aata (2 enrollments). <code>IN</code> sirf yeh dekhta hai ki ID list mein <b>hai ya nahi</b> → Rahul <b>1 baar</b>. Isliye &ldquo;kitni rows&rdquo; wale sawaal mein IN aur JOIN ka count alag ho sakta hai.</p></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> <code>SELECT Name FROM STUDENT WHERE ID IN (SELECT ID FROM ENROLL WHERE CID = 'C1')</code> ke result mein kitni rows?</p><p><b>Answer:</b> <b>3</b> (Rahul, Aman, Priya). Aur agar <code>STUDENT JOIN ENROLL</code> karke CID=&#39;C1&#39; lagate to bhi 3 (C1 mein koi student duplicate nahi).</p></div>
+<h2 id="L09-h32">9.8 · IN, NOT IN, ANY, ALL <small>list ke saath comparison</small></h2>
+<h3 id="L09-h33">Meaning</h3>
+<table class="g"><tr><th>Likha</th><th>Matlab</th><th>Equivalent</th></tr>
+<tr><td><code>x IN (list)</code></td><td>list ki <b>kisi ek</b> value ke barabar</td><td><code>x = ANY (list)</code></td></tr>
+<tr><td><code>x NOT IN (list)</code></td><td>list ki <b>kisi</b> ke barabar nahi</td><td><code>x &lt;&gt; ALL (list)</code></td></tr>
+<tr><td><code>x &gt; ANY (list)</code></td><td>kisi <b>ek</b> se bada</td><td><code>x &gt; MIN(list)</code></td></tr>
+<tr><td><code>x &gt; ALL (list)</code></td><td><b>sab</b> se bada</td><td><code>x &gt; MAX(list)</code></td></tr>
+<tr><td><code>x &lt; ANY (list)</code></td><td>kisi ek se chhota</td><td><code>x &lt; MAX(list)</code></td></tr>
+<tr><td><code>x &lt; ALL (list)</code></td><td>sab se chhota</td><td><code>x &lt; MIN(list)</code></td></tr></table>
+<p><b>ANY ≈ &ldquo;OR&rdquo; chain, ALL ≈ &ldquo;AND&rdquo; chain.</b> ANY (SOME bhi likh sakte ho) = list ke har element ke saath comparison OR se jodo; ALL = AND se jodo.</p>
+<h3 id="L09-h34">Example: Age &gt; ALL(CSE ki ages)  vs  Age &gt; ANY(CSE ki ages)</h3>
+<p>CSE ki ages = {20 (Rahul), 19 (Priya)}.</p>
+<div class="two">
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT
+<b>WHERE</b> Age &gt; <b>ALL</b>
+  (<b>SELECT</b> Age <b>FROM</b> STUDENT
+   <b>WHERE</b> Dept = 'CSE');</pre></div><div><div class="tb"><span class="rn">> ALL  (= > 20)</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Aman</td></tr><tr class="hr"><td class="">Neha</td></tr></table></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT
+<b>WHERE</b> Age &gt; <b>ANY</b>
+  (<b>SELECT</b> Age <b>FROM</b> STUDENT
+   <b>WHERE</b> Dept = 'CSE');</pre></div><div><div class="tb"><span class="rn">> ANY  (= > 19)</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Rahul</td></tr><tr class="hr"><td class="">Aman</td></tr><tr class="hr"><td class="">Neha</td></tr></table></div></div></div></div></div>
+<p class="cap">(Result tables SQLite mein ANY/ALL na hone ke kaaran equivalent MAX/MIN form se nikaale gaye; matlab bilkul same.)</p>
+<h3 id="L09-h35">Khali list ke saath — ek aur trap</h3>
+<ul>
+<li><code>x &gt; ALL (empty)</code> = <b>TRUE</b> (koi aisa element hi nahi jisse bada na ho — &ldquo;vacuous truth&rdquo;).</li>
+<li><code>x &gt; ANY (empty)</code> = <b>FALSE</b> (koi element hai hi nahi jisse bada ho).</li>
+<li>Isliye <code>Age &gt; ALL (SELECT … WHERE Dept = &#39;XYZ&#39;)</code> <b>saari rows</b> deta hai, aur <code>&gt; ANY</code> <b>zero</b>. <code>&gt; MAX(empty)</code> = <code>&gt; NULL</code> = UNKNOWN → zero — isliye ALL ≡ MAX wala shortcut khali list par <b>fail</b> hota hai.</li></ul>
+<h3 id="L09-h36">⚠ NOT IN aur NULL — SQL ka sabse famous trap</h3>
+<p><b>Normal case:</b> students jinhone koi course nahi liya:</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT
+<b>WHERE</b> ID <b>NOT</b> <b>IN</b> (<b>SELECT</b> ID <b>FROM</b> ENROLL);</pre></div><div><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Neha</td></tr></table></div></div></div>
+<p>Ab ek <b>NULL</b> wali ENROLLN table lo — jisme ek enrollment (NULL, C3) hai (kisi anjaan student ki):</p>
+<div class="avoid"><div class="fl top"><div class="tb"><span class="rn">ENROLLN</span><table class="r"><tr><th class="">ID</th><th class="">CID</th></tr><tr class=""><td class="">1</td><td class="">C1</td></tr><tr class=""><td class="">1</td><td class="">C2</td></tr><tr class=""><td class="">2</td><td class="">C1</td></tr><tr class=""><td class="">3</td><td class="">C1</td></tr><tr class=""><td class="">3</td><td class="">C2</td></tr><tr class=""><td class="nul">NULL</td><td class="">C3</td></tr></table></div></div></div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT
+<b>WHERE</b> ID <b>NOT</b> <b>IN</b> (<b>SELECT</b> ID <b>FROM</b> ENROLLN);</pre></div><div><div class="tb"><span class="rn">SURPRISE: khali!</span><table class="r"><tr><th class="">Name</th></tr></table><div class="cap">Neha ab bhi unenrolled hai, par result khali</div></div></div></div>
+<p><b>Kyun? Neha (ID = 4) ke liye step-by-step:</b></p>
+<ol class="steps"><li><code>4 NOT IN (1, 1, 2, 3, 3, NULL)</code> ka matlab <code>NOT (4 = 1 OR 4 = 1 OR 4 = 2 OR 4 = 3 OR 4 = 3 OR 4 = NULL)</code>.</li><li>Har comparison: FALSE, FALSE, FALSE, FALSE, FALSE, <b>UNKNOWN</b> (4 = NULL).</li><li>OR chain: F OR F OR … OR U = <b>UNKNOWN</b>.</li><li><code>NOT UNKNOWN</code> = <b>UNKNOWN</b> → WHERE sirf TRUE rakhta hai → <b>Neha reject</b>.</li><li>Baaki sab bhi reject: Rahul ke liye <code>1 = 1</code> TRUE → NOT TRUE = FALSE. Isliye <b>koi row pass nahi</b>.</li></ol>
+<p>Rule: <b>agar list mein ek bhi NULL hai</b> to <code>x NOT IN (list)</code> kabhi <b>TRUE nahi</b> ho sakta (ya to FALSE, ya UNKNOWN).</p>
+<div class="two">
+<div class="box tip"><div class="t">Fix 1: NULL filter karo</div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT
+<b>WHERE</b> ID <b>NOT</b> <b>IN</b> (<b>SELECT</b> ID <b>FROM</b> ENROLLN
+                 <b>WHERE</b> ID <b>IS NOT NULL</b>);</pre></div><div class="box tip"><div class="t">Fix 2: NOT EXISTS (safer)</div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT S
+<b>WHERE</b> <b>NOT</b> <b>EXISTS</b> (<b>SELECT</b> 1 <b>FROM</b> ENROLLN E
+                  <b>WHERE</b> E.ID = S.ID);</pre></div>
+</div>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT S
+<b>WHERE</b> <b>NOT</b> <b>EXISTS</b> (<b>SELECT</b> 1 <b>FROM</b> ENROLLN E
+                  <b>WHERE</b> E.ID = S.ID);</pre></div><div><div class="tb"><span class="rn">Sahi: Neha</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Neha</td></tr></table></div></div></div>
+<p><b>IN</b> mein NULL se utni dikkat nahi: <code>x IN (…, NULL)</code> ya to TRUE (agar match mila) ya UNKNOWN — dono mein row ka na aana ya aana wahi rehta hai jo aap chahte ho (UNKNOWN = reject, jo &ldquo;match nahi&rdquo; ke barabar hai). Asli bomb sirf <b>NOT IN</b> hai.</p>
+<div class="box trap"><div class="t">GATE trap summary</div><ul><li><b>NOT IN + subquery mein NULL ⇒ result khali.</b></li><li><b>NOT IN + outer value NULL</b> bhi UNKNOWN deta hai (agar list khali nahi hai).</li><li><code>x &lt;&gt; ALL(list)</code> bhi NULL par isi tarah fail hota hai.</li></ul></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> T(x) = {1, 2}, U(y) = {2, NULL}. <code>SELECT x FROM T WHERE x NOT IN (SELECT y FROM U)</code> ?</p><p><b>Answer:</b> <b>khali</b>. x=1: 1≠2 F, 1=NULL U → NOT(U) = U. x=2: 2=2 T → NOT T = F. Koi row TRUE nahi.</p></div>
+<h2 id="L09-h37">9.9 · EXISTS, NOT EXISTS aur correlated subquery</h2>
+<h3 id="L09-h38">EXISTS = &ldquo;kam se kam ek row mili?&rdquo;</h3>
+<ul><li><code>EXISTS (subquery)</code> → <b>TRUE</b> agar subquery ne <b>≥ 1 row</b> di, warna FALSE. (Kabhi UNKNOWN nahi!)</li>
+<li><code>NOT EXISTS (subquery)</code> → TRUE agar subquery <b>khali</b> hai.</li>
+<li>Subquery ke SELECT mein kya likha hai, farak nahi padta: <code>SELECT 1</code>, <code>SELECT *</code> — sirf rows ka hona ya na hona dekha jaata hai. NULL values yahan matter nahi karti.</li></ul>
+<h3 id="L09-h39">Correlated EXISTS — row by row</h3>
+<p><b>Sawaal:</b> Wo students jinhone kam se kam ek course liya.</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name
+<b>FROM</b> STUDENT S
+<b>WHERE</b> <b>EXISTS</b> (<b>SELECT</b> *
+              <b>FROM</b> ENROLL E
+              <b>WHERE</b> E.ID = S.ID);</pre></div><div><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Rahul</td></tr><tr class="hr"><td class="">Aman</td></tr><tr class="hr"><td class="">Priya</td></tr></table></div></div></div>
+<p>Dhyaan do: inner query mein <code>S.ID</code> hai — wo <b>bahar ki table</b> ka hai. Ye <b>correlation</b> hai. Isiliye inner query akeli nahi chalegi. Execution:</p>
+<ol class="steps"><li>Outer: STUDENT ki <b>pehli row</b> uthao (Rahul, ID=1).</li><li>Inner query chalao <b>S.ID = 1 daalkar</b>: ENROLL se E.ID = 1 wali rows.</li><li>Inner ne ≥ 1 row di? → EXISTS TRUE → Rahul result mein.</li><li>Ab outer ki <b>agli row</b> (Aman, 2) — phir se inner query naye S.ID ke saath… aur aise <b>har row</b> ke liye.</li></ol><div class="tb"><span class="rn">Row-by-row execution</span><table class="r"><tr><th class="">outer row: ID</th><th class="">Name</th><th class="">inner: ENROLL.CID where E.ID = S.ID</th><th class="">EXISTS?</th></tr><tr class="hr"><td class="">1</td><td class="">Rahul</td><td class="">{C1, C2}</td><td class="">TRUE ✔</td></tr><tr class="hr"><td class="">2</td><td class="">Aman</td><td class="">{C1}</td><td class="">TRUE ✔</td></tr><tr class="hr"><td class="">3</td><td class="">Priya</td><td class="">{C1, C2}</td><td class="">TRUE ✔</td></tr><tr class="fr"><td class="">4</td><td class="">Neha</td><td class="">∅ (khali)</td><td class="">FALSE ✘</td></tr></table></div>
+<p><b>NOT EXISTS</b> same query mein sirf ulta karta hai — Neha milti hai:</p>
+<div class="two">
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name <b>FROM</b> STUDENT S
+<b>WHERE</b> <b>NOT</b> <b>EXISTS</b>
+ (<b>SELECT</b> * <b>FROM</b> ENROLL E
+  <b>WHERE</b> E.ID = S.ID);</pre></div><div><div class="tb"><span class="rn">Not enrolled</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Neha</td></tr></table></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> C.Title <b>FROM</b> COURSE C
+<b>WHERE</b> <b>NOT</b> <b>EXISTS</b>
+ (<b>SELECT</b> * <b>FROM</b> ENROLL E
+  <b>WHERE</b> E.CID = C.CID);</pre></div><div><div class="tb"><span class="rn">Unchosen courses</span><table class="r"><tr><th class="">Title</th></tr><tr class="hr"><td class="">Maths</td></tr></table></div></div></div></div></div>
+<h3 id="L09-h40">Correlated + aggregate: apne department ke average se zyada age</h3>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name
+<b>FROM</b> STUDENT S
+<b>WHERE</b> S.Age &gt; (<b>SELECT</b> <b>AVG</b>(S2.Age)
+               <b>FROM</b> STUDENT S2
+               <b>WHERE</b> S2.Dept = S.Dept);</pre></div><div><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Rahul</td></tr></table></div></div></div><div class="tb"><span class="rn">Correlated scalar: step by step</span><table class="r"><tr><th class="">outer: Name</th><th class="">Dept</th><th class="">Age</th><th class="">inner: AVG(Age) of that Dept</th><th class="">Comparison</th><th class="">Keep?</th></tr><tr class="hr"><td class="">Rahul</td><td class="">CSE</td><td class="">20</td><td class="">19.5</td><td class="">20 &gt; 19.5 ?</td><td class="">TRUE ✔</td></tr><tr class="fr"><td class="">Aman</td><td class="">ECE</td><td class="">21</td><td class="">21</td><td class="">21 &gt; 21 ?</td><td class="">FALSE ✘</td></tr><tr class="fr"><td class="">Priya</td><td class="">CSE</td><td class="">19</td><td class="">19.5</td><td class="">19 &gt; 19.5 ?</td><td class="">FALSE ✘</td></tr><tr class="fr"><td class="">Neha</td><td class="">ME</td><td class="">22</td><td class="">22</td><td class="">22 &gt; 22 ?</td><td class="">FALSE ✘</td></tr></table></div>
+<p>Dekha? <b>Inner ka answer har row ke liye alag</b> aaya (19.5, 21, 19.5, 22). Agar inner correlated na hota (<code>AVG</code> sab ka) to ek hi number hota (20.5). Yahi fark hai.</p>
+<h3 id="L09-h41">IN vs EXISTS vs JOIN — kab kya?</h3>
+<table class="g"><tr><th></th><th>IN</th><th>EXISTS</th><th>JOIN</th></tr>
+<tr><td>Inner query</td><td>uncorrelated (aam taur par)</td><td>correlated</td><td>—</td></tr>
+<tr><td>Duplicates</td><td>outer row 1 baar</td><td>outer row 1 baar</td><td><b>multiply</b> ho sakti hain</td></tr>
+<tr><td>NULL</td><td>x IN: UNKNOWN reh sakta hai</td><td><b>kabhi UNKNOWN nahi</b></td><td>NULL match nahi</td></tr>
+<tr><td>Negation</td><td><b>NOT IN: NULL trap</b></td><td>NOT EXISTS <b>safe</b></td><td>LEFT JOIN … IS NULL (safe)</td></tr>
+<tr><td>Inner ke columns output mein?</td><td>nahi</td><td>nahi</td><td><b>haan</b></td></tr></table>
+<div class="box mem"><div class="t">Correlated vs uncorrelated — pehchan</div><p>Inner query mein <b>outer ke alias/column</b> (S.ID, S.Dept …) dikhe → correlated. Na dikhe → uncorrelated. Test: &ldquo;kya inner query ko copy karke akele chala sakte hain?&rdquo; Haan → uncorrelated.</p></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> <code>SELECT Name FROM STUDENT S WHERE EXISTS (SELECT * FROM ENROLL E WHERE E.CID = 'C3')</code> — result?</p><p><b>Answer:</b> <b>Khali.</b> Inner mein S ka koi reference nahi → ye uncorrelated hai: ENROLL mein C3 hai hi nahi → EXISTS FALSE har row ke liye. (Agar C3 hota to <b>saare</b> students aate.)</p></div>
+<h2 id="L09-h42">9.10 · &ldquo;Sabhi ke liye&rdquo; = Division = double NOT EXISTS</h2>
+<p>SQL mein <b>FOR ALL</b> likhne ka koi seedha keyword nahi hai. Isliye logic ko palat dete hain:</p>
+<div class="exbig">&ldquo;Student ne <b>sab</b> required courses liye&rdquo; &nbsp;≡&nbsp; &ldquo;<b>aisa koi</b> required course <b>nahi</b> jo student ne <b>nahi</b> liya&rdquo;</div>
+<p>Matlab <b>NOT EXISTS ( required course jiske liye NOT EXISTS (enrollment) )</b> — do baar NOT, isliye double NOT EXISTS. (Logic: ∀x P ≡ ¬∃x ¬P.)</p>
+<h3 id="L09-h43">Query</h3>
+<div class="l09-ex avoid" style="grid-template-columns:1fr"><div><pre class="sql"><b>SELECT</b> S.Name
+<b>FROM</b> STUDENT S
+<b>WHERE</b> <b>NOT</b> <b>EXISTS</b> (                    -- aisa koi required course nahi
+    <b>SELECT</b> *
+    <b>FROM</b> REQUIRED R
+    <b>WHERE</b> <b>NOT</b> <b>EXISTS</b> (                -- jo student ne nahi liya
+        <b>SELECT</b> *
+        <b>FROM</b> ENROLL E
+        <b>WHERE</b> E.ID  = S.ID
+          <b>AND</b> E.CID = R.CID));</pre></div><div><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Rahul</td></tr><tr class="hr"><td class="">Priya</td></tr></table><div class="cap">REQUIRED = {C1, C2}</div></div></div></div>
+<h3 id="L09-h44">Teen darwaze (3 levels) ko samjho</h3>
+<div class="fl"><span class="pill p-b">Outer: S (har student)</span><div class="ar">→<small>NOT EXISTS</small></div><span class="pill p-o">Middle: R (har required course)</span><div class="ar">→<small>NOT EXISTS</small></div><span class="pill p-g">Inner: E (enrollment of S in R?)</span></div>
+<ol class="steps"><li>Outer se ek student S lo.</li><li>Middle query us student ke liye <b>missing required courses</b> dhoondti hai: wo R jinke liye inner query khali ho (S ne R liya hi nahi).</li><li>Agar missing <b>koi nahi</b> mila (middle khali) → outer NOT EXISTS TRUE → student result mein.</li></ol><div class="tb"><span class="rn">Student ke liye trace</span><table class="r"><tr><th class="">Student</th><th class="">Courses liye</th><th class="">Required mein se MISSING (middle query)</th><th class="">Outer NOT EXISTS</th></tr><tr class="hr"><td class="">Rahul</td><td class="">{C1, C2}</td><td class="">∅ (koi nahi)</td><td class="">NOT EXISTS = TRUE ✔</td></tr><tr class="fr"><td class="">Aman</td><td class="">{C1}</td><td class="">{C2}</td><td class="">FALSE ✘</td></tr><tr class="hr"><td class="">Priya</td><td class="">{C1, C2}</td><td class="">∅ (koi nahi)</td><td class="">NOT EXISTS = TRUE ✔</td></tr><tr class="fr"><td class="">Neha</td><td class="">∅</td><td class="">{C1, C2}</td><td class="">FALSE ✘</td></tr></table></div>
+<h3 id="L09-h45">Dusra tareeka: GROUP BY + HAVING + COUNT</h3>
+<p>Counting wala idea (Lesson 6 ka &ldquo;Tareeka B&rdquo;): student ke <b>required courses ki ginti</b> = <b>kul required courses</b> ho to pass.</p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID
+<b>FROM</b> ENROLL
+<b>WHERE</b> CID <b>IN</b> (<b>SELECT</b> CID <b>FROM</b> REQUIRED)
+<b>GROUP BY</b> ID
+<b>HAVING</b> <b>COUNT</b>(<b>DISTINCT</b> CID) =
+       (<b>SELECT</b> <b>COUNT</b>(*) <b>FROM</b> REQUIRED);</pre></div><div><div class="tb"><span class="rn">IDs</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">1</td></tr><tr class="hr"><td class="">3</td></tr></table><div class="cap">1 = Rahul, 3 = Priya</div></div></div></div>
+<div class="two">
+<div class="box tip"><div class="t">Dono mein se kab kya</div><ul><li><b>NOT EXISTS:</b> logic pura general, khali REQUIRED par bhi sahi (sab pass).</li><li><b>COUNT:</b> chhota aur aasaan; <code>DISTINCT</code> zaroori agar duplicate rows ho sakti hain; student jinki ENROLL mein ek bhi row nahi unka ID output mein aata hi nahi.</li></ul></div><div class="box trap"><div class="t">Traps</div><ul><li>Division mein <b>extra</b> courses ka koi nuksaan nahi.</li><li>Khali REQUIRED par NOT EXISTS version <b>sab students</b> (Neha tak) de deta hai — vacuous truth.</li><li><code>CID IN (…)</code> filter bhoolkar COUNT karoge to extra courses wale galat pass ho jaate hain.</li></ul></div>
+</div>
+<div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> Wo courses dhoondo jinhe <b>har CSE student</b> ne liya. (CSE students: Rahul, Priya.)</p><p><b>Answer:</b> double NOT EXISTS, outer = COURSE, middle = CSE students, inner = ENROLL → <b>C1, C2</b> (dono ke liye dono CSE students enrolled hain; C3 ko koi nahi).</p></div>
+<h2 id="L09-h46">9.11 · Scalar subquery aur derived table (FROM mein subquery)</h2>
+<h3 id="L09-h47">SELECT list mein scalar subquery</h3>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> S.Name,
+       (<b>SELECT</b> <b>COUNT</b>(*)
+        <b>FROM</b> ENROLL E
+        <b>WHERE</b> E.ID = S.ID) <b>AS</b> courses
+<b>FROM</b> STUDENT S;</pre></div><div><div class="tb"><span class="rn">Courses per student</span><table class="r"><tr><th class="">Name</th><th class="">courses</th></tr><tr class="hr"><td class="">Rahul</td><td class="">2</td></tr><tr class="hr"><td class="">Aman</td><td class="">1</td></tr><tr class="hr"><td class="">Priya</td><td class="">2</td></tr><tr class=""><td class="">Neha</td><td class="hx">0</td></tr></table><div class="cap">Neha = 0 (LEFT JOIN trap yahan nahi)</div></div></div></div>
+<ul><li>Scalar subquery <b>exactly 1 row, 1 column</b> deni chahiye. <b>0 rows</b> → value NULL. <b>&gt;1 row</b> → <b>error</b>.</li>
+<li>Upar wali query ek <b>correlated</b> scalar subquery hai (S.ID use hua).</li></ul>
+<h3 id="L09-h48">FROM mein subquery (derived table) — 2026 Q51 ka idea</h3>
+<p>Pehle group karke ek chhoti table banao, phir usse join karo. <b>Alias dena zaroori.</b></p>
+<div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> E.ID, B.n
+<b>FROM</b> ENROLL E,
+     (<b>SELECT</b> ID, <b>COUNT</b>(*) <b>AS</b> n
+      <b>FROM</b> ENROLL <b>GROUP BY</b> ID) <b>AS</b> B
+<b>WHERE</b> E.ID = B.ID;</pre></div><div><div class="tb"><span class="rn">Har enrollment row ke saath student ka total</span><table class="r"><tr><th class="">ID</th><th class="">n</th></tr><tr class="hr"><td class="">1</td><td class="">2</td></tr><tr class="hr"><td class="">1</td><td class="">2</td></tr><tr class="hr"><td class="">2</td><td class="">1</td></tr><tr class="hr"><td class="">3</td><td class="">2</td></tr><tr class="hr"><td class="">3</td><td class="">2</td></tr></table><div class="cap">ID 1 ke 2 rows (n=2), ID 2 ka 1, ID 3 ke 2</div></div></div></div>
+<h3 id="L09-h49">Second highest / k-th highest</h3>
+<div class="two">
+<div><h4>MAX of the rest</h4><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> <b>MAX</b>(Age) <b>AS</b> second
+<b>FROM</b> STUDENT
+<b>WHERE</b> Age &lt; (<b>SELECT</b> <b>MAX</b>(Age)
+             <b>FROM</b> STUDENT);</pre></div><div><div class="tb"><span class="rn">2nd highest age</span><table class="r"><tr><th class="">second</th></tr><tr class="hr"><td class="">21</td></tr></table></div></div></div></div>
+<div><h4>Correlated COUNT</h4><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> Name <b>FROM</b> STUDENT S1
+<b>WHERE</b> 1 = (<b>SELECT</b> <b>COUNT</b>(<b>DISTINCT</b> Age)
+           <b>FROM</b> STUDENT S2
+           <b>WHERE</b> S2.Age &gt; S1.Age);</pre></div><div><div class="tb"><span class="rn">Jis se sirf 1 distinct bada</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Aman</td></tr></table></div></div></div></div></div>
+<p><b>Correlated COUNT ka logic:</b> &ldquo;k-th highest&rdquo; = jis se <b>exactly (k − 1)</b> alag-alag values bade hon. 2nd highest = 1 value bada (Neha 22) → Aman (21). (2026 Q60 isi family ka sawaal hai — 9.14.)</p>
+
+<h2 id="L09-h50">9.12 · UNION, INTERSECT, EXCEPT <small>query-level set operations</small></h2>
+<p>Do queries ke <b>results</b> par set-operations. Shart: <b>same number of columns</b> aur compatible types (RA ki union-compatibility jaisi). Column names <b>pehli query</b> ke aate hain.</p>
+<p>P = DBMS (C1) wale IDs = {1, 2, 3} &nbsp;·&nbsp; Q = Python (C2) wale IDs = {1, 3}</p>
+<div class="two">
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> ENROLL <b>WHERE</b> CID='C1'
+<b>UNION</b>
+<b>SELECT</b> ID <b>FROM</b> ENROLL <b>WHERE</b> CID='C2';</pre></div><div><div class="tb"><span class="rn">UNION</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">1</td></tr><tr class="hr"><td class="">2</td></tr><tr class="hr"><td class="">3</td></tr></table></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> ENROLL <b>WHERE</b> CID='C1'
+<b>UNION ALL</b>
+<b>SELECT</b> ID <b>FROM</b> ENROLL <b>WHERE</b> CID='C2';</pre></div><div><div class="tb"><span class="rn">UNION ALL (5)</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">1</td></tr><tr class="hr"><td class="">2</td></tr><tr class="hr"><td class="">3</td></tr><tr class="hr"><td class="">1</td></tr><tr class="hr"><td class="">3</td></tr></table><div class="cap">duplicates rakhta hai</div></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> ENROLL <b>WHERE</b> CID='C1'
+<b>INTERSECT</b>
+<b>SELECT</b> ID <b>FROM</b> ENROLL <b>WHERE</b> CID='C2';</pre></div><div><div class="tb"><span class="rn">INTERSECT</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">1</td></tr><tr class="hr"><td class="">3</td></tr></table></div></div></div></div>
+<div><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> ID <b>FROM</b> ENROLL <b>WHERE</b> CID='C1'
+<b>EXCEPT</b>
+<b>SELECT</b> ID <b>FROM</b> ENROLL <b>WHERE</b> CID='C2';</pre></div><div><div class="tb"><span class="rn">EXCEPT (P − Q)</span><table class="r"><tr><th class="">ID</th></tr><tr class="hr"><td class="">2</td></tr></table></div></div></div></div></div>
+<h3 id="L09-h51">Duplicates ka rule</h3>
+<table class="g"><tr><th>Operator</th><th>Duplicates</th><th>Agar value m baar (pehle result mein) aur n baar (doosre mein)</th></tr>
+<tr><td><code>UNION</code></td><td>hata deta hai</td><td>1 baar (agar m+n ≥ 1)</td></tr>
+<tr><td><code>UNION ALL</code></td><td>rakhta hai</td><td>m + n baar</td></tr>
+<tr><td><code>INTERSECT</code></td><td>hata deta hai</td><td>1 baar agar m ≥ 1 aur n ≥ 1</td></tr>
+<tr><td><code>INTERSECT ALL</code></td><td>rakhta hai</td><td>min(m, n)</td></tr>
+<tr><td><code>EXCEPT</code></td><td>hata deta hai</td><td>1 baar agar m ≥ 1 aur n = 0</td></tr>
+<tr><td><code>EXCEPT ALL</code></td><td>rakhta hai</td><td>max(0, m − n)</td></tr></table>
+<p><b>Example:</b> R(X) = {1,1,2}, S(X) = {1,2,2,3}. UNION ALL = 3 + 4 = <b>7</b> rows. UNION = {1,2,3} = 3. INTERSECT ALL: 1 → min(2,1)=1, 2 → min(1,2)=1 → <b>2 rows</b>. EXCEPT ALL (R − S): 1 → max(0, 2−1) = 1, 2 → max(0, 1−2) = 0 → <b>1 row</b> (sirf ek 1).</p>
+<div class="box trap"><div class="t">Traps</div><ul><li><b>UNION default mein duplicates hatata hai</b> (sort/dedupe ka kharcha) — UNION ALL zyada tez hai.</li><li>NULL in set-operations: <b>NULL = NULL maana jaata hai</b> (do NULL ek hi element) — ye WHERE ke = se ulta hai.</li><li><b>EXCEPT sirf is order mein</b>: A EXCEPT B ≠ B EXCEPT A.</li><li>INTERSECT ki jagah <code>IN</code> bhi chal sakta hai, EXCEPT ki jagah <code>NOT EXISTS</code> (NOT IN nahi, NULL!).</li></ul></div>
+<h2 id="L09-h52">9.13 · Views <small>saved query = virtual table</small></h2>
+<h3 id="L09-h53">Analogy</h3>
+<p>View ek <b>khidki</b> hai: asli ghar (base tables) ke andar ka sirf wo hissa dikhata hai jo aap dikhana chahte ho. Khidki mein <b>data copy nahi</b> hota — jab bhi aap khidki se dekhte ho, asli table se taaza data aata hai.</p>
+<h3 id="L09-h54">Banana aur use karna</h3>
+<pre class="sql"><b>CREATE VIEW</b> CSE_STU <b>AS</b>
+<b>SELECT</b> ID, Name, Age
+<b>FROM</b> STUDENT
+<b>WHERE</b> Dept = 'CSE';</pre><div class="l09-ex avoid"><div><pre class="sql"><b>SELECT</b> * <b>FROM</b> CSE_STU;</pre></div><div><div class="tb"><span class="rn">View CSE_STU</span><table class="r"><tr><th class="">ID</th><th class="">Name</th><th class="">Age</th></tr><tr class="hr"><td class="">1</td><td class="">Rahul</td><td class="">20</td></tr><tr class="hr"><td class="">3</td><td class="">Priya</td><td class="">19</td></tr></table></div></div></div>
+<p>View ko <code>FROM</code> mein table ki tarah use karo; database us par <b>view ki definition chipka</b> deta hai (<i>view expansion / merging</i>): <code>SELECT * FROM CSE_STU WHERE Age &gt; 19</code> asal mein <code>… FROM STUDENT WHERE Dept=&#39;CSE&#39; AND Age &gt; 19</code> ban jaata hai.</p>
+<h3 id="L09-h55">Join wala view</h3>
+<div class="l09-ex avoid"><div><pre class="sql"><b>CREATE VIEW</b> ENR_INFO <b>AS</b>
+<b>SELECT</b> S.Name, C.Title
+<b>FROM</b> STUDENT S
+<b>JOIN</b> ENROLL E <b>ON</b> S.ID  = E.ID
+<b>JOIN</b> COURSE C <b>ON</b> E.CID = C.CID;</pre></div><div><div class="tb"><span class="rn">SELECT * FROM ENR_INFO</span><table class="r"><tr><th class="">Name</th><th class="">Title</th></tr><tr class="hr"><td class="">Rahul</td><td class="">DBMS</td></tr><tr class="hr"><td class="">Rahul</td><td class="">Python</td></tr><tr class="hr"><td class="">Aman</td><td class="">DBMS</td></tr><tr class="hr"><td class="">Priya</td><td class="">DBMS</td></tr><tr class="hr"><td class="">Priya</td><td class="">Python</td></tr></table></div></div></div>
+<h3 id="L09-h56">View kyun?</h3>
+<div class="three">
+<div class="box idea"><div class="t">Simplicity</div><p>Lamba join ek baar likho, baad mein <code>SELECT * FROM ENR_INFO</code> likho.</p></div><div class="box tip"><div class="t">Security</div><p>Sensitive columns (salary) chhupao: user ko sirf view ka <code>GRANT</code> do.</p></div><div class="box mem"><div class="t">Logical data independence</div><p>Base table ka structure badle to view ki definition badal do — application ka code same rahe.</p></div>
+</div>
+<h3 id="L09-h57">View par INSERT / UPDATE / DELETE</h3>
+<p>View ke through data badalna <b>sirf tab</b> allowed hota hai jab database <b>ek-ek row ko base table ki ek-ek row se pakka map</b> kar sake. Aam shartein (updatable view):</p>
+<ul>
+<li>Sirf <b>ek base table</b> par bana ho (kuch DBMS simple joins allow karte hain par GATE-level: single table).</li>
+<li><b>DISTINCT, GROUP BY, HAVING, aggregate (SUM/COUNT…), UNION</b> nahi hona chahiye.</li>
+<li>Jo base-table ke <b>NOT NULL / primary-key columns</b> view mein nahi hain unke bina INSERT possible nahi (default/NULL nahi de sakte).</li>
+<li>Computed (expression) columns par update nahi.</li></ul>
+<h3 id="L09-h58">WITH CHECK OPTION</h3>
+<p>Maan lo view CSE_STU banaya <b>WITH CHECK OPTION</b> ke saath. Kisi ne <code>INSERT INTO CSE_STU</code> se ek aisa row dala jo <b>Dept = ECE</b> hai? Wo row view ki condition (<code>Dept=&#39;CSE&#39;</code>) <b>satisfy hi nahi karti</b> → <b>reject</b>. Bina CHECK OPTION ke row base table mein chali jaati par view mein <b>dikhti nahi</b> (&ldquo;ghost row&rdquo;).</p>
+<h3 id="L09-h59">Virtual vs Materialized view</h3>
+<table class="g"><tr><th></th><th>Normal (virtual) view</th><th>MATERIALIZED view</th></tr>
+<tr><td>Data store?</td><td>Nahi, sirf query</td><td><b>Haan</b>, result disk par save</td></tr>
+<tr><td>Read speed</td><td>Har baar query chalti hai</td><td><b>Tez</b> (precomputed)</td></tr>
+<tr><td>Freshness</td><td>Hamesha latest</td><td>Stale ho sakta hai → <b>refresh</b> chahiye</td></tr>
+<tr><td>Use</td><td>Security, simplicity</td><td>Data warehouse / heavy aggregates (Lesson 18+ mein dobara aayega)</td></tr></table>
+<div class="box trap"><div class="t">View ke traps</div><ul><li>View data <b>store nahi</b> karta (materialized ko chhodkar).</li><li><code>DROP VIEW</code> sirf definition hataata hai, base table ka data <b>safe</b>.</li><li>Base table drop karne par view <b>invalid</b> ho jaata hai.</li><li>View ke upar view bana sakte ho.</li></ul></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> View V = <code>SELECT Dept, AVG(Age) AS a FROM STUDENT GROUP BY Dept</code>. Kya <code>UPDATE V SET a = 25 WHERE Dept = &#39;CSE&#39;</code> allowed hai?</p><p><b>Answer:</b> <b>Nahi.</b> View mein GROUP BY + aggregate hai; &ldquo;a&rdquo; computed value hai, base rows se 1-1 mapping nahi.</p></div>
+<h2 id="L09-h60">9.14 · Real GATE DA PYQs — step by step <small>4 sawaal</small></h2>
+
+<h3 id="L09-h61">PYQ 1 · GATE DA 2024 · Q31 <span class="tag tg-y">Join + filter, NAT</span></h3>
+<p>Kabaddi league ke do tables: <b>Raider</b> aur <b>Team</b>. Team.ID, Raider ki primary key ID ko refer karta hai.</p>
+<div class="avoid"><div class="fl top"><div class="tb"><span class="rn">Raider</span><table class="r"><tr><th class="">ID</th><th class="">Name</th><th class="">Raids</th><th class="">RaidPoints</th></tr><tr class=""><td class="">1</td><td class="">Arjun</td><td class="">200</td><td class="">250</td></tr><tr class=""><td class="">2</td><td class="">Ankush</td><td class="">190</td><td class="">219</td></tr><tr class=""><td class="">3</td><td class="">Sunil</td><td class="">150</td><td class="">200</td></tr><tr class=""><td class="">4</td><td class="">Reza</td><td class="">150</td><td class="">190</td></tr><tr class=""><td class="">5</td><td class="">Pratham</td><td class="">175</td><td class="">220</td></tr><tr class=""><td class="">6</td><td class="">Gopal</td><td class="">193</td><td class="">215</td></tr></table></div><div class="tb"><span class="rn">Team</span><table class="r"><tr><th class="">City</th><th class="">ID</th><th class="">BidPoints</th></tr><tr class=""><td class="">Jaipur</td><td class="">2</td><td class="">200</td></tr><tr class=""><td class="">Patna</td><td class="">3</td><td class="">195</td></tr><tr class=""><td class="">Hyderabad</td><td class="">5</td><td class="">175</td></tr><tr class=""><td class="">Jaipur</td><td class="">1</td><td class="">250</td></tr><tr class=""><td class="">Patna</td><td class="">4</td><td class="">200</td></tr><tr class=""><td class="">Jaipur</td><td class="">6</td><td class="">200</td></tr></table></div></div></div>
+<p>Query: <code>SELECT * FROM Raider, Team WHERE Raider.ID = Team.ID AND City = &ldquo;Jaipur&rdquo; AND RaidPoints &gt; 200;</code> &nbsp; Kitni rows return hongi? (NAT)</p>
+<ol class="steps"><li>Comma-join = <b>cross product + WHERE</b>. Teen conditions AND se jude hain — <b>teeno</b> TRUE chahiye.</li><li><code>City</code> sirf <b>Team</b> mein hai, <code>RaidPoints</code> sirf <b>Raider</b> mein → ambiguity nahi. (Team ka <code>BidPoints</code> bas distraction hai — query RaidPoints maangti hai.)</li><li>Team ki har row ke liye check karo: join ID se Raider ki row dhoondo, phir City aur RaidPoints dekho.</li></ol><div class="tb"><span class="rn">Team ki har row ke liye</span><table class="r"><tr><th class="">Team.City</th><th class="">Team.ID</th><th class="">Raider.RaidPoints (join se)</th><th class="">City filter</th><th class="">Points filter</th><th class="">Result</th></tr><tr class="hr"><td class="">Jaipur</td><td class="">2</td><td class="">219</td><td class="">Jaipur? ✔</td><td class="">RaidPoints &gt; 200? ✔</td><td class="">ROW ✔</td></tr><tr class="fr"><td class="">Patna</td><td class="">3</td><td class="">200</td><td class="">Jaipur? ✘</td><td class="">—</td><td class="">hata</td></tr><tr class="fr"><td class="">Hyderabad</td><td class="">5</td><td class="">220</td><td class="">Jaipur? ✘</td><td class="">—</td><td class="">hata</td></tr><tr class="hr"><td class="">Jaipur</td><td class="">1</td><td class="">250</td><td class="">Jaipur? ✔</td><td class="">RaidPoints &gt; 200? ✔</td><td class="">ROW ✔</td></tr><tr class="fr"><td class="">Patna</td><td class="">4</td><td class="">190</td><td class="">Jaipur? ✘</td><td class="">—</td><td class="">hata</td></tr><tr class="hr"><td class="">Jaipur</td><td class="">6</td><td class="">215</td><td class="">Jaipur? ✔</td><td class="">RaidPoints &gt; 200? ✔</td><td class="">ROW ✔</td></tr></table></div>
+<p>Jaipur ki teen rows: ID 2 (219), ID 1 (250), ID 6 (215). Teeno ke RaidPoints 200 se zyada → <b>teeno rows aati hain</b>. Patna/Hyderabad wali Team rows City filter se hi hat gayin — chahe unke Raider ke points kuch bhi hon (jaise ID 5 ke 220 hain par City Jaipur nahi). Sirf ID 3 (Patna) ka RaidPoints exactly 200 hai, par wo vaise bhi City se bahar.</p>
+<div class="note box"><div class="t">Answer</div><b>3</b> (official answer 3; SQLite mein asli query chalakar bhi 3 aaya). Trap: sirf &ldquo;Jaipur ki Team rows&rdquo; gin kar rukna nahi, aur <code>RaidPoints &gt; 200</code> strict hai — exactly 200 wali row (ID 3) include nahi hoti (par wo to City se pehle hi bahar hai).</div>
+<div class="l09-ex avoid" style="grid-template-columns:1fr"><div><pre class="sql"><b>SELECT</b> * <b>FROM</b> Raider, Team
+<b>WHERE</b> Raider.ID = Team.ID
+  <b>AND</b> City = 'Jaipur'
+  <b>AND</b> RaidPoints &gt; 200;</pre></div><div><div class="tb"><span class="rn">Output (3 rows)</span><table class="r"><tr><th class="">ID</th><th class="">Name</th><th class="">Raids</th><th class="">RaidPoints</th><th class="">City</th><th class="">ID</th><th class="">BidPoints</th></tr><tr class="hr"><td class="">2</td><td class="">Ankush</td><td class="">190</td><td class="">219</td><td class="">Jaipur</td><td class="">2</td><td class="">200</td></tr><tr class="hr"><td class="">1</td><td class="">Arjun</td><td class="">200</td><td class="">250</td><td class="">Jaipur</td><td class="">1</td><td class="">250</td></tr><tr class="hr"><td class="">6</td><td class="">Gopal</td><td class="">193</td><td class="">215</td><td class="">Jaipur</td><td class="">6</td><td class="">200</td></tr></table></div></div></div>
+
+<h3 id="L09-h62">PYQ 2 · GATE DA 2025 · Q33 <span class="tag tg-y">Uncorrelated scalar subquery, NAT</span></h3>
+<div class="tb"><span class="rn">Loan</span><table class="r"><tr><th class="">loan_number</th><th class="">branch_name</th><th class="">amount</th></tr><tr class=""><td class="">L11</td><td class="">Banjara Hills</td><td class="">90000</td></tr><tr class=""><td class="">L14</td><td class="">Kondapur</td><td class="">50000</td></tr><tr class=""><td class="">L15</td><td class="">SR Nagar</td><td class="">40000</td></tr><tr class=""><td class="">L22</td><td class="">SR Nagar</td><td class="">25000</td></tr><tr class=""><td class="">L23</td><td class="">Balanagar</td><td class="">80000</td></tr><tr class=""><td class="">L25</td><td class="">Kondapur</td><td class="">70000</td></tr><tr class=""><td class="">L19</td><td class="">SR Nagar</td><td class="">65000</td></tr></table></div>
+<pre class="sql"><b>SELECT</b> L1.loan_number
+<b>FROM</b> Loan L1
+<b>WHERE</b> L1.amount &gt; (<b>SELECT</b> <b>MAX</b>(L2.amount)
+                   <b>FROM</b> Loan L2
+                   <b>WHERE</b> L2.branch_name = 'SR Nagar');</pre>
+<ol class="steps"><li><b>Inner (uncorrelated, ek baar):</b> SR Nagar ke loans = 40000, 25000, 65000 → <b>MAX = 65000</b>.</li><li><b>Outer</b> ban gayi: <code>WHERE amount &gt; 65000</code> — <b>saari branches</b> par (branch ka restriction sirf inner mein tha).</li><li>amount &gt; 65000: L11 (90000) ✔, L14 (50000) ✘, L15 ✘, L22 ✘, L23 (80000) ✔, L25 (70000) ✔, L19 (65000) ✘ (strict &gt;, 65000 &gt; 65000 FALSE).</li></ol>
+<div class="note box"><div class="t">Answer</div><b>3</b> (L11, L23, L25). Trap: outer query ko bhi SR Nagar tak seemit maanna, ya L19 (65000) ko include karna.</div>
+
+<h3 id="L09-h63">PYQ 3 · GATE DA 2026 · Q51 <span class="tag tg-y">MSQ · derived table + GROUP BY</span></h3>
+<p>Employee(EmpID, TeamID); EmpID primary key, TeamID NOT NULL. Chahiye: har employee ke saath uski team ka size.</p>
+<div class="fl top"><div class="tb"><span class="rn">Employee</span><table class="r"><tr><th class="">EmpID</th><th class="">TeamID</th></tr><tr class=""><td class="">1</td><td class="">8</td></tr><tr class=""><td class="">2</td><td class="">8</td></tr><tr class=""><td class="">3</td><td class="">8</td></tr><tr class=""><td class="">4</td><td class="">7</td></tr><tr class=""><td class="">5</td><td class="">7</td></tr><tr class=""><td class="">6</td><td class="">9</td></tr></table></div><div class="ar">→<small>desired</small></div><div class="tb"><span class="rn">Output</span><table class="r"><tr><th class="">EmpID</th><th class="">TeamSize</th></tr><tr class=""><td class="">1</td><td class="">3</td></tr><tr class=""><td class="">2</td><td class="">3</td></tr><tr class=""><td class="">3</td><td class="">3</td></tr><tr class=""><td class="">4</td><td class="">2</td></tr><tr class=""><td class="">5</td><td class="">2</td></tr><tr class=""><td class="">6</td><td class="">1</td></tr></table></div></div>
+<table class="g"><tr><th>Opt</th><th>Query</th></tr>
+<tr><td>A</td><td><pre class="sql" style="margin:0"><b>SELECT</b> E.EmpID, B.TeamSize
+<b>FROM</b> Employee <b>AS</b> E,
+     (<b>SELECT</b> TeamID, <b>COUNT</b>(TeamID) <b>AS</b> TeamSize
+      <b>FROM</b> Employee <b>GROUP BY</b> TeamID) <b>AS</b> B
+<b>WHERE</b> E.TeamID = B.TeamID</pre></td></tr>
+<tr><td>B</td><td><pre class="sql" style="margin:0"><b>SELECT</b> A.EmpID, <b>COUNT</b>(B.TeamID) <b>AS</b> TeamSize
+<b>FROM</b> Employee <b>AS</b> A, Employee <b>AS</b> B
+<b>WHERE</b> A.TeamID = B.TeamID <b>AND</b> A.EmpID = B.EmpID
+<b>GROUP BY</b> A.EmpID</pre></td></tr>
+<tr><td>C</td><td><pre class="sql" style="margin:0"><b>SELECT</b> B.EmpID, B.TeamSize
+<b>FROM</b> (<b>SELECT</b> EmpID, <b>COUNT</b>(TeamID) <b>AS</b> TeamSize
+      <b>FROM</b> Employee <b>GROUP BY</b> EmpID) <b>AS</b> B</pre></td></tr>
+<tr><td>D</td><td><pre class="sql" style="margin:0"><b>SELECT</b> A.EmpID, B.TeamSize
+<b>FROM</b> Employee <b>AS</b> A,
+     (<b>SELECT</b> <b>COUNT</b>(TeamID) <b>AS</b> TeamSize
+      <b>FROM</b> Employee <b>GROUP BY</b> TeamID) <b>AS</b> B
+<b>WHERE</b> A.TeamID = B.TeamID</pre></td></tr></table>
+<h4>Option-wise jaanch</h4>
+<ul>
+<li><b>A ✔.</b> Derived table B = per-team count: (8,3), (7,2), (9,1). Join E.TeamID = B.TeamID har employee ko uski team ka count de deta hai. Output = desired (6 rows).</li>
+<li><b>B ✘.</b> Condition <code>A.EmpID = B.EmpID</code> EmpID par self-match karwati hai: har employee sirf apne aap se match → COUNT = <b>1</b> sab ke liye (EmpID PK hai).</li>
+<li><b>C ✘.</b> <code>GROUP BY EmpID</code>: har EmpID ek alag group (key hai) → TeamSize = 1 sab ke liye.</li>
+<li><b>D ✘.</b> Subquery ka output sirf <code>TeamSize</code> hai (GROUP BY TeamID hai par TeamID SELECT mein <b>nahi</b>). Isliye outer mein <code>B.TeamID</code> exist hi nahi karta → <b>error</b>.</li></ul>
+<div class="fl top"><div class="tb"><span class="rn">A ka actual output</span><table class="r"><tr><th class="">EmpID</th><th class="">TeamSize</th></tr><tr class=""><td class="">1</td><td class="">3</td></tr><tr class=""><td class="">2</td><td class="">3</td></tr><tr class=""><td class="">3</td><td class="">3</td></tr><tr class=""><td class="">4</td><td class="">2</td></tr><tr class=""><td class="">5</td><td class="">2</td></tr><tr class=""><td class="">6</td><td class="">1</td></tr></table></div><div class="tb"><span class="rn">B ka actual output</span><table class="r"><tr><th class="">EmpID</th><th class="">TeamSize</th></tr><tr class="fr"><td class="">1</td><td class="">1</td></tr><tr class="fr"><td class="">2</td><td class="">1</td></tr><tr class="fr"><td class="">3</td><td class="">1</td></tr><tr class="fr"><td class="">4</td><td class="">1</td></tr><tr class="fr"><td class="">5</td><td class="">1</td></tr><tr class="fr"><td class="">6</td><td class="">1</td></tr></table></div><div class="tb"><span class="rn">C ka actual output</span><table class="r"><tr><th class="">EmpID</th><th class="">TeamSize</th></tr><tr class="fr"><td class="">1</td><td class="">1</td></tr><tr class="fr"><td class="">2</td><td class="">1</td></tr><tr class="fr"><td class="">3</td><td class="">1</td></tr><tr class="fr"><td class="">4</td><td class="">1</td></tr><tr class="fr"><td class="">5</td><td class="">1</td></tr><tr class="fr"><td class="">6</td><td class="">1</td></tr></table></div></div>
+<div class="note box"><div class="t">Answer</div><b>Only A</b> (official answer: A). Rule: &ldquo;group-wise value ko har row ke saath jodna&rdquo; = <b>GROUP BY wali derived table + join on group key</b>.</div>
+
+<h3 id="L09-h64">PYQ 4 · GATE DA 2026 · Q60 <span class="tag tg-y">Correlated subquery, NAT</span></h3>
+<div class="tb"><span class="rn">Account</span><table class="r"><tr><th class="">AccNo</th><th class="">Balance</th></tr><tr class=""><td class="">A1</td><td class="">5000</td></tr><tr class=""><td class="">A2</td><td class="">5000</td></tr><tr class=""><td class="">A3</td><td class="">10000</td></tr><tr class=""><td class="">A4</td><td class="">15000</td></tr><tr class=""><td class="">A5</td><td class="">18000</td></tr></table></div>
+<pre class="sql"><b>SELECT</b> AccNo <b>FROM</b> Account <b>AS</b> A
+<b>WHERE</b> (<b>SELECT</b> <b>COUNT</b>(*) <b>FROM</b> Account <b>AS</b> B
+       <b>WHERE</b> A.Balance &lt; B.Balance)
+   &gt;= (<b>SELECT</b> <b>COUNT</b>(*) <b>FROM</b> Account <b>AS</b> C
+       <b>WHERE</b> A.Balance &gt; C.Balance)</pre>
+<p><b>Samajh:</b> A ek &ldquo;outer&rdquo; account hai. Pehla count = <b>kitne accounts A se zyada</b> balance wale hain (<code>A.Balance &lt; B.Balance</code> ⇒ B bada). Doosra count = <b>kitne A se kam</b> balance wale hain. Condition: &ldquo;bade ≥ chhote&rdquo; — yaani A <b>median ya usse neeche</b>.</p>
+<div class="tb"><span class="rn">Outer row-by-row</span><table class="r"><tr><th class="">AccNo (A)</th><th class="">Balance</th><th class="">higher: COUNT(A.Bal &lt; B.Bal)</th><th class="">lower: COUNT(A.Bal &gt; C.Bal)</th><th class="">Compare</th><th class="">Result</th></tr><tr class="hr"><td class="">A1</td><td class="">5000</td><td class="">3</td><td class="">0</td><td class="">3 &ge; 0 ?</td><td class="">KEEP ✔</td></tr><tr class="hr"><td class="">A2</td><td class="">5000</td><td class="">3</td><td class="">0</td><td class="">3 &ge; 0 ?</td><td class="">KEEP ✔</td></tr><tr class="hr"><td class="">A3</td><td class="">10000</td><td class="">2</td><td class="">2</td><td class="">2 &ge; 2 ?</td><td class="">KEEP ✔</td></tr><tr class="fr"><td class="">A4</td><td class="">15000</td><td class="">1</td><td class="">3</td><td class="">1 &ge; 3 ?</td><td class="">hata ✘</td></tr><tr class="fr"><td class="">A5</td><td class="">18000</td><td class="">0</td><td class="">4</td><td class="">0 &ge; 4 ?</td><td class="">hata ✘</td></tr></table></div>
+<p>Dhyaan do: A1 aur A2 ka balance <b>same</b> (5000) hai; dono ko <b>alag-alag</b> row ki tarah check kiya (duplicates preserve). Same balance wale account ek doosre ko &ldquo;bada&rdquo; ya &ldquo;chhota&rdquo; count nahi karte (strict &lt;, &gt;).</p>
+<div class="note box"><div class="t">Answer</div><b>3</b> (A1, A2, A3). Trap: A1/A2 ko ek ginna, ya A3 (2 ≥ 2, barabari par TRUE) ko bhoolna.</div>
+
+<h2 id="L09-h65">9.15 · Practice <small>16 questions — pehle khud, phir answer</small></h2>
+<div class="qa"><div class="q">Q1. R(X) = {1, 1, 2, NULL}, S(X) = {1, 2, 2, NULL}. <code>R JOIN S ON R.X = S.X</code> ki kitni rows?</div><div class="a">✔ 4</div><div class="w">key 1: 2×1 = 2; key 2: 1×2 = 2; NULL match nahi. Total 4.</div></div><div class="qa"><div class="q">Q2. Upar wale R, S ke liye <code>R LEFT JOIN S</code> aur <code>R FULL JOIN S</code> kitni rows?</div><div class="a">✔ LEFT = 5, FULL = 6</div><div class="w">Inner 4. R ke unmatched: NULL (1 row) → left = 5. S ke unmatched: NULL (1 row) → full = 6.</div></div><div class="qa"><div class="q">Q3. R (m = 8 rows), S (n = 5 rows). <code>R CROSS JOIN S</code> mein columns: R ke 3, S ke 4. Rows aur columns?</div><div class="a">✔ 40 rows, 7 columns</div><div class="w">m·n aur 3 + 4.</div></div><div class="qa"><div class="q">Q4. R.fk (NOT NULL) ek foreign key hai S.pk ko (S ki primary key). R ke 100 rows, S ke 40. <code>R JOIN S ON R.fk = S.pk</code> ki rows?</div><div class="a">✔ 100</div><div class="w">Har R-row ka S mein ek hi match.</div></div><div class="qa"><div class="q">Q5. T(x) = {5, NULL, 8}. <code>SELECT COUNT(*) FROM T WHERE x &lt;&gt; 5 OR x IS NULL</code> ?</div><div class="a">✔ 2</div><div class="w">x=5: F OR F = F. x=NULL: U OR TRUE = TRUE. x=8: T. → 2 rows.</div></div><div class="qa"><div class="q">Q6. T(x) = {1, 2, 3}, U(y) = {3, 4}. <code>SELECT x FROM T WHERE x NOT IN (SELECT y FROM U)</code> ?</div><div class="a">✔ {1, 2}</div><div class="w">Koi NULL nahi, to NOT IN theek chalta hai.</div></div><div class="qa"><div class="q">Q7. Upar U mein ek aur row NULL daal do. Ab wahi query ka result?</div><div class="a">✔ Khali</div><div class="w">x NOT IN (3,4,NULL) har x ke liye FALSE ya UNKNOWN.</div></div><div class="qa"><div class="q">Q8. Age &gt; ALL (subquery) par agar subquery <b>khali</b> ho to result?</div><div class="a">✔ Saari outer rows</div><div class="w">ALL ka vacuous truth. (&gt; ANY khali par zero rows.)</div></div><div class="qa"><div class="q">Q9. Kya <code>x = ANY (SELECT y …)</code> aur <code>x IN (SELECT y …)</code> hamesha same hain?</div><div class="a">✔ Haan</div><div class="w">IN = (= ANY). NOT IN = (&lt;&gt; ALL).</div></div><div class="qa"><div class="q">Q10. STUDENT NATURAL JOIN COURSE kitni rows deta hai?</div><div class="a">✔ 12</div><div class="w">Koi common column nahi → cross product 4×3.</div></div><div class="qa"><div class="q">Q11. SELECT mein <b>correlated</b> scalar subquery kab error deti hai?</div><div class="a">✔ Jab wo ek se zyada row return kare</div><div class="w">0 row → NULL, &gt;1 row → runtime error.</div></div><div class="qa"><div class="q">Q12. Query likho: wo students jinhone <b>C2 nahi</b> liya (NOT EXISTS). Answer?</div><div class="a">✔ Aman, Neha</div><div class="w"><code>WHERE NOT EXISTS (SELECT * FROM ENROLL E WHERE E.ID=S.ID AND E.CID=&#39;C2&#39;)</code>. Rahul, Priya ne C2 liya.</div></div><div class="qa"><div class="q">Q13. <code>SELECT S.Name, COUNT(*) FROM STUDENT S LEFT JOIN ENROLL E ON S.ID=E.ID GROUP BY S.ID, S.Name</code>: Neha ka count?</div><div class="a">✔ 1 — isliye ye query galat hai; sahi count 0 hai</div><div class="w">COUNT(*) NULL-extended row bhi ginta hai. 0 chahiye to COUNT(E.CID).</div></div><div class="qa"><div class="q">Q14. Query likho: wo students jo <b>sirf C1</b> par enrolled hain (aur kuch nahi).</div><div class="a">✔ Aman</div><div class="w">C1 wale {1,2,3} − jinhone kuch aur bhi liya {1,3} = {2}. SQL: <code>… WHERE ID IN (…C1) AND ID NOT IN (SELECT ID FROM ENROLL WHERE CID&lt;&gt;&#39;C1&#39;)</code>.</div></div><div class="qa"><div class="q">Q15. Kya <code>CREATE VIEW V AS SELECT Dept, COUNT(*) AS n FROM STUDENT GROUP BY Dept</code> par INSERT ho sakta hai?</div><div class="a">✔ Nahi</div><div class="w">Aggregate/GROUP BY view updatable nahi hota.</div></div><div class="qa"><div class="q">Q16. R(A) = {1,1,2}, S(A) = {1,2,2}. <code>SELECT A FROM R UNION ALL SELECT A FROM S</code> aur <code>… INTERSECT …</code> ki rows?</div><div class="a">✔ 6 aur 2</div><div class="w">UNION ALL = 3+3. INTERSECT (distinct) = {1, 2} = 2.</div></div>
+<div class="avoid"><h2 id="L09-h66">Lesson 9 — cheat box</h2>
+<div class="box tip"><div class="t">PYQ answers</div><p>2024 Q31 = <b>3</b> · 2025 Q33 = <b>3</b> · 2026 Q51 = <b>A</b> · 2026 Q60 = <b>3</b></p></div>
+<div class="two">
+<div>
+<div class="box mem"><div class="t">Joins</div><ul><li>INNER: sirf match · LEFT/RIGHT: ek taraf poori · FULL: dono · CROSS: |L|·|R|.</li><li><b>Rows = Σ (count in L) × (count in R)</b> per key. NULL kisi se match nahi.</li><li>Left rows ≥ |L|; FK→PK (NOT NULL) inner join = |R_fk-table|.</li><li>NATURAL JOIN, koi common col nahi → CROSS.</li><li>Anti-join: <code>LEFT JOIN … WHERE r.key IS NULL</code>.</li><li>LEFT JOIN + WHERE on right column ⇒ inner join ban jaata hai. Filter ON mein rakho.</li><li>Self-join: alias zaroori; <code>a.id &lt; b.id</code> se pairs ek baar.</li></ul></div><div class="box mem"><div class="t">Set ops</div><p>UNION / INTERSECT / EXCEPT dedupe karte hain; <b>ALL</b> versions: m+n, min(m,n), max(0,m−n). Set ops mein NULL = NULL.</p></div><div class="box mem"><div class="t">Views</div><p>Virtual table = stored query. Updatable: single table, no DISTINCT/GROUP BY/aggregate. WITH CHECK OPTION ghost rows rokta hai. Materialized = stored result (refresh chahiye).</p></div>
+</div>
+<div>
+<div class="box trap"><div class="t">NULL / 3-valued logic</div><ul><li>NULL se comparison → UNKNOWN; WHERE sirf TRUE rakhta hai.</li><li>AND = min, OR = max, NOT U = U (T=1, U=½, F=0).</li><li><code>= NULL</code> hamesha galat; <code>IS NULL</code> use karo.</li><li><b>NOT IN + NULL in subquery ⇒ khali result.</b> NOT EXISTS use karo.</li><li>COUNT(*) NULL ginta hai, COUNT(col) nahi; AVG/SUM NULL ignore.</li><li>GROUP BY, DISTINCT, UNION mein NULLs equal.</li><li>CHECK mein UNKNOWN pass hota hai.</li></ul></div><div class="box idea"><div class="t">Subqueries</div><ul><li><b>Uncorrelated</b>: ek baar chalti hai (inside-out). <b>Correlated</b>: har outer row ke liye.</li><li>x = ANY ≡ IN · x &lt;&gt; ALL ≡ NOT IN · &gt; ALL ≡ &gt; MAX · &gt; ANY ≡ &gt; MIN. ALL(empty)=TRUE, ANY(empty)=FALSE.</li><li>EXISTS kabhi UNKNOWN nahi.</li><li><b>Division (for all)</b> = NOT EXISTS ( … NOT EXISTS ( … )) ya GROUP BY/HAVING COUNT = total.</li><li>FROM wale subquery ko alias chahiye; scalar subquery 1 row return kare.</li></ul></div>
+</div></div></div>
+</section><div class="donebar"><label><input type="checkbox" class="doneChk" data-id="L09"> <span>Ye lesson <b>complete</b> ho gaya (done mark karo)</span></label></div><div class="pager"><a class="pg prev" href="lesson08.html" data-nav="prev"><small>&larr; Pichhla</small><b>SQL basics</b></a><a class="pg next" href="lesson10.html" data-nav="next"><small>Agla &rarr;</small><b>Functional Dependencies</b></a></div></article>
+</main>
+<aside id="toc" aria-label="Is page par"></aside>
+</div>
+<div id="searchModal" class="smodal" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="sbox"><div class="srow"><input id="sInput" type="search" placeholder="Search karo: e.g. closure, B+ tree, left join, HAVING..." autocomplete="off" spellcheck="false"><button type="button" id="sClose" class="ib" aria-label="Band karo">&times;</button></div>
+  <div id="sRes" class="sres"><p class="mut">Type karo &mdash; saare 22 lessons + appendix mein dhoondhega. Up/Down arrow + Enter se open.</p></div></div>
+</div>
+<script src="assets/js/widgets-core.js"></script>
+<script src="assets/js/widgets/bplus-tree.js"></script>
+<script src="assets/js/widgets/cuboid-lattice.js"></script>
+<script src="assets/js/widgets/data-scaling.js"></script>
+<script src="assets/js/widgets/er-mapping.js"></script>
+<script src="assets/js/widgets/fd-closure.js"></script>
+<script src="assets/js/widgets/file-blocks.js"></script>
+<script src="assets/js/widgets/huffman.js"></script>
+<script src="assets/js/widgets/index-lookup.js"></script>
+<script src="assets/js/widgets/lossless-chase.js"></script>
+<script src="assets/js/widgets/normal-forms.js"></script>
+<script src="assets/js/widgets/olap-ops.js"></script>
+<script src="assets/js/widgets/ra-operators.js"></script>
+<script src="assets/js/widgets/sampling.js"></script>
+<script src="assets/js/widgets/sql-joins.js"></script>
+<script src="assets/js/widgets/sql-order.js"></script>
+<script src="assets/js/widgets/star-schema.js"></script>
+<script src="assets/js/widgets/trc-vs-ra.js"></script>
+<script src="assets/js/site-data.js"></script>
+<script src="assets/js/app.js"></script>
+</body></html>

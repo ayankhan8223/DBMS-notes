@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en" data-kind="lesson" data-current="L07">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 7: Tuple Relational Calculus (TRC) | GATE DA DBMS</title>
+<meta name="description" content="GATE DA 2027 DBMS and Data Warehousing study book in simple Hinglish">
+<meta name="color-scheme" content="light dark">
+<script>(function(){try{var q=/[?&]theme=(dark|light)/.exec(location.search);var t=q?q[1]:localStorage.getItem('gatedba.theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
+<link rel="stylesheet" href="assets/css/app.css">
+
+</head>
+<body class="k-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button type="button" id="menuBtn" class="ib" aria-label="Menu kholo" aria-controls="sidebar" aria-expanded="false">&#9776;</button>
+  <a class="brand" href="index.html"><span class="logo">DA</span><span class="bt">GATE DA &middot; DBMS</span></a>
+  <span class="grow"></span>
+  <button type="button" id="ansBtn" class="tbn" hidden>Show all answers</button>
+  <button type="button" id="searchBtn" class="tbn" aria-label="Search">&#128269;<span class="lbl"> Search</span> <kbd>/</kbd></button>
+  <button type="button" id="themeBtn" class="ib" aria-label="Dark / light mode">&#9680;</button>
+  <div class="readbar"><i id="readBar"></i></div>
+</header>
+<div class="layout">
+<nav id="sidebar" aria-label="Lessons"><div class="sb-head"><a class="sb-home" href="index.html">&#8962; Home / Learning map</a>
+<div class="sb-prog"><div class="bar"><i id="sbBar"></i></div><span id="sbTxt">0 / 22 done</span></div></div>
+<div class="sb-part"><div class="sb-pt"><b>Part A</b> &middot; ER Model</div>
+<a data-id="L01" href="lesson01.html"><span class="chk" aria-hidden="true"></span><span class="num">1</span><span class="tt">Entity, attribute, ER basics</span></a>
+<a data-id="L02" href="lesson02.html"><span class="chk" aria-hidden="true"></span><span class="num">2</span><span class="tt">Cardinality &amp; participation</span></a>
+<a data-id="L03" href="lesson03.html"><span class="chk" aria-hidden="true"></span><span class="num">3</span><span class="tt">Weak entity &amp; ER-to-table mapping</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part B</b> &middot; Relational Model</div>
+<a data-id="L04" href="lesson04.html"><span class="chk" aria-hidden="true"></span><span class="num">4</span><span class="tt">Rows, columns, schema, domain</span></a>
+<a data-id="L05" href="lesson05.html"><span class="chk" aria-hidden="true"></span><span class="num">5</span><span class="tt">Keys &amp; integrity constraints</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part C</b> &middot; Query Languages</div>
+<a data-id="L06" href="lesson06.html"><span class="chk" aria-hidden="true"></span><span class="num">6</span><span class="tt">Relational Algebra</span></a>
+<a class="cur" data-id="L07" href="lesson07.html"><span class="chk" aria-hidden="true"></span><span class="num">7</span><span class="tt">Tuple Relational Calculus</span></a>
+<a data-id="L08" href="lesson08.html"><span class="chk" aria-hidden="true"></span><span class="num">8</span><span class="tt">SQL basics</span></a>
+<a data-id="L09" href="lesson09.html"><span class="chk" aria-hidden="true"></span><span class="num">9</span><span class="tt">SQL joins, NULL, nested queries</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part D</b> &middot; Normalization</div>
+<a data-id="L10" href="lesson10.html"><span class="chk" aria-hidden="true"></span><span class="num">10</span><span class="tt">Functional Dependencies</span></a>
+<a data-id="L11" href="lesson11.html"><span class="chk" aria-hidden="true"></span><span class="num">11</span><span class="tt">1NF, 2NF, 3NF, BCNF</span></a>
+<a data-id="L12" href="lesson12.html"><span class="chk" aria-hidden="true"></span><span class="num">12</span><span class="tt">Lossless join &amp; dependency preservation</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part E</b> &middot; Storage &amp; Indexing</div>
+<a data-id="L13" href="lesson13.html"><span class="chk" aria-hidden="true"></span><span class="num">13</span><span class="tt">File organization</span></a>
+<a data-id="L14" href="lesson14.html"><span class="chk" aria-hidden="true"></span><span class="num">14</span><span class="tt">Single &amp; multilevel indexing</span></a>
+<a data-id="L15" href="lesson15.html"><span class="chk" aria-hidden="true"></span><span class="num">15</span><span class="tt">B-Tree &amp; B+ Tree</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part F</b> &middot; Data Transformation</div>
+<a data-id="L16" href="lesson16.html"><span class="chk" aria-hidden="true"></span><span class="num">16</span><span class="tt">Data types</span></a>
+<a data-id="L17" href="lesson17.html"><span class="chk" aria-hidden="true"></span><span class="num">17</span><span class="tt">Normalization &amp; discretization</span></a>
+<a data-id="L18" href="lesson18.html"><span class="chk" aria-hidden="true"></span><span class="num">18</span><span class="tt">Sampling &amp; compression</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part G</b> &middot; Data Warehousing</div>
+<a data-id="L19" href="lesson19.html"><span class="chk" aria-hidden="true"></span><span class="num">19</span><span class="tt">Data warehouse &amp; Star/Snowflake schemas</span></a>
+<a data-id="L20" href="lesson20.html"><span class="chk" aria-hidden="true"></span><span class="num">20</span><span class="tt">Data cubes &amp; concept hierarchies</span></a>
+<a data-id="L21" href="lesson21.html"><span class="chk" aria-hidden="true"></span><span class="num">21</span><span class="tt">Measures &amp; aggregations</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Part H</b> &middot; Practice &amp; Revision</div>
+<a data-id="L22" href="lesson22.html"><span class="chk" aria-hidden="true"></span><span class="num">22</span><span class="tt">Mixed GATE practice &amp; all PYQs</span></a>
+</div>
+<div class="sb-part"><div class="sb-pt"><b>Back matter</b></div><a data-id="APP" href="appendix.html"><span class="chk" aria-hidden="true"></span><span class="num">A</span><span class="tt">Appendix &mdash; revision plan &amp; cheat sheet</span></a></div>
+<div class="sb-foot"><button type="button" id="resetProg">Progress reset</button></div></nav>
+<div id="scrim"></div>
+<main id="main" tabindex="-1">
+<article class="lesson-wrap" data-id="L07"><section class="lesson" id="L07"><div class="lessonhead"><div class="k">LESSON 07 / 22</div><div class="n">Tuple Relational Calculus (TRC)</div><div class="s">Steps nahi batane — bas bolo <b>kaisa answer chahiye</b>. Tuple variables, ∃ / ∀, free-bound, safe expressions, RA ↔ TRC translation</div></div><div class="wbox" data-wbox="trc-vs-ra"><div class="wlab">Interactive &middot; khud try karo</div><div data-widget="trc-vs-ra"></div></div><style>#L07 .l07-neg{font-family:"Times New Roman",serif;font-size:17.2px}
+#L07 .l07-anat{display:flex;align-items:stretch;gap:0;margin:8px 0;font-family:"Times New Roman",serif;font-size:21px;flex-wrap:wrap}
+#L07 .l07-anat>div{padding:6px 10px;border:2px solid;text-align:center}
+#L07 .l07-anat small{display:block;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:11.7px;font-weight:700;margin-top:2px}
+#L07 .l07-a1{border-color:#2f5bd8;background:var(--blueb);border-radius:10px 0 0 10px}
+#L07 .l07-a2{border-color:#6b7590;background:var(--card2);border-left:0;border-right:0}
+#L07 .l07-a3{border-color:#14a06b;background:var(--greenb);border-right:0}
+#L07 .l07-a4{border-color:#e8730c;background:var(--orgb);border-radius:0 10px 10px 0}
+#L07 .l07-tt td,#L07 .l07-tt th{text-align:center}
+#L07 pre.l07-code{font:8.6pt Menlo,monospace;background:var(--card);border:1px solid var(--line);border-radius:7px;padding:6px 9px;white-space:pre-wrap;margin:5px 0}</style>
+<h2 id="L07-h1">7.1 · Big idea — recipe nahi, order bolo <small>RA vs TRC</small></h2>
+<div class="two"><div>
+<h4>Restaurant analogy 🍽️</h4>
+<p><b>Relational Algebra</b> = <b>recipe</b>: “pehle pyaaz kaato, phir tel mein daalo, phir…”. Aap <i>kaise</i> banana hai wo steps batate ho (σ, π, ⋈ ek ke baad ek).</p>
+<p><b>Tuple Relational Calculus</b> = <b>menu se order</b>: “mujhe aisi dish do jo paneer wali ho aur teekhi ho.” Aap sirf bolte ho <i>kaisi</i> chahiye — kaise banegi, kitchen sochega.</p>
+</div><div>
+<div class="box idea"><div class="t">Do shabd jo yaad rakhne hain</div><p><b>Procedural</b> (RA): “kaise” — operators ka sequence.<br><b>Declarative / non-procedural</b> (TRC): “kya” — sirf condition (predicate).</p><p>Power mein <b>dono barabar</b> hain (Codd&#39;s theorem, 7.8) — bas <b>safe</b> TRC chahiye. SQL ka <code>SELECT … WHERE … EXISTS</code> asal mein TRC se aaya hai.</p></div>
+</div></div>
+<div class="avoid"><div class="fl"><span class="pill p-b">English sawaal</span><div class="ar">→<small>likho</small></div><span class="pill p-p">TRC formula  {t | P(t)}</span><div class="ar">→<small>Codd&#39;s theorem</small></div><span class="pill p-g">RA expression</span><div class="ar">→</div><span class="pill p-o">SQL</span></div></div>
+<h3 id="L07-h2">Hamari practice tables (Lesson 6 wali hi)</h3>
+<div class="avoid"><div class="fl top"><div class="tb"><span class="rn">STUDENT</span><table class="r"><tr><th class="">ID</th><th class="">Name</th><th class="">Dept</th><th class="">Age</th></tr><tr class=""><td class="">1</td><td class="">Rahul</td><td class="">CSE</td><td class="">20</td></tr><tr class=""><td class="">2</td><td class="">Aman</td><td class="">ECE</td><td class="">21</td></tr><tr class=""><td class="">3</td><td class="">Priya</td><td class="">CSE</td><td class="">19</td></tr><tr class=""><td class="">4</td><td class="">Neha</td><td class="">ME</td><td class="">22</td></tr></table></div><div class="tb"><span class="rn">COURSE</span><table class="r"><tr><th class="">CID</th><th class="">Title</th><th class="">Credits</th></tr><tr class=""><td class="">C1</td><td class="">DBMS</td><td class="">4</td></tr><tr class=""><td class="">C2</td><td class="">Python</td><td class="">3</td></tr><tr class=""><td class="">C3</td><td class="">Maths</td><td class="">4</td></tr></table></div><div class="tb"><span class="rn">ENROLL</span><table class="r"><tr><th class="">ID</th><th class="">CID</th></tr><tr class=""><td class="">1</td><td class="">C1</td></tr><tr class=""><td class="">1</td><td class="">C2</td></tr><tr class=""><td class="">2</td><td class="">C1</td></tr><tr class=""><td class="">3</td><td class="">C1</td></tr><tr class=""><td class="">3</td><td class="">C2</td></tr></table></div></div></div>
+<p class="mut">Yaad rakho: <b>Neha</b> ne koi course nahi liya; <b>C3 (Maths)</b> ko koi student nahi mila. Ye “akele” rows hi “not” aur “all” wale sawaalon ke trap hain.</p>
+
+<h3 id="L07-h3">Ek query ki anatomy: <span class="ex">{t | STUDENT(t) ∧ t.Age &gt; 20}</span></h3>
+<div class="l07-anat"><div class="l07-a1">{ t<small>tuple variable<br>(output)</small></div><div class="l07-a2">|<small>“such that”</small></div><div class="l07-a3">STUDENT(t)<small>range: t kis table ki row hai</small></div><div class="l07-a4">∧ t.Age &gt; 20 }<small>condition (predicate)</small></div></div>
+<p><b>Padho aise:</b> “Sab tuples <b>t</b> ka set, <b>jahan</b> t STUDENT ki row hai <b>aur</b> t ki Age 20 se zyada hai.”</p>
+<h4>Dimaag mein model: har candidate row ko “test” karo</h4>
+<p><b>t</b> ek <b>dummy variable</b> hai jo ek-ek row ban kar aata hai. Formula true → row answer mein. False → bahar. Bilkul σ jaisa, bas steps ki jagah ek <b>sentence</b>.</p>
+<div class="avoid"><div class="fl top"><div class="tb"><table class="r"><tr><th class="">t (candidate)</th><th class="">STUDENT(t)?</th><th class="">t.Age &gt; 20?</th><th class="">In answer?</th></tr><tr class=""><td class="">(1, Rahul, CSE, 20)</td><td class="">✔</td><td class="">✘ (20 &gt; 20 false)</td><td class="">✘</td></tr><tr class="hr"><td class="">(2, Aman, ECE, 21)</td><td class="">✔</td><td class="">✔</td><td class="">✔</td></tr><tr class=""><td class="">(3, Priya, CSE, 19)</td><td class="">✔</td><td class="">✘</td><td class="">✘</td></tr><tr class="hr"><td class="">(4, Neha, ME, 22)</td><td class="">✔</td><td class="">✔</td><td class="">✔</td></tr></table></div><div class="ar">→<small>answer</small></div><div class="tb"><span class="rn">Answer</span><table class="r"><tr><th class="">ID</th><th class="">Name</th><th class="">Dept</th><th class="">Age</th></tr><tr class="hr"><td class="">2</td><td class="">Aman</td><td class="">ECE</td><td class="">21</td></tr><tr class="hr"><td class="">4</td><td class="">Neha</td><td class="">ME</td><td class="">22</td></tr></table></div></div></div>
+<div class="box mem"><div class="t">Notation ke variants (GATE mein dono dikhte hain)</div><ul><li>Range: <span class="ex">STUDENT(t)</span> ya <span class="ex">t ∈ STUDENT</span> — same matlab. (GATE DA 2026 ne <span class="ex">t ∈ X</span> likha tha.)</li><li>Attribute: <span class="ex">t.Age</span> ya <span class="ex">t[Age]</span> — same. Position se bhi: <span class="ex">t[2]</span>.</li><li>Predicate calculus ke symbols: <b>∧</b> and, <b>∨</b> or, <b>¬</b> not, <b>⇒</b> implies, <b>∃</b> there exists, <b>∀</b> for all.</li></ul></div>
+
+<h2 id="L07-h4">7.2 · Formula kaise banta hai <small>atoms + connectives + quantifiers</small></h2>
+<p>TRC formula Lego jaisa hai: chhote tukde (<b>atoms</b>) ko <b>connectives</b> se jodo, aur beech mein <b>quantifier</b> (∃/∀) laga do.</p>
+<div class="three">
+<div class="box idea"><div class="t">Atom type 1: range</div><p><span class="ex">R(t)</span> ya <span class="ex">t ∈ R</span><br>“t relation R ki ek row hai.”</p><p class="mut">Eg: STUDENT(s), e ∈ ENROLL</p></div><div class="box idea"><div class="t">Atom type 2: var vs var</div><p><span class="ex">s.A θ t.B</span><br>do variables ke attributes ki tulna. θ ∈ {=, ≠, &lt;, ≤, &gt;, ≥}</p><p class="mut">Eg: e.ID = s.ID (ye join ka kaam karta hai!)</p></div><div class="box idea"><div class="t">Atom type 3: var vs constant</div><p><span class="ex">s.A θ c</span><br>attribute ko ek fixed value se tulna.</p><p class="mut">Eg: s.Dept = &#39;CSE&#39;</p></div>
+</div>
+<div class="two"><div>
+<h4>Formula banane ke rules</h4>
+<ol>
+<li>Har atom ek formula hai.</li>
+<li>P, Q formulas hain to <span class="ex">P ∧ Q</span>, <span class="ex">P ∨ Q</span>, <span class="ex">¬P</span>, <span class="ex">P ⇒ Q</span> bhi formulas hain.</li>
+<li>P(t) formula hai to <span class="ex">∃t ∈ R (P(t))</span> aur <span class="ex">∀t ∈ R (P(t))</span> bhi formulas hain.</li>
+<li>Brackets se grouping. Precedence: <b>¬</b> &gt; <b>∧</b> &gt; <b>∨</b> &gt; <b>⇒</b>. Shaque ho to bracket lagao!</li>
+</ol>
+</div><div>
+<h4>Implication <span class="ex">P ⇒ Q</span> ka matlab</h4>
+<p>“Agar P true hai to Q bhi true hona chahiye.” Sirf ek hi halat mein <b>false</b> hota hai: P true aur Q false. Isliye:</p>
+<div class="exbig">P ⇒ Q &nbsp;≡&nbsp; ¬P ∨ Q</div>
+<table class="r l07-tt"><tr><th>P</th><th>Q</th><th>P ⇒ Q</th></tr><tr><td>T</td><td>T</td><td class="hx">T</td></tr><tr><td>T</td><td>F</td><td class="hx" style="background:var(--frow)">F</td></tr><tr><td>F</td><td>T</td><td class="hx">T</td></tr><tr><td>F</td><td>F</td><td class="hx">T</td></tr></table>
+</div></div>
+<div class="box trap"><div class="t">Trap: “P galat ho to implication apne aap true”</div><p>Jab P false hai, <span class="ex">P ⇒ Q</span> <b>true</b> ho jaata hai (vacuously). Isi liye ∀ ke saath <b>⇒</b> aata hai, aur ∃ ke saath <b>∧</b> — ulta karoge to formula pagal ho jaayega (7.4 mein dekho).</p></div>
+
+<h2 id="L07-h5">7.3 · Free aur Bound variables <small>kaun “bahar se aaya”, kaun “andar ka loop”</small></h2>
+<div class="two"><div>
+<h4>Programming analogy</h4>
+<pre class="l07-code">for i in range(n):      # i = bound (loop ke andar)
+    total += x[i]       # x, total = free (bahar se aaye)</pre>
+<ul>
+<li><b>Bound variable</b> = jise ∃ ya ∀ ne “pakad” liya (quantifier ke scope mein). Wo loop variable jaisa hai: <b>kisi ek specific row ka matlab nahi</b>, “koi bhi/har row”.</li>
+<li><b>Free variable</b> = jise kisi ne pakda nahi. Uski value <b>bahar se</b> aati hai — query mein ye <b>output variable t</b> hai.</li>
+</ul>
+</div><div>
+<div class="box mem"><div class="t">Golden rule</div><p>{t | P(t)} mein <b>t hi akela free variable</b> hona chahiye P mein. Baaki saare variables <b>bound</b> (∃/∀ ke andar). Agar koi aur variable free reh gaya to query ka matlab hi nahi banta.</p></div><div class="box tip"><div class="t">Bound variable ka naam kuch bhi rakho</div><p><span class="ex">∃e ∈ ENROLL (e.ID = t.ID)</span> aur <span class="ex">∃x ∈ ENROLL (x.ID = t.ID)</span> <b>same</b> hain (jaise Σ<sub>i</sub> aur Σ<sub>j</sub>). Par <b>t</b> ka naam badla to answer ka naam badla.</p></div>
+</div></div>
+<h4>Classify karo: <span class="ex">{t | STUDENT(t) ∧ ∃e ∈ ENROLL (e.ID = t.ID ∧ e.CID = &#39;C1&#39;)}</span></h4>
+<table class="g"><tr><th>Variable</th><th>Kahan aaya</th><th>Free ya Bound?</th><th>Kyun</th></tr><tr><td><b>t</b></td><td>{t | …} aur STUDENT(t), e.ID = <b>t</b>.ID</td><td><span class="tag tg-g">FREE</span></td><td>koi quantifier nahi pakadta; ye output tuple hai</td></tr><tr><td><b>e</b></td><td>∃e ∈ ENROLL ( … )</td><td><span class="tag tg-r">BOUND</span></td><td>∃ ne pakda; scope = bracket ke andar. “koi ek enrollment e”</td></tr></table>
+<h4>Thoda tricky: ek formula mein dono roop</h4>
+<p class="big"><span class="ex">STUDENT(s) ∧ ∃s ∈ ENROLL(…)</span> ❌ — “s” ek jagah free, ek jagah bound. Aisa mix mat banao; <b>har variable ka alag naam</b> rakho (s, e, c, e1, e2…).</p>
+<div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> <span class="ex">{t | COURSE(t) ∧ ∀e ∈ ENROLL (e.CID ≠ t.CID)}</span> mein free aur bound variables batao, aur answer kya hoga?</p><p><b>Answer:</b> Free = <b>t</b>, bound = <b>e</b>. Matlab: wo courses jinke liye <i>koi bhi</i> enrollment match nahi karta = <b>jinhe koi student nahi mila</b> → <b>C3 Maths</b>.</p></div>
+<h2 id="L07-h6">7.4 · ∃ aur ∀ — “koi ek” aur “har ek” <small>quantifiers</small></h2>
+<div class="two"><div>
+<div class="box idea"><div class="t">∃  “there exists” = KAM-SE-KAM EK</div><p><span class="ex">∃e ∈ ENROLL (P(e))</span> true hai agar ENROLL ki <b>koi bhi ek</b> row P satisfy kare.</p><p>Python: <code>any(P(e) for e in ENROLL)</code><br>Logic: P(e<sub>1</sub>) <b>∨</b> P(e<sub>2</sub>) ∨ … (sab ka <b>OR</b>)</p></div>
+</div><div>
+<div class="box idea"><div class="t">∀  “for all” = HAR EK</div><p><span class="ex">∀c ∈ COURSE (P(c))</span> true hai agar COURSE ki <b>har ek</b> row P satisfy kare.</p><p>Python: <code>all(P(c) for c in COURSE)</code><br>Logic: P(c<sub>1</sub>) <b>∧</b> P(c<sub>2</sub>) ∧ … (sab ka <b>AND</b>)</p></div>
+</div></div>
+<h3 id="L07-h7">Example par check: kya Rahul (ID=1) ne C2 liya?</h3>
+<p><span class="ex">∃e ∈ ENROLL (e.ID = 1 ∧ e.CID = &#39;C2&#39;)</span> — ENROLL ki har row ko dekho:</p>
+<div class="tb"><table class="r"><tr><th class="">e</th><th class="">e.ID = 1 ?</th><th class="">e.CID = C2 ?</th><th class="">dono (∧)</th></tr><tr class=""><td class="">(1, C1)</td><td class="">✔</td><td class="">✘</td><td class="">✘</td></tr><tr class="hr"><td class="">(1, C2)</td><td class="">✔</td><td class="">✔</td><td class=""><b>✔</b></td></tr><tr class=""><td class="">(2, C1)</td><td class="">✘</td><td class="">✘</td><td class="">✘</td></tr><tr class=""><td class="">(3, C1)</td><td class="">✘</td><td class="">✘</td><td class="">✘</td></tr><tr class=""><td class="">(3, C2)</td><td class="">✘</td><td class="">✔</td><td class="">✘</td></tr></table></div>
+<p>Ek row mein dono true → ∃ <b>true</b>. (Ek bhi row mil jaaye to baaki dekhna zaroori nahi.)</p>
+
+<h3 id="L07-h8">Empty set ka rule (GATE ka chhupa trap)</h3>
+<table class="g"><tr><th>Agar range khali ho…</th><th>Result</th><th>Kyun</th></tr><tr><td><span class="ex">∃x ∈ ∅ (…)</span></td><td><b>FALSE</b></td><td>koi row hai hi nahi jo satisfy kare</td></tr><tr><td><span class="ex">∀x ∈ ∅ (…)</span></td><td><b>TRUE</b></td><td>koi row “fail” karne wali hai hi nahi — vacuously true</td></tr></table>
+<h3 id="L07-h9">Negation ke niyam (De Morgan for quantifiers)</h3>
+<div class="avoid"><div class="fl"><span class="pill p-r">¬ ∃x P(x)</span><b>≡</b><span class="pill p-g">∀x ¬P(x)</span><span style="width:24px"></span><span class="pill p-r">¬ ∀x P(x)</span><b>≡</b><span class="pill p-g">∃x ¬P(x)</span></div></div>
+<ul>
+<li>“<b>Koi nahi hai</b> jo P kare” = “<b>sab</b> P <b>nahi</b> karte”.</li>
+<li>“<b>Sab</b> P nahi karte (ye galat hai)” = “<b>koi na koi</b> hai jo P <b>nahi</b> karta”.</li>
+</ul>
+<div class="two">
+<div class="box idea"><div class="t">∀ ko ¬∃¬ mein badalna (3 steps)</div><ol><li>Likho: <span class="ex">∀x ∈ R (P(x))</span></li><li>Double negation: <span class="ex">¬¬∀x P(x)</span></li><li>Andar ghusao: <span class="ex">¬ ∃x ∈ R (¬P(x))</span></li></ol><p>Padho: “aisa <b>koi x nahi</b> hai jo P fail kare.”</p></div><div class="box mem"><div class="t">Sabse zyada kaam aane wala pattern</div><p><span class="ex">∀x (P(x) ⇒ Q(x))</span></p><p>≡ <span class="ex">∀x (¬P(x) ∨ Q(x))</span></p><p>≡ <span class="ex">¬∃x (P(x) ∧ ¬Q(x))</span></p><p>“Aisa koi x nahi jo P ho par Q na ho.”</p></div>
+</div>
+<div class="box trap"><div class="t">Quantifier ke saath connective ki 2 classic galtiyan</div><ul><li><b>∀ ke saath ∧ nahi:</b> <span class="ex">∀c ∈ COURSE (c.CID=&#39;C1&#39; ∧ taken)</span> kehta hai “<b>har</b> course C1 hai” — jhooth (C2 bhi hai). Sahi: <span class="ex">∀c (c.CID=&#39;C1&#39; <b>⇒</b> taken)</span>.</li><li><b>∃ ke saath ⇒ nahi:</b> <span class="ex">∃c ∈ COURSE (c.CID=&#39;C1&#39; <b>⇒</b> taken)</span> — C2 jaise koi bhi course jahan antecedent false hai, formula ko <b>trivially true</b> bana deta hai. Sahi: <span class="ex">∃c (c.CID=&#39;C1&#39; <b>∧</b> taken)</span>.</li></ul><p><b>Yaad:</b> ∃ → ∧ &nbsp;&nbsp;|&nbsp;&nbsp; ∀ → ⇒</p></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> <span class="ex">¬∃c ∈ COURSE (c.Credits &gt; 4)</span> ko ∀ mein likho, aur ye true hai ya false?</p><p><b>Answer:</b> <span class="ex">∀c ∈ COURSE (c.Credits ≤ 4)</span>. Credits 4,3,4 → sab ≤ 4 → <b>TRUE</b>.</p></div>
+<h2 id="L07-h10">7.5 · RA ↔ TRC: har operator ka TRC roop <small>translation dictionary</small></h2>
+<p>Lesson 6 ke har operator ka TRC mein ek seedha jawab hai. Ye table <b>yaad kar lo</b> — GATE mein yahi aata hai.</p>
+<table class="g"><tr><th style="width:15%">RA</th><th style="width:48%">TRC</th><th>Kaise padho</th></tr>
+<tr><td><span class="ex">σ<sub>c</sub>(R)</span></td><td><span class="ex">{t | R(t) ∧ c(t)}</span></td><td>R ki wo rows jahan c true</td></tr>
+<tr><td><span class="ex">π<sub>A</sub>(R)</span></td><td><span class="ex">{t | ∃r ∈ R (t.A = r.A)}</span><br><span class="mut">shorthand: {r.A | R(r)}</span></td><td>koi r hai R mein jiski A value = t.A; <b>t mein sirf A</b> hai. ∃ ne r ko “bound” kar diya</td></tr>
+<tr><td><span class="ex">R ∪ S</span></td><td><span class="ex">{t | R(t) ∨ S(t)}</span></td><td>R mein ya S mein</td></tr>
+<tr><td><span class="ex">R ∩ S</span></td><td><span class="ex">{t | R(t) ∧ S(t)}</span></td><td>dono mein</td></tr>
+<tr><td><span class="ex">R − S</span></td><td><span class="ex">{t | R(t) ∧ ¬S(t)}</span></td><td>R mein par S mein <b>nahi</b></td></tr>
+<tr><td><span class="ex">R × S</span></td><td><span class="ex">{t | ∃r ∈ R ∃s ∈ S (t = r ∘ s)}</span><br><span class="mut">t ke pehle attributes = r ke, baaki = s ke</span></td><td>R ki koi row + S ki koi row ko chipka do</td></tr>
+<tr><td><span class="ex">R ⋈<sub>R.B=S.B</sub> S</span></td><td><span class="ex">{t | ∃r ∈ R ∃s ∈ S (r.B = s.B ∧ t = r ∘ s)}</span></td><td>product + matching atom (type 2)</td></tr>
+<tr><td><span class="ex">R(A,B) ÷ S(B)</span></td><td><span class="ex">{t | ∃r ∈ R (t.A = r.A) ∧ ∀s ∈ S ∃r′ ∈ R (r′.A = t.A ∧ r′.B = s.B)}</span></td><td>t.A aisa jiske saath S ki <b>har</b> B value R mein juda ho</td></tr>
+</table>
+<div class="two">
+<div class="box tip"><div class="t">Pattern jo yaad rakhna hai</div><ul><li><b>σ</b> → bas condition ∧ lagao</li><li><b>π, ⋈, ×</b> → ∃ (kuch variables “andar” chhupa do)</li><li><b>∪</b> → ∨, <b>∩</b> → ∧, <b>−</b> → ∧¬</li><li><b>÷</b> → ∀ (ya ¬∃¬)</li></ul></div><div class="box idea"><div class="t">Kyun π mein ∃ aata hai?</div><p>Projection mein <b>kuch columns phenk diye</b> jaate hain. TRC mein phenke hue columns ko “koi bhi value ho sakti hai” bol kar ∃ se bound kar dete hain. Isi se duplicates bhi apne aap hat jaate hain (answer ek set hai).</p></div>
+</div>
+<h3 id="L07-h11">Worked examples (Practice DB par)</h3>
+<h4>(a) σ: CSE ke students &nbsp; <span class="ex">{t | STUDENT(t) ∧ t.Dept = &#39;CSE&#39;}</span></h4>
+<div class="tb"><span class="rn">Answer (Name, Dept dikhaye)</span><table class="r"><tr><th class="">Name</th><th class="">Dept</th></tr><tr class="hr"><td class="">Rahul</td><td class="">CSE</td></tr><tr class="hr"><td class="">Priya</td><td class="">CSE</td></tr></table></div>
+<h4>(b) π: kaunse departments hain &nbsp; <span class="ex">{t | ∃s ∈ STUDENT (t.Dept = s.Dept)}</span></h4>
+<div class="avoid"><div class="fl top"><div class="tb"><span class="rn">s ki har row se</span><table class="r"><tr><th class="">s.Dept</th></tr><tr class=""><td class="">CSE</td></tr><tr class=""><td class="">ECE</td></tr><tr class="fr"><td class="">CSE</td></tr><tr class=""><td class="">ME</td></tr></table></div><div class="ar">→<small>set: duplicate gaya</small></div><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Dept</th></tr><tr class="hr"><td class="">CSE</td></tr><tr class="hr"><td class="">ECE</td></tr><tr class="hr"><td class="">ME</td></tr></table></div></div></div>
+<h4>(c) ∪ ∩ −: C1 aur C2 ke enrolled IDs</h4>
+<p>Maano <span class="ex">A = π<sub>ID</sub>(σ<sub>CID=&#39;C1&#39;</sub>(ENROLL))</span> = {1,2,3} aur <span class="ex">B = π<sub>ID</sub>(σ<sub>CID=&#39;C2&#39;</sub>(ENROLL))</span> = {1,3}.</p>
+<table class="g"><tr><th>RA</th><th>TRC</th><th>Answer (IDs)</th></tr><tr><td>A ∪ B</td><td>{t | A(t) ∨ B(t)}</td><td>[1, 2, 3]</td></tr><tr><td>A ∩ B</td><td>{t | A(t) ∧ B(t)}</td><td>[1, 3]</td></tr><tr><td>A − B</td><td>{t | A(t) ∧ ¬B(t)}</td><td>[2]  (Aman)</td></tr></table>
+<h4>(d) ⋈: students ke naam unke course ID ke saath &nbsp; <span class="ex">{t | ∃s ∈ STUDENT ∃e ∈ ENROLL (s.ID = e.ID ∧ t.Name = s.Name ∧ t.CID = e.CID)}</span></h4>
+<div class="tb"><span class="rn">5 rows (Neha ki koi row nahi)</span><table class="r"><tr><th class="">Name</th><th class="">CID</th></tr><tr class="hr"><td class="">Rahul</td><td class="">C1</td></tr><tr class="hr"><td class="">Rahul</td><td class="">C2</td></tr><tr class="hr"><td class="">Aman</td><td class="">C1</td></tr><tr class="hr"><td class="">Priya</td><td class="">C1</td></tr><tr class="hr"><td class="">Priya</td><td class="">C2</td></tr></table></div><div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> <span class="ex">σ<sub>Age&gt;20</sub>(STUDENT)</span> ko TRC mein likho.</p><p><b>Answer:</b> <span class="ex">{t | STUDENT(t) ∧ t.Age &gt; 20}</span> → Aman, Neha.</p></div>
+<h2 id="L07-h12">7.6 · 4 patterns: “not”, “both”, “all”, “sabse bada” <small>English → TRC → RA</small></h2>
+<p>GATE ke 90% TRC sawaal inhi 4 shapes mein aate hain. Har ek ko <b>recipe</b> se likho:</p>
+<ol class="steps"><li><b>Output variable</b> chuno (t ya s) aur uski range likho: <span class="ex">STUDENT(s)</span>.</li><li>Seedhi condition ho to bas ∧ se jodo (σ jaisa).</li><li>Doosri table ki zarurat ho to <b>∃ e ∈ ENROLL</b> laao aur <b>link atom</b> likho: <span class="ex">e.ID = s.ID</span> (ye join hai).</li><li>“<b>nahi</b>” shabd → <b>¬∃</b>. “<b>har / all</b>” → <b>∀ ya ¬∃¬</b>.</li><li>Check: s ke alawa har variable ∃/∀ ke andar hai? (free-bound rule)</li></ol>
+<div class="opban b-set"><div class="sym">¬∃</div><div><div class="nm">Pattern 1 — “NOT” (jisne X nahi kiya)</div><div class="sm">RA mein: Difference (−). SQL mein: NOT EXISTS / NOT IN</div></div></div>
+<p class="big"><b>Sawaal:</b> Wo students jinhone <b>koi bhi course enroll nahi</b> kiya.</p>
+<div class="exbig">{s | STUDENT(s) ∧ ¬ ∃e ∈ ENROLL (e.ID = s.ID)}</div>
+<p>Padho: “s ek student hai aur <b>aisi koi enrollment e nahi</b> jo s ki ho.”</p>
+<div class="avoid"><div class="fl top"><div class="tb"><table class="r"><tr><th class="">s</th><th class="">∃ e with e.ID = s.ID ?</th><th class="">¬∃ ?</th></tr><tr class=""><td class="">Rahul</td><td class="">✔</td><td class="">✘</td></tr><tr class=""><td class="">Aman</td><td class="">✔</td><td class="">✘</td></tr><tr class=""><td class="">Priya</td><td class="">✔</td><td class="">✘</td></tr><tr class="hr"><td class="">Neha</td><td class="">✘</td><td class=""><b>✔</b></td></tr></table></div><div class="ar">→<small>answer</small></div><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Neha</td></tr></table></div></div></div>
+<p><b>RA roop:</b> <span class="ex">π<sub>ID</sub>(STUDENT) − π<sub>ID</sub>(ENROLL)</span> = {4}, phir STUDENT se join karke naam nikaalo. (“−” = “¬∃”.)</p>
+<div class="box trap"><div class="t">Trap: ¬ ko galat jagah mat lagao</div><p><span class="ex">∃e ∈ ENROLL (e.ID ≠ s.ID)</span> ≠ “s ne koi course nahi liya”. Ye kehta hai “<b>koi aisi enrollment hai jo kisi aur ki hai</b>” — ye har student ke liye true hoga! “Nahi” ko <b>quantifier ke bahar</b> lagao: <b>¬∃</b>.</p></div>
+<div class="opban b-set"><div class="sym">∃∃</div><div><div class="nm">Pattern 2 — “BOTH” (X bhi aur Y bhi)</div><div class="sm">RA mein: Intersection (∩) ya self-join. Do alag ∃ variables!</div></div></div>
+<p class="big"><b>Sawaal:</b> Wo students jinhone <b>C1 aur C2 dono</b> liye.</p>
+<div class="exbig">{s | STUDENT(s) ∧ ∃e<sub>1</sub> ∈ ENROLL (e<sub>1</sub>.ID = s.ID ∧ e<sub>1</sub>.CID = &#39;C1&#39;) ∧ ∃e<sub>2</sub> ∈ ENROLL (e<sub>2</sub>.ID = s.ID ∧ e<sub>2</sub>.CID = &#39;C2&#39;)}</div><div class="avoid"><div class="fl"><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Rahul</td></tr><tr class="hr"><td class="">Priya</td></tr></table></div><span class="pill p-g">Rahul: C1 ✔ C2 ✔</span><span class="pill p-g">Priya: C1 ✔ C2 ✔</span><span class="pill p-r">Aman: C1 ✔ C2 ✘</span></div></div>
+<p><b>RA roop:</b> <span class="ex">π<sub>ID</sub>(σ<sub>CID=&#39;C1&#39;</sub>ENROLL) ∩ π<sub>ID</sub>(σ<sub>CID=&#39;C2&#39;</sub>ENROLL)</span> = {1,3}.</p>
+<div class="box trap"><div class="t">Sabse bada trap: ek hi e se “C1 aur C2”</div><p><span class="ex">∃e (e.ID = s.ID ∧ e.CID = &#39;C1&#39; ∧ e.CID = &#39;C2&#39;)</span> ❌ — ek hi row (e) ka CID ek saath C1 aur C2 nahi ho sakta → <b>hamesha khali</b>. “Dono” chahiye to <b>do alag tuple variables</b> (e<sub>1</sub>, e<sub>2</sub>). RA mein bhi yahi: σ<sub>CID=C1 ∧ CID=C2</sub> khali deta hai.</p></div>
+<div class="opban b-div"><div class="sym">∀</div><div><div class="nm">Pattern 3 — “ALL” (har ek)</div><div class="sm">RA mein: Division (÷). Ya ¬∃¬ (“aisa koi nahi jo chhoot gaya”)</div></div></div>
+<p class="big"><b>Sawaal:</b> Wo students jinhone <b>C1 aur C2 ke har course</b> liya (required = {C1, C2}).</p>
+<div class="exbig">{s | STUDENT(s) ∧ ∀c ∈ COURSE ( (c.CID = &#39;C1&#39; ∨ c.CID = &#39;C2&#39;) ⇒ ∃e ∈ ENROLL (e.ID = s.ID ∧ e.CID = c.CID) )}</div>
+<p>Samjho: “<b>jo bhi</b> course required hai, <b>uske liye</b> s ki enrollment exist kare.” Required na ho to ⇒ apne aap true (isi liye ⇒ chahiye, ∧ nahi).</p>
+<h4>Dusra (equivalent) roop: <span class="ex">¬∃</span> se</h4>
+<div class="exbig">{s | STUDENT(s) ∧ ¬ ∃c ∈ COURSE ( (c.CID = &#39;C1&#39; ∨ c.CID = &#39;C2&#39;) ∧ ¬ ∃e ∈ ENROLL (e.ID = s.ID ∧ e.CID = c.CID) )}</div>
+<p>Padho: “aisa <b>koi required course nahi</b> jo s ne <b>chhod diya</b>.”</p>
+<div class="tb"><table class="r"><tr><th class="">Student</th><th class="">C1 liya?</th><th class="">C2 liya?</th><th class="">koi required chhoota?</th><th class="">Answer</th></tr><tr class="hr"><td class="">Rahul</td><td class="">✔</td><td class="">✔</td><td class="">nahi</td><td class=""><b>✔</b></td></tr><tr class=""><td class="">Aman</td><td class="">✔</td><td class="">✘</td><td class="">haan (C2)</td><td class="">✘</td></tr><tr class="hr"><td class="">Priya</td><td class="">✔</td><td class="">✔</td><td class="">nahi</td><td class=""><b>✔</b></td></tr><tr class=""><td class="">Neha</td><td class="">✘</td><td class="">✘</td><td class="">haan (C1, C2)</td><td class="">✘</td></tr></table></div>
+<p><b>RA roop:</b> <span class="ex">ENROLL ÷ π<sub>CID</sub>(σ<sub>CID=&#39;C1&#39; ∨ CID=&#39;C2&#39;</sub>(COURSE))</span> = {1, 3} → Rahul, Priya. <span class="mut">(Lesson 6 ka division — wahi cheez!)</span></p>
+<div class="box trap"><div class="t">Edge case: “har course” (poora COURSE table)</div><p>Required = <b>poori COURSE</b> (C1, C2, C3) lo to C3 ko koi nahi mila → <b>koi student qualify nahi karta → answer khali</b>. Aur agar required set <b>khali</b> hota to ∀ vacuous true: <b>saare 4 students</b> aate (Neha bhi)! (RA ka ÷ sirf ENROLL mein aane wale IDs ko dekhta hai, isliye wahan Neha kabhi nahi aati; TRC mein STUDENT(s) range hone se aati hai — isliye formula banate waqt range sochkar likho.)</p></div>
+<div class="opban b-ext"><div class="sym">¬∃</div><div><div class="nm">Pattern 4 — “SABSE BADA / koi usse bada nahi”</div><div class="sm">RA mein: self-join ke saath Difference</div></div></div>
+<div class="avoid"><p class="big"><b>Sawaal:</b> Sabse zyada age wala student.</p>
+<div class="exbig">{s | STUDENT(s) ∧ ¬ ∃s′ ∈ STUDENT (s′.Age &gt; s.Age)}</div><div class="avoid"><div class="fl"><div class="tb"><span class="rn">Result</span><table class="r"><tr><th class="">Name</th></tr><tr class="hr"><td class="">Neha</td></tr></table></div><span class="pill p-p">“s se bada koi nahi”</span></div></div></div>
+<p>Dhyaan: yahan <b>do variables ek hi table</b> se hain (s aur s′) — RA ke ρ (rename) wali self-join jaisa. <b>Minimum</b> ke liye bas <span class="ex">s′.Age &lt; s.Age</span>. Agar <span class="ex">≥</span> likh diya to koi bhi answer nahi aayega (s khud s′ ban jaata hai) — trap!</p>
+<h3 id="L07-h13">Cheat table: English ke cue → TRC shape → RA operator</h3>
+<table class="g"><tr><th>English mein suno…</th><th>TRC shape</th><th>RA operator</th></tr><tr><td>“… <b>aur</b> condition”</td><td>R(t) ∧ cond</td><td>σ</td></tr><tr><td>“kuch columns”, “naam batao”</td><td>∃ (bound variables)</td><td>π</td></tr><tr><td>“X ya Y”</td><td>P ∨ Q</td><td>∪</td></tr><tr><td>“X aur Y <b>dono</b>” (alag rows mein)</td><td>∃e₁ … ∧ ∃e₂ … (do variables)</td><td>∩ / self-join</td></tr><tr><td>“X par Y <b>nahi</b>”, “koi nahi”</td><td>P ∧ ¬∃ …</td><td>− (difference)</td></tr><tr><td>“<b>har / all / sabhi</b>”</td><td>∀ (⇒ ∃) ya ¬∃(… ∧ ¬∃ …)</td><td>÷ (division)</td></tr><tr><td>“sabse bada/chhota”</td><td>¬∃ s′ (s′.A &gt; s.A)</td><td>self-join + −</td></tr><tr><td>“dusri table se milao”</td><td>∃ e (e.ID = s.ID)</td><td>⋈</td></tr></table>
+<h2 id="L07-h14">7.7 · Safe expressions <small>“answer finite hona chahiye”</small></h2>
+<h3 id="L07-h15">Problem kya hai?</h3>
+<p>Calculus “condition” batata hai, par ye nahi batata ki <b>candidate tuples kahan se laane hain</b>. Agar hum kuch rok-tok na lagayein to candidates = <b>duniya ke saare possible tuples</b> (saare integers, saare strings…) — <b>infinite</b>!</p>
+<div class="two"><div>
+<p class="big"><span class="ex">{t | ¬ STUDENT(t)}</span></p>
+<p>“Wo saare tuples jo STUDENT mein <b>nahi</b> hain” — (99, xyz, …), (100, abc, …) … <b>anant</b>. Database ke kisi data se ye answer bana hi nahi sakte. Aisi expression <b>UNSAFE</b> hai.</p>
+</div><div>
+<div class="box idea"><div class="t">Safe expression ki definition</div><p>Ek TRC expression <b>safe</b> hai agar uska answer <b>hamesha finite</b> ho aur uske har tuple ki har value <b>expression ke “domain”</b> mein se aaye — yaani un values mein se jo formula mein mentioned <b>relations ke andar</b> hain ya <b>constants</b> jo formula mein likhe hain.</p><p class="mut">(Isi ko “domain independent” bhi kehte hain.)</p></div>
+</div></div>
+<h3 id="L07-h16">Safe ya Unsafe? Pehchaan karo</h3>
+<table class="g"><tr><th>Expression</th><th>Safe?</th><th>Kyun</th></tr><tr><td><span class="ex">{t | STUDENT(t) ∧ t.Age &gt; 20}</span></td><td><span class="tag tg-g">SAFE</span></td><td>t ko positive atom STUDENT(t) ne bandh diya: sirf STUDENT ki rows</td></tr><tr><td><span class="ex">{t | ¬ STUDENT(t)}</span></td><td><span class="tag tg-r">UNSAFE</span></td><td>sirf negation: universe ke saare baaki tuples</td></tr><tr><td><span class="ex">{t | t.Age &gt; 20}</span></td><td><span class="tag tg-r">UNSAFE</span></td><td>t kisi relation se bandha nahi; Age &gt; 20 ke anant tuples</td></tr><tr><td><span class="ex">{t | STUDENT(t) ∨ t.Age &gt; 30}</span></td><td><span class="tag tg-r">UNSAFE</span></td><td>∨ ke doosre hisse mein t free hai, kisi relation se tied nahi → anant answers</td></tr><tr><td><span class="ex">{t | STUDENT(t) ∧ ¬∃e ∈ ENROLL (e.ID = t.ID)}</span></td><td><span class="tag tg-g">SAFE</span></td><td>negation ke saath positive STUDENT(t) bhi hai (¬ sirf “filter” hai)</td></tr><tr><td><span class="ex">{t | ∃s ∈ STUDENT (t.Name = s.Name)}</span></td><td><span class="tag tg-g">SAFE</span></td><td>t.Name sirf STUDENT ke Name values mein se hi aa sakta hai</td></tr><tr><td><span class="ex">{t | ∀s ∈ STUDENT (s.Age &gt; t.Age)}</span></td><td><span class="tag tg-r">UNSAFE</span></td><td>t unrestricted: har Age &lt; 19 wala t pass → anant</td></tr></table>
+<div class="two">
+<div class="box tip"><div class="t">Thumb rule (exam ke liye)</div><ol><li>Output variable t ke liye ek <b>positive range atom</b> hai (R(t) / t ∈ R / ∃r ∈ R (t.A = r.A))?</li><li>Har ¬ ya ∀ kisi <b>already bandhe</b> variable par laga hai?</li></ol><p>Dono “haan” → <b>safe</b>. Nahi → <b>unsafe</b>.</p></div><div class="box idea"><div class="t">Codd&#39;s theorem (bahut important)</div><p><b>Relational Algebra ≡ Safe TRC ≡ Safe DRC</b> (domain calculus). Yaani jo query RA mein likh sakte ho wo safe TRC mein bhi, aur ulta bhi.</p><p><b>Dono se nahi ho sakta:</b> aggregates (COUNT, SUM, AVG) aur recursion/transitive closure (“saare ancestors”). SQL ne ye extra add kiye.</p></div>
+</div>
+<div class="avoid"><div class="fl"><span class="pill p-g">Safe TRC</span><b>=</b><span class="pill p-b">Relational Algebra</span><b>=</b><span class="pill p-p">Safe DRC</span><span style="width:14px"></span><b>⊂</b><span class="pill p-o">SQL (aggregates, recursion, bag semantics)</span></div></div>
+<div class="two">
+<div class="box mem"><div class="t">TRC vs DRC ek line mein</div><p><b>TRC</b>: variable <b>poori row (tuple)</b> ko represent karta hai (<code>t.Name</code>). <b>DRC</b> (Domain RC): variable ek <b>single value</b> ko represent karta hai: <span class="ex">{&lt;n, d&gt; | ∃i, a (STUDENT(i, n, d, a) ∧ a &gt; 20)}</span>. Syllabus mein sirf <b>tuple calculus</b> hai; DRC bas jaankari ke liye.</p></div><div class="box idea"><div class="t">TRC aur SQL ka rishta</div><p>SQL ke <b>tuple variables = aliases</b> (<code>FROM STUDENT s</code>). SQL ka <code>EXISTS</code> = ∃, <code>NOT EXISTS</code> = ¬∃. “All” ke liye SQL mein ∀ nahi hai, to <b>double NOT EXISTS</b> (¬∃¬) use hota hai.</p></div>
+</div>
+<pre class="l07-code">-- Pattern 1 (not):     SELECT s.Name FROM STUDENT s
+--                      WHERE NOT EXISTS (SELECT * FROM ENROLL e WHERE e.ID = s.ID);
+-- Pattern 3 (all of C1,C2):  SELECT s.Name FROM STUDENT s WHERE NOT EXISTS (
+--     SELECT * FROM COURSE c WHERE c.CID IN (&#39;C1&#39;,&#39;C2&#39;) AND NOT EXISTS (
+--         SELECT * FROM ENROLL e WHERE e.ID = s.ID AND e.CID = c.CID));</pre>
+<div class="box try"><div class="t">Ab tum try karo</div><p><b>Q.</b> <span class="ex">{t | COURSE(t) ∧ t.Credits = 4}</span> safe hai ya unsafe? Output kya?</p><p><b>Answer:</b> Safe (t ko COURSE se bandha hai). Output: <b>DBMS (C1) aur Maths (C3)</b>.</p></div>
+<h2 id="L07-h17">7.8 · Real PYQ — GATE DA 2026 <small>TRC mein tuples gino</small></h2>
+<h3 id="L07-h18"><span class="tag tg-y">DA 2026 · Q59 · NAT · 2 marks</span></h3>
+<p><b>Question.</b> Let there be two relations X and Y as shown. X has three columns P, Q and R. Y has two columns P and S.</p>
+<div class="avoid"><div class="fl top"><div class="tb"><span class="rn">X</span><table class="r"><tr><th class="">P</th><th class="">Q</th><th class="">R</th></tr><tr class=""><td class="">P1</td><td class="">Q1</td><td class="">R1</td></tr><tr class=""><td class="">P2</td><td class="">Q2</td><td class="">R2</td></tr><tr class=""><td class="">P3</td><td class="">Q3</td><td class="">R2</td></tr></table></div><div class="tb"><span class="rn">Y</span><table class="r"><tr><th class="">P</th><th class="">S</th></tr><tr class=""><td class="">P1</td><td class="">10</td></tr><tr class=""><td class="">P1</td><td class="">15</td></tr><tr class=""><td class="">P2</td><td class="">20</td></tr><tr class=""><td class="">P3</td><td class="">1</td></tr></table></div></div></div>
+<p>Consider that the following tuple relational calculus expression is evaluated.</p>
+<div class="exbig">{t | t ∈ X ∧ ∃z ∈ X (t[P] = z[P]) ∧ ∃m ∈ Y (m[P] = t[P] ∧ m[S] &gt; 1)}</div>
+<p>The number of tuples that will be returned is ______. (Answer in integer)</p>
+<h4>Solution — step by step</h4>
+<ol class="steps"><li><b>Free/bound:</b> t free (output). z aur m bound (∃). Formula teen ∧-juri hui conditions hai — t tabhi answer mein jab <b>teeno</b> true.</li><li><b>Condition 1: t ∈ X</b> — t ko X ki hi rows mein se lena hai (safe, finite). Candidates = 3 rows.</li><li><b>Condition 2: ∃z ∈ X (t[P] = z[P])</b> — kya X mein koi z hai jiska P = t ka P? <b>Haan, z = t khud!</b> Isliye ye <b>har t ke liye true</b> hai. (Trick condition — kuch filter nahi karti.)</li><li><b>Condition 3: ∃m ∈ Y (m[P] = t[P] ∧ m[S] &gt; 1)</b> — Y mein koi row jiska P same aur S <b>strictly</b> 1 se bada ho. Row-by-row dekho (niche table).</li></ol><div class="tb"><table class="r"><tr><th class="">t (X ki row)</th><th class="">Cond 2</th><th class="">Y mein is P ke S values</th><th class="">Cond 3: koi S &gt; 1?</th><th class="">Answer?</th></tr><tr class="hr"><td class="">P1</td><td class="">✔ (z = t)</td><td class="">10, 15</td><td class="">✔</td><td class=""><b>✔ IN</b></td></tr><tr class="hr"><td class="">P2</td><td class="">✔ (z = t)</td><td class="">20</td><td class="">✔</td><td class=""><b>✔ IN</b></td></tr><tr class=""><td class="">P3</td><td class="">✔ (z = t)</td><td class="">1</td><td class="">✘ (sirf 1, 1 &gt; 1 false)</td><td class="">✘ OUT</td></tr></table></div>
+<ul><li>P1: S = 10, 15 → dono &gt; 1 ✔ &nbsp;|&nbsp; P2: S = 20 ✔ &nbsp;|&nbsp; P3: S = 1 → <b>1 &gt; 1 false</b> ✘.</li></ul>
+<div class="avoid"><div class="fl"><div class="tb"><span class="rn">Returned tuples (X ki poori rows)</span><table class="r"><tr><th class="">P</th><th class="">Q</th><th class="">R</th></tr><tr class="hr"><td class="">P1</td><td class="">Q1</td><td class="">R1</td></tr><tr class="hr"><td class="">P2</td><td class="">Q2</td><td class="">R2</td></tr></table></div><span class="pill p-g">Count = 2</span></div></div>
+<div class="note box"><div class="t">Official answer</div><p><b>2</b>. (Handbook ke mutabiq official key NAT range 2–3 accept karti hai; hamara derivation clean <b>2</b> deta hai.) <b>Trap:</b> strict “&gt; 1” ko “≥ 1” samajh liya to P3 bhi aa jaata aur answer 3 hota. Aur ye mat socho ki output mein P hi aayega — t poori X ki row hai.</p></div>
+<div class="box mem"><div class="t">Is PYQ se seekha</div><ul><li>Aise sawaal mein <b>har tuple ko ek-ek karke test</b> karo — “candidate table” banao.</li><li><span class="ex">∃z ∈ X (t[P] = z[P])</span> jaisi condition (khud ko match karne wali) <b>hamesha true</b> hoti hai — ye distractor hai.</li><li>Teesri condition ek <b>semi-join</b> hai: X ⋉ σ<sub>S&gt;1</sub>(Y) on P → RA: <span class="ex">X ⋈ π<sub>P</sub>(σ<sub>S&gt;1</sub>(Y))</span>.</li></ul></div>
+<h2 id="L07-h19">7.9 · Practice — 14 sawaal <small>pehle khud karo, phir answer dekho</small></h2>
+<div class="qa"><div class="q">Q1. <span class="ex">{t | STUDENT(t) ∧ t.Dept = &#39;CSE&#39; ∧ t.Age &gt; 19}</span> ka output?</div><div class="a">✔ Rahul (1, Rahul, CSE, 20).</div><div class="w">Priya CSE hai par age 19 (&gt; 19 nahi).</div></div><div class="qa"><div class="q">Q2. Free aur bound variables batao: <span class="ex">{s | STUDENT(s) ∧ ∃e ∈ ENROLL ∃c ∈ COURSE (e.ID = s.ID ∧ e.CID = c.CID ∧ c.Credits = 4)}</span>.</div><div class="a">✔ Free = s. Bound = e, c. Output = jinhone 4-credit course liya: Rahul, Aman, Priya.</div><div class="w">Credits=4 → C1 (DBMS) aur C3. Rahul, Aman, Priya ne C1 liya. Neha ne kuch nahi.</div></div><div class="qa"><div class="q">Q3. “Wo students jinhone C3 liya” ka TRC likho aur answer batao.</div><div class="a">✔ <span class="ex">{s | STUDENT(s) ∧ ∃e ∈ ENROLL (e.ID = s.ID ∧ e.CID = &#39;C3&#39;)}</span> → <b>khali</b>.</div><div class="w">ENROLL mein C3 ki koi row nahi.</div></div><div class="qa"><div class="q">Q4. <span class="ex">¬∀x P(x)</span> ke barabar kaunsa hai? (a) ∀x ¬P(x) (b) ∃x ¬P(x) (c) ¬∃x P(x) (d) ∃x P(x)</div><div class="a">✔ (b) ∃x ¬P(x).</div><div class="w">Sab P nahi karte ⇒ koi na koi hai jo P nahi karta.</div></div><div class="qa"><div class="q">Q5. Kya <span class="ex">∀x ∈ ∅ (P(x))</span> true hai ya false? Aur <span class="ex">∃x ∈ ∅ (P(x))</span>?</div><div class="a">✔ ∀ → <b>true</b> (vacuous); ∃ → <b>false</b>.</div><div class="w">Koi counter-example row nahi, koi witness row nahi.</div></div><div class="qa"><div class="q">Q6. “Wo courses jinhe kam-se-kam 2 students ne liya” TRC likho aur output batao.</div><div class="a">✔ <span class="ex">{c | COURSE(c) ∧ ∃e<sub>1</sub>, e<sub>2</sub> ∈ ENROLL (e<sub>1</sub>.CID = c.CID ∧ e<sub>2</sub>.CID = c.CID ∧ e<sub>1</sub>.ID ≠ e<sub>2</sub>.ID)}</span> → C1 (3 students), C2 (2 students). C3 nahi.</div><div class="w">“Kam-se-kam 2” = do variables + alag-alag hone ki condition (≠). Pattern 2 jaisa.</div></div><div class="qa"><div class="q">Q7. <span class="ex">{t | STUDENT(t) ∨ COURSE(t)}</span> — kya ye valid/safe hai? Kya union ban sakta hai?</div><div class="a">✔ Safe lagta hai (dono positive), par <b>union-compatible nahi</b> (STUDENT 4 attributes, COURSE 3) → meaningful nahi.</div><div class="w">RA ke ∪ ki tarah TRC mein bhi dono relations ka degree/domain same hona chahiye.</div></div><div class="qa"><div class="q">Q8. Safe ya unsafe: <span class="ex">{t | ∃s ∈ STUDENT (t.ID = s.ID ∧ ¬∃e ∈ ENROLL (e.ID = s.ID))}</span>.</div><div class="a">✔ <b>Safe</b>. Output: ID 4.</div><div class="w">t.ID student ki ID se aati hai (bandha hua), ¬∃ sirf filter.</div></div><div class="qa"><div class="q">Q9. <span class="ex">{s | STUDENT(s) ∧ ∀e ∈ ENROLL (e.ID = s.ID ⇒ e.CID = &#39;C1&#39;)}</span> ka output?</div><div class="a">✔ Aman aur Neha.</div><div class="w">“Jo bhi enrollment s ki ho, wo C1 hi ho.” Aman: sirf C1 ✔. Neha: koi enrollment nahi → vacuous true ✔. Rahul (C2 bhi), Priya (C2 bhi) ✘.</div></div><div class="qa"><div class="q">Q10. Upar Q9 mein ⇒ ki jagah ∧ likh do: <span class="ex">∀e ∈ ENROLL (e.ID = s.ID ∧ e.CID = &#39;C1&#39;)</span>. Output?</div><div class="a">✔ <b>Khali</b>.</div><div class="w">Har enrollment e (jisme dusre students ki bhi hain) ke liye “e.ID = s.ID” true nahi ho sakta → ∀ + ∧ galat pattern.</div></div><div class="qa"><div class="q">Q11. Sabse kam age wale student ka TRC likho.</div><div class="a">✔ <span class="ex">{s | STUDENT(s) ∧ ¬∃s′ ∈ STUDENT (s′.Age &lt; s.Age)}</span> → Priya (19).</div><div class="w">Pattern 4; min ke liye “&lt;”.</div></div><div class="qa"><div class="q">Q12. RA <span class="ex">π<sub>Name</sub>(σ<sub>Dept=&#39;CSE&#39;</sub>(STUDENT)) − π<sub>Name</sub>(σ<sub>Age&lt;20</sub>(STUDENT))</span> ko TRC mein likho; answer?</div><div class="a">✔ <span class="ex">{t | ∃s ∈ STUDENT (t.Name = s.Name ∧ s.Dept = &#39;CSE&#39;) ∧ ¬∃s′ ∈ STUDENT (s′.Name = t.Name ∧ s′.Age &lt; 20)}</span> → Rahul.</div><div class="w">CSE = {Rahul, Priya}; Age&lt;20 = {Priya}; difference = {Rahul}.</div></div><div class="qa"><div class="q">Q13. Relation R(A,B) mein A ki values (1,2,3) hain; S(B) mein 2 rows. R ÷ S ke TRC mein ∀ kisse upar lagta hai?</div><div class="a">✔ S ki rows (<span class="ex">∀s ∈ S</span>) — “S ki har row ke liye R mein (t.A, s.B) maujood ho”.</div><div class="w">Division = “har required (S) ke liye”.</div></div><div class="qa"><div class="q">Q14. MCQ: TRC ke baare mein sahi hai? (a) procedural hai (b) safe TRC ki power RA ke barabar hai (c) COUNT express kar sakta hai (d) {t | ¬R(t)} safe hai</div><div class="a">✔ (b)</div><div class="w">a: declarative; c: aggregates RA/TRC mein nahi; d: unsafe.</div></div>
+<div class="box mem"><div class="t">Lesson 7 cheat box — last-night revision</div><ul>
+<li><b>{t | P(t)}</b> = “sab tuples t jinke liye P true”. t = <b>akela free variable</b>; baaki sab ∃/∀ se <b>bound</b>.</li>
+<li>Atoms: <b>R(t)</b> (range), <b>s.A θ t.B</b>, <b>t.A θ c</b>. Connectives ∧ ∨ ¬ ⇒; <b>P ⇒ Q ≡ ¬P ∨ Q</b>. Precedence ¬ &gt; ∧ &gt; ∨ &gt; ⇒.</li>
+<li><b>∃ = any = OR over rows</b> (khali par false); <b>∀ = all = AND over rows</b> (khali par true).</li>
+<li><b>¬∃x P ≡ ∀x ¬P</b> &nbsp;|&nbsp; <b>¬∀x P ≡ ∃x ¬P</b> &nbsp;|&nbsp; <b>∀x(P ⇒ Q) ≡ ¬∃x(P ∧ ¬Q)</b>. Yaad: <b>∃ ke saath ∧, ∀ ke saath ⇒</b>.</li>
+<li>RA ↔ TRC: σ → ∧cond; π/⋈/× → ∃; ∪ → ∨; ∩ → ∧; <b>− → ∧ ¬</b>; <b>÷ → ∀ (¬∃¬)</b>.</li>
+<li>“not” → <b>¬∃</b> (quantifier ke <b>bahar</b>) &nbsp; “both” → <b>do alag ∃ variables</b> &nbsp; “all” → <b>∀⇒∃</b> &nbsp; “max” → <b>¬∃ bada</b>.</li>
+<li><b>Safe</b> = finite answer; har free var kisi relation se bandha. <b>¬R(t)</b>, <b>t.A &gt; 5</b> akele → unsafe. <b>Safe TRC ≡ RA</b> (Codd). Aggregates / recursion TRC-RA mein nahi.</li>
+<li>Strict vs non-strict (&gt; vs ≥), z = t wali self-match conditions, aur empty-set vacuous truth — teen favourite traps.</li>
+<li>PYQ yaad: <b>DA 2026 Q59 → 2</b>.</li></ul></div></section><div class="donebar"><label><input type="checkbox" class="doneChk" data-id="L07"> <span>Ye lesson <b>complete</b> ho gaya (done mark karo)</span></label></div><div class="pager"><a class="pg prev" href="lesson06.html" data-nav="prev"><small>&larr; Pichhla</small><b>Relational Algebra</b></a><a class="pg next" href="lesson08.html" data-nav="next"><small>Agla &rarr;</small><b>SQL basics</b></a></div></article>
+</main>
+<aside id="toc" aria-label="Is page par"></aside>
+</div>
+<div id="searchModal" class="smodal" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="sbox"><div class="srow"><input id="sInput" type="search" placeholder="Search karo: e.g. closure, B+ tree, left join, HAVING..." autocomplete="off" spellcheck="false"><button type="button" id="sClose" class="ib" aria-label="Band karo">&times;</button></div>
+  <div id="sRes" class="sres"><p class="mut">Type karo &mdash; saare 22 lessons + appendix mein dhoondhega. Up/Down arrow + Enter se open.</p></div></div>
+</div>
+<script src="assets/js/widgets-core.js"></script>
+<script src="assets/js/widgets/bplus-tree.js"></script>
+<script src="assets/js/widgets/cuboid-lattice.js"></script>
+<script src="assets/js/widgets/data-scaling.js"></script>
+<script src="assets/js/widgets/er-mapping.js"></script>
+<script src="assets/js/widgets/fd-closure.js"></script>
+<script src="assets/js/widgets/file-blocks.js"></script>
+<script src="assets/js/widgets/huffman.js"></script>
+<script src="assets/js/widgets/index-lookup.js"></script>
+<script src="assets/js/widgets/lossless-chase.js"></script>
+<script src="assets/js/widgets/normal-forms.js"></script>
+<script src="assets/js/widgets/olap-ops.js"></script>
+<script src="assets/js/widgets/ra-operators.js"></script>
+<script src="assets/js/widgets/sampling.js"></script>
+<script src="assets/js/widgets/sql-joins.js"></script>
+<script src="assets/js/widgets/sql-order.js"></script>
+<script src="assets/js/widgets/star-schema.js"></script>
+<script src="assets/js/widgets/trc-vs-ra.js"></script>
+<script src="assets/js/site-data.js"></script>
+<script src="assets/js/app.js"></script>
+</body></html>
