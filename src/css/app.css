@@ -305,3 +305,13 @@ mark.hl{background:var(--hxy);color:inherit;border-radius:3px}
   .lessonhead,.ap-head{box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
   *{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
+
+/* ---- join "input tables" strips + id colour coding (used in lessons 6 and 9) ---- */
+.lesson table.r td.k1{background:var(--hxy);font-weight:700}.lesson table.r td.k2{background:var(--hcol);font-weight:700}
+.lesson table.r td.k3{background:var(--hrow);font-weight:700}.lesson table.r td.k4,.lesson table.r td.k7{background:var(--frow);font-weight:700}
+.lesson table.r td.k5{background:color-mix(in srgb,#7048e8 24%,var(--paper));font-weight:700}
+.lesson table.r td.k6{background:color-mix(in srgb,#0e9aa7 26%,var(--paper));font-weight:700}
+.lesson table.r td.kn{background:var(--chip);font-style:italic}
+.lesson .jt{border:1.5px dashed var(--bluet);border-radius:12px;padding:8px 12px;margin:10px 0;background:var(--card)}
+.lesson .jt .t{font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--bluet);margin-bottom:4px}
+.lesson .jt .ln{font-family:Menlo,Monaco,monospace;font-size:12.5px;font-weight:700;align-self:center;padding:0 4px;text-align:center}

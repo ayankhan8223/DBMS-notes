@@ -25,6 +25,8 @@ const NAMED = {
   cup: '∪', cap: '∩', sub: '⊂', sube: '⊆', sup: '⊃', supe: '⊇', isin: '∈', empty: '∅', exist: '∃', forall: '∀',
   and: '∧', or: '∨', not: '¬', prime: '′', bull: '•', check: '✓', cross: '✗', bowtie: '⋈',
   lceil: '⌈', rceil: '⌉', lfloor: '⌊', rfloor: '⌋',
+  frac12: '½',
+  supseteq: '⊇', nsupe: '⊉', notin: '∉',
 };
 
 function decode(s) {

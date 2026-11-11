@@ -93,9 +93,11 @@ function notIn(a,B){if(B.length===0)return 'T';var unk=false;for(var i=0;i<B.len
 function notExists(a,B){return B.some(function(b){return eqk(a,b);})?'F':'T';}
 // 3-valued logic for "a <> b": any NULL => UNKNOWN. Returns 'T' | 'F' | 'U'.
 function cmpNe(a,b){if(a===null||b===null)return 'U';return a!==b?'T':'F';}
+// 3-valued logic for "a = b": any NULL => UNKNOWN. Returns 'T' | 'F' | 'U'.
+function cmpEq(a,b){if(a===null||b===null)return 'U';return a===b?'T':'F';}
 // AND of 3-valued values: any FALSE => FALSE; else any UNKNOWN => UNKNOWN; else TRUE (empty AND = TRUE).
 function andAll(v){if(v.indexOf('F')>=0)return 'F';if(v.indexOf('U')>=0)return 'U';return 'T';}
-var LOGIC={joinTables:joinTables,notIn:notIn,notExists:notExists,nv:nv,cmpNe:cmpNe,andAll:andAll};
+var LOGIC={joinTables:joinTables,notIn:notIn,notExists:notExists,nv:nv,cmpNe:cmpNe,cmpEq:cmpEq,andAll:andAll};
 function mount(el,opts){
   injectCss('.$ex{background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:10px;padding:8px 11px;margin:9px 0;font-size:14px}.$ex .$h{font-weight:700;margin-bottom:3px}.$ex p{margin:3px 0}.$ex ul,.$ex ol{margin:4px 0 2px 18px;padding:0}.$ex li{margin:2px 0}.$ex pre{margin:5px 0;padding:6px 9px;border-radius:8px;background:color-mix(in srgb,var(--blue,#2f5bd8) 8%,var(--card,#f6f8ff));font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}.$c2{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:600px){.$c2{grid-template-columns:1fr}}.$okc{color:var(--green,#14a06b);font-weight:700}.$noc{color:var(--red,#d63b4f);font-weight:700}.$unk{color:var(--org,#e8730c);font-weight:700}.$key{border-left:4px solid var(--blue,#2f5bd8)}.$edit input{width:68px;min-height:28px;padding:2px 5px;font-size:13px}.$edit td{padding:2px 3px}.$xb{padding:0 7px;min-height:26px}.$two{display:flex;flex-wrap:wrap;gap:14px}.$venn{max-width:230px;width:100%}.$ttabs{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}.$vrow{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}.$u{background:color-mix(in srgb,var(--org,#e8730c) 30%,var(--bg,#fff))}');
   el.innerHTML='';var root=h('div','w');el.appendChild(root);
@@ -177,8 +179,25 @@ function mount(el,opts){
     a.forEach(function(x,i){c+='<tr><td>'+(x===null?'NULL':esc(x))+'</td>'+cell(t1.finals[i])+cell(t2.finals[i])+'</tr>';});
     return '<div class="'+P+'sub" style="margin-top:10px">Step-by-step: <code>x NOT IN (b1, b2, …)</code> = <code>x&lt;&gt;b1 AND x&lt;&gt;b2 AND …</code>. FALSE AND UNKNOWN = FALSE, TRUE AND UNKNOWN = UNKNOWN. <code>WHERE</code> sirf TRUE rakhta hai.</div>'+t1.html+t2.html+'<div class="'+P+'wrap">'+c+'</table></div>';
   }
+  // NOT EXISTS step tables: for every B row check "B.id = A.id". Only a TRUE row counts as a match;
+  // UNKNOWN rows are simply thrown away by the subquery WHERE (like FALSE), they do not poison the answer.
+  function stepTablesExists(a,bClean){
+    var NM={T:'TRUE',F:'FALSE',U:'UNKNOWN'};
+    function cell(v){return '<td class="'+P+(v==='T'?'g':v==='U'?'o':'x')+'">'+NM[v]+'</td>';}
+    function build(title,bs){var finals=[];
+      var t='<table class="'+P+'t"><caption>'+title+'</caption><tr><th>A.id</th>'+bs.map(function(b){return '<th>'+(b===null?'NULL':esc(b))+' = A.id</th>';}).join('')+'<th>Koi TRUE mila?</th><th>NOT EXISTS</th><th>Output</th></tr>';
+      a.forEach(function(x){var cs=bs.map(function(b){return cmpEq(x,b);}),found=cs.indexOf('T')>=0,f=found?'F':'T';finals.push(f);
+        t+='<tr><td>'+(x===null?'NULL':esc(x))+'</td>'+cs.map(cell).join('')+'<td>'+(found?'Haan':'Nahi')+'</td>'+cell(f)+'<td class="'+P+(f==='T'?'g':'x')+'">'+(f==='T'?'Keep ✓':'Reject')+'</td></tr>';});
+      return {html:'<div class="'+P+'wrap">'+t+'</table></div>',finals:finals};}
+    var t4=build('Table 4: NOT EXISTS — NULL ke bina',bClean),t5=build('Table 5: NOT EXISTS — NULL ke saath',bClean.concat([null]));
+    var withNull=bClean.concat([null]);
+    var c='<table class="'+P+'t"><caption>Table 6: NULL ke saath — NOT IN vs NOT EXISTS</caption><tr><th>A.id</th><th>NOT IN</th><th>NOT EXISTS</th></tr>';
+    a.forEach(function(x,i){c+='<tr><td>'+(x===null?'NULL':esc(x))+'</td>'+cell(andAll(withNull.map(function(b){return cmpNe(x,b);})))+cell(t5.finals[i])+'</tr>';});
+    return '<div class="'+P+'sub" style="margin-top:12px">NOT EXISTS: B ki <b>har row</b> par <code>B.id = A.id</code> check hota hai. Agar <b>koi bhi row TRUE</b> deti hai to EXISTS TRUE, yaani NOT EXISTS FALSE. Jis B row ka jawab <b>UNKNOWN</b> hai (NULL wali), wo subquery ke <code>WHERE</code> mein FALSE ki tarah <b>hat jaati hai</b>: wo poore jawab ko UNKNOWN <b>nahi</b> banati. Yahi NOT IN se fark hai.</div>'+t4.html+t5.html+'<div class="'+P+'wrap">'+c+'</table></div>';
+  }
   function trapRender(){var a=parseList(ia.value),b=parseList(ib.value);var hasNull=hasNullIn(b);
-    tsteps.innerHTML=stepTables(a,b.filter(function(x){return x!==null;}));
+    var bc=b.filter(function(x){return x!==null;});
+    tsteps.innerHTML=stepTables(a,bc)+stepTablesExists(a,bc);
     var t='<table class="'+P+'t"><tr><th>A.id</th><th>id NOT IN B</th><th>NOT EXISTS</th></tr>';var rin=[],rex=[];
     a.forEach(function(x){var v=notIn(x,b),e=notExists(x,b);if(v==='T')rin.push(x);if(e==='T')rex.push(x);var nm={T:'TRUE ✓ (row aayi)',F:'FALSE (row gayi)',U:'UNKNOWN (row gayi)'};t+='<tr><td>'+(x===null?'NULL':esc(x))+'</td><td class="'+P+(v==='T'?'g':v==='U'?'o':'x')+'">'+nm[v]+'</td><td class="'+P+(e==='T'?'g':'x')+'">'+(e==='T'?'TRUE ✓':'FALSE')+'</td></tr>';});
     tout.innerHTML=t+'</table>';

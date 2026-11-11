@@ -19,7 +19,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     rollupOptions: { input: pages },
-    // src/data/search-index.js is ~700 kB but is loaded lazily (only when you open search), so the size warning is noise.
-    chunkSizeWarningLimit: 800,
+    // src/data/search-index.js is ~1 MB but is loaded lazily (only when you open search), so the size warning is noise.
+    chunkSizeWarningLimit: 1500,
   },
 });
