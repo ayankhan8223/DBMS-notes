@@ -91,7 +91,11 @@ function joinTables(L,R,type){
 }
 function notIn(a,B){if(B.length===0)return 'T';var unk=false;for(var i=0;i<B.length;i++){if(a===null||B[i]===null){unk=true;continue;}if(a===B[i])return 'F';}return unk?'U':'T';}
 function notExists(a,B){return B.some(function(b){return eqk(a,b);})?'F':'T';}
-var LOGIC={joinTables:joinTables,notIn:notIn,notExists:notExists,nv:nv};
+// 3-valued logic for "a <> b": any NULL => UNKNOWN. Returns 'T' | 'F' | 'U'.
+function cmpNe(a,b){if(a===null||b===null)return 'U';return a!==b?'T':'F';}
+// AND of 3-valued values: any FALSE => FALSE; else any UNKNOWN => UNKNOWN; else TRUE (empty AND = TRUE).
+function andAll(v){if(v.indexOf('F')>=0)return 'F';if(v.indexOf('U')>=0)return 'U';return 'T';}
+var LOGIC={joinTables:joinTables,notIn:notIn,notExists:notExists,nv:nv,cmpNe:cmpNe,andAll:andAll};
 function mount(el,opts){
   injectCss('.$edit input{width:68px;min-height:28px;padding:2px 5px;font-size:13px}.$edit td{padding:2px 3px}.$xb{padding:0 7px;min-height:26px}.$two{display:flex;flex-wrap:wrap;gap:14px}.$venn{max-width:230px;width:100%}.$ttabs{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}.$vrow{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}.$u{background:color-mix(in srgb,var(--org,#e8730c) 30%,var(--bg,#fff))}');
   el.innerHTML='';var root=h('div','w');el.appendChild(root);
@@ -146,9 +150,25 @@ function mount(el,opts){
   var cb=document.createElement('input');cb.type='checkbox';cb.id=P+'cb'+Math.random().toString(36).slice(2);var cl=document.createElement('label');cl.htmlFor=cb.id;cl.textContent=' B mein NULL daalo';
   [['A ids',ia],['B ids',ib]].forEach(function(p){var c=h('div','col');c.appendChild(h('span','lab',p[0]));c.appendChild(p[1]);tin.appendChild(c);});var cw=h('div','col');cw.appendChild(h('span','lab','Toggle'));var cc=h('div','');cc.appendChild(cb);cc.appendChild(cl);cw.appendChild(cc);tin.appendChild(cw);trap.appendChild(tin);
   var tout=h('div','wrap');trap.appendChild(tout);var tmsg=h('div','');trap.appendChild(tmsg);
+  var tsteps=h('div','');trap.appendChild(tsteps);
   function parseList(s){return s.split(',').map(function(x){return nv(x);}).filter(function(x,i,a){return !(x===null&&s.trim()==='');});}
   function hasNullIn(b){return b.some(function(x){return x===null;});}
+  // Step-by-step tables: x NOT IN (b1, b2, ...) is  x<>b1 AND x<>b2 AND ...  (one column per b, then the AND).
+  function stepTables(a,bClean){
+    var NM={T:'TRUE',F:'FALSE',U:'UNKNOWN'};
+    function cell(v){return '<td class="'+P+(v==='T'?'g':v==='U'?'o':'x')+'">'+NM[v]+'</td>';}
+    function build(title,bs){var finals=[];
+      var t='<table class="'+P+'t"><caption>'+title+'</caption><tr><th>A.id</th>'+bs.map(function(b){return '<th>&lt;&gt; '+(b===null?'NULL':esc(b))+'</th>';}).join('')+'<th>Final AND</th><th>Output</th></tr>';
+      a.forEach(function(x){var cs=bs.map(function(b){return cmpNe(x,b);}),f=andAll(cs);finals.push(f);
+        t+='<tr><td>'+(x===null?'NULL':esc(x))+'</td>'+cs.map(cell).join('')+cell(f)+'<td class="'+P+(f==='T'?'g':'x')+'">'+(f==='T'?'Keep ✓':'Reject')+'</td></tr>';});
+      return {html:'<div class="'+P+'wrap">'+t+'</table></div>',finals:finals};}
+    var t1=build('Table 1: NOT IN — NULL ke bina',bClean),t2=build('Table 2: NOT IN — NULL ke saath',bClean.concat([null]));
+    var c='<table class="'+P+'t"><caption>Table 3: Comparison</caption><tr><th>A.id</th><th>NULL ke bina</th><th>NULL ke saath</th></tr>';
+    a.forEach(function(x,i){c+='<tr><td>'+(x===null?'NULL':esc(x))+'</td>'+cell(t1.finals[i])+cell(t2.finals[i])+'</tr>';});
+    return '<div class="'+P+'sub" style="margin-top:10px">Step-by-step: <code>x NOT IN (b1, b2, …)</code> = <code>x&lt;&gt;b1 AND x&lt;&gt;b2 AND …</code>. FALSE AND UNKNOWN = FALSE, TRUE AND UNKNOWN = UNKNOWN. <code>WHERE</code> sirf TRUE rakhta hai.</div>'+t1.html+t2.html+'<div class="'+P+'wrap">'+c+'</table></div>';
+  }
   function trapRender(){var a=parseList(ia.value),b=parseList(ib.value);var hasNull=hasNullIn(b);
+    tsteps.innerHTML=stepTables(a,b.filter(function(x){return x!==null;}));
     var t='<table class="'+P+'t"><tr><th>A.id</th><th>id NOT IN B</th><th>NOT EXISTS</th></tr>';var rin=[],rex=[];
     a.forEach(function(x){var v=notIn(x,b),e=notExists(x,b);if(v==='T')rin.push(x);if(e==='T')rex.push(x);var nm={T:'TRUE ✓ (row aayi)',F:'FALSE (row gayi)',U:'UNKNOWN (row gayi)'};t+='<tr><td>'+(x===null?'NULL':esc(x))+'</td><td class="'+P+(v==='T'?'g':v==='U'?'o':'x')+'">'+nm[v]+'</td><td class="'+P+(e==='T'?'g':'x')+'">'+(e==='T'?'TRUE ✓':'FALSE')+'</td></tr>';});
     tout.innerHTML=t+'</table>';
