@@ -1,5 +1,5 @@
-/* widget: trc-vs-ra — self-contained, registers via window.Widgets.register */
-(function(){'use strict';
+/* widget: trc-vs-ra — self-contained, registers via register() from widgets-core.js */
+import { register as registerWidget } from '../widgets-core.js';
 var NAME='trc-vs-ra';
 var P='w-'+NAME+'-';
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -139,6 +139,5 @@ function mount(el,opts){
   build();
 }
 
-if(typeof module!=='undefined'&&module.exports){module.exports=LOGIC;}
-if(typeof window!=='undefined'&&typeof document!=='undefined'){if(window.Widgets&&window.Widgets.register){window.Widgets.register(NAME,mount);}else{(window.__widgetQueue=window.__widgetQueue||[]).push([NAME,mount]);}}
-})();
+export { LOGIC };
+registerWidget(NAME, mount);

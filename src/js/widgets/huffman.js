@@ -1,5 +1,4 @@
-(function(){
-"use strict";
+import { register as registerWidget } from '../widgets-core.js';
 var N="huffman", P="w-huffman-";
 var SVGNS="http://www.w3.org/2000/svg";
 function h(tag,a,k,isSvg){
@@ -77,11 +76,7 @@ function Player(onGo,getLen,opt){
   ui();
   return {el:el,start:start,go:go,stop:stop,idx:function(){return st.i;},refresh:ui,speed:function(){return st.speed;}};
 }
-function reg(fn){
-  if(typeof window==="undefined")return;
-  if(window.Widgets&&window.Widgets.register)window.Widgets.register(N,fn);
-  else (window.__widgetQueue=window.__widgetQueue||[]).push([N,fn]);
-}
+function reg(fn){ registerWidget(N, fn); }
 function pn(v,d){var x=Number(v);return isFinite(x)?x:d;}
 /* ===== core ===== */
 function huffman(syms){
@@ -216,6 +211,4 @@ reg(function(el,opts){
   root.appendChild(pl.el);root.appendChild(cap);root.appendChild(qbox);root.appendChild(svgW);root.appendChild(tbl);root.appendChild(met);
   el.appendChild(root);build();
 });
-if(typeof module!=="undefined"&&module.exports)module.exports={huffman:huffman,huffMetrics:huffMetrics,parseSyms:parseSyms};
-
-})();
+export { huffman, huffMetrics, parseSyms };

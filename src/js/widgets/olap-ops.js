@@ -1,5 +1,4 @@
-(function(){
-"use strict";
+import { register as registerWidget } from '../widgets-core.js';
 var N="olap-ops", P="w-olap-ops-";
 var SVGNS="http://www.w3.org/2000/svg";
 function h(tag,a,k,isSvg){
@@ -77,11 +76,7 @@ function Player(onGo,getLen,opt){
   ui();
   return {el:el,start:start,go:go,stop:stop,idx:function(){return st.i;},refresh:ui,speed:function(){return st.speed;}};
 }
-function reg(fn){
-  if(typeof window==="undefined")return;
-  if(window.Widgets&&window.Widgets.register)window.Widgets.register(N,fn);
-  else (window.__widgetQueue=window.__widgetQueue||[]).push([N,fn]);
-}
+function reg(fn){ registerWidget(N, fn); }
 function pn(v,d){var x=Number(v);return isFinite(x)?x:d;}
 /* ===== core: cube ===== */
 var DIM=[
@@ -245,6 +240,4 @@ reg(function(el,opts){
   root.appendChild(fnTabs);root.appendChild(mout);
   el.appendChild(root);controls();render();meas();
 });
-if(typeof module!=="undefined"&&module.exports)module.exports={cellValue:cellValue,grandTotal:grandTotal,FN:FN,direct:direct,viaPartials:viaPartials,DIM:DIM,base:base};
-
-})();
+export { cellValue, grandTotal, FN, direct, viaPartials, DIM, base };

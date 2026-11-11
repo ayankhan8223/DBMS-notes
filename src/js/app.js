@@ -1,7 +1,8 @@
-/* Site shell: sidebar, theme, progress, search, TOC, answer reveal, code copy, keyboard. Works from file://. */
-(function () {
-  'use strict';
-  var doc = document, root = doc.documentElement, SITE = window.SITE || { lessons: [], parts: [] };
+/* Site shell (ES module): sidebar, theme, progress, search, TOC, answer reveal, code copy, keyboard. */
+import SITE from './site-data.js';
+import { Widgets } from './widgets-core.js';
+
+  var doc = document, root = doc.documentElement;
   var CUR = root.getAttribute('data-current');
   var KIND = root.getAttribute('data-kind');
   var $ = function (s, r) { return (r || doc).querySelector(s); };
@@ -171,14 +172,16 @@
 
   /* ---------- search ---------- */
   var idxLoaded = false, idxLoading = false, sel = 0, results = [];
+  var SEARCH_INDEX = null; // filled on first search (separate chunk, built by scripts/make-search-index.mjs)
   function loadIndex(cb) {
-    if (window.SEARCH_INDEX) { idxLoaded = true; return cb(); }
+    if (SEARCH_INDEX) { idxLoaded = true; return cb(); }
     if (idxLoading) { return setTimeout(function () { loadIndex(cb); }, 80); }
     idxLoading = true;
-    var s = doc.createElement('script'); s.src = 'assets/js/search-index.js';
-    s.onload = function () { idxLoaded = true; idxLoading = false; cb(); };
-    s.onerror = function () { idxLoading = false; $('#sRes').innerHTML = '<p>Search index load nahi hua.</p>'; };
-    doc.head.appendChild(s);
+    import('../data/search-index.js').then(function (m) {
+      SEARCH_INDEX = m.default; idxLoaded = true; idxLoading = false; cb();
+    }).catch(function () {
+      idxLoading = false; $('#sRes').innerHTML = '<p>Search index load nahi hua.</p>';
+    });
   }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function re_esc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
@@ -200,10 +203,10 @@
   }
   function runSearch(q) {
     var box = $('#sRes'); q = q.trim().toLowerCase();
-    if (!window.SEARCH_INDEX) return;
+    if (!SEARCH_INDEX) return;
     if (q.length < 2) { box.innerHTML = '<p class="mut">Kam se kam 2 letters likho.</p>'; results = []; return; }
     var terms = q.split(/\s+/).filter(Boolean), res = [];
-    window.SEARCH_INDEX.forEach(function (L) {
+    SEARCH_INDEX.forEach(function (L) {
       L.s.forEach(function (S) {
         var tl = S.t.toLowerCase(), hl = S.h.toLowerCase(), sc = 0, ok = true;
         for (var i = 0; i < terms.length; i++) {
@@ -312,9 +315,8 @@
     var cur = $('#sidebar a.cur'); if (cur) { var sbx = $('#sidebar'); sbx.scrollTop = Math.max(0, cur.offsetTop - 140); }
     setupQA(); setupCode(); setupTables(); setupTOC(); setupRead(); setupHome(); setupSearch(); setupKeys();
     paint();
-    if (window.Widgets) window.Widgets.mountAll(doc);
+    Widgets.mountAll(doc, { eager: true });
     if (window.matchMedia) { try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updThemeBtn); } catch (e) {} }
   }
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', init); else init();
   window.__site = { runSearch: runSearch, toggleAnswers: toggleAnswers, getDone: getDone };
-})();

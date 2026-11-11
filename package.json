@@ -1,0 +1,19 @@
+{
+  "name": "gate-da-dbms-notes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GATE DA 2027 - DBMS & Data Warehousing study notes (Hinglish) with interactive animations",
+  "type": "module",
+  "scripts": {
+    "index": "node scripts/make-search-index.mjs",
+    "dev": "npm run index && vite",
+    "build": "npm run index && vite build",
+    "preview": "vite preview"
+  },
+  "engines": {
+    "node": ">=20.19"
+  },
+  "devDependencies": {
+    "vite": "^8.3.7"
+  }
+}

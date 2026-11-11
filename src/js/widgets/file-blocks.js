@@ -1,5 +1,4 @@
-(function(){
-"use strict";
+import { register as registerWidget } from '../widgets-core.js';
 var N="file-blocks", P="w-file-blocks-";
 var SVGNS="http://www.w3.org/2000/svg";
 function h(tag,a,k,isSvg){
@@ -77,11 +76,7 @@ function Player(onGo,getLen,opt){
   ui();
   return {el:el,start:start,go:go,stop:stop,idx:function(){return st.i;},refresh:ui,speed:function(){return st.speed;}};
 }
-function reg(fn){
-  if(typeof window==="undefined")return;
-  if(window.Widgets&&window.Widgets.register)window.Widgets.register(N,fn);
-  else (window.__widgetQueue=window.__widgetQueue||[]).push([N,fn]);
-}
+function reg(fn){ registerWidget(N, fn); }
 function pn(v,d){var x=Number(v);return isFinite(x)?x:d;}
 /* ===== core ===== */
 function fileCalc(B,R,r,spanned){
@@ -211,6 +206,4 @@ reg(function(el,opts){
   root.appendChild(h("div",{class:c("title"),text:"Search cost (block accesses)",style:"margin-top:10px"}));root.appendChild(cost);
   el.appendChild(root);recalc();
 });
-if(typeof module!=="undefined"&&module.exports)module.exports={fileCalc:fileCalc};
-
-})();
+export { fileCalc };

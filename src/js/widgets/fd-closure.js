@@ -1,6 +1,6 @@
-/* widget: normal-forms — self-contained, registers via window.Widgets.register */
-(function(){'use strict';
-var NAME='normal-forms';
+/* widget: fd-closure — self-contained, registers via register() from widgets-core.js */
+import { register as registerWidget } from '../widgets-core.js';
+var NAME='fd-closure';
 var P='w-'+NAME+'-';
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function h(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls.split(' ').map(function(c){return c?P+c:'';}).join(' ');if(html!=null)e.innerHTML=html;return e;}
@@ -86,70 +86,61 @@ function fmtS(s){return s.length?s.join(''):'∅';}
 function fmtSet(s){return '{'+s.join(', ')+'}';}
 function fmtFD(f){return f.l.join('')+' → '+f.r.join('');}
 function checkFDs(attrs,fds){var bad=[];fds.forEach(function(f){f.l.concat(f.r).forEach(function(a){if(attrs.indexOf(a)<0&&bad.indexOf(a)<0)bad.push(a);});});return bad;}
-function analyze(attrs,fds){
-  attrs=attrs.slice().sort();
-  var keys=candidateKeys(attrs,fds),prime=[];keys.forEach(function(k){prime=unionS(prime,k);});
-  var nonprime=minusS(attrs,prime),rows=[];
-  fds.forEach(function(f){f.r.forEach(function(a){if(f.l.indexOf(a)>=0)return;
-    var superkey=closure(f.l,fds).length===attrs.length,aPrime=prime.indexOf(a)>=0;
-    var inKey=keys.some(function(k){return subsetOf(f.l,k);}),proper=keys.some(function(k){return subsetOf(f.l,k)&&f.l.length<k.length;});
-    var kind='';if(!superkey&&!aPrime){kind=proper?'partial':'transitive';}
-    rows.push({l:f.l,a:a,superkey:superkey,aPrime:aPrime,bcnf:superkey,nf3:superkey||aPrime,kind:kind,inKey:inKey});});});
-  var partials=[],seen={};
-  keys.forEach(function(K){var n=K.length;for(var m=1;m<(1<<n)-1;m++){var S=K.filter(function(_,i){return m&(1<<i);});var key=S.join('');if(seen[key])continue;var c=closure(S,fds);var extra=minusS(c,S).filter(function(x){return nonprime.indexOf(x)>=0;});if(extra.length){seen[key]=1;partials.push({S:S,attrs:extra,key:K});}}});
-  var is2=!partials.length,is3=rows.every(function(r){return r.nf3;}),isB=rows.every(function(r){return r.bcnf;});
-  var highest=isB?'BCNF':is3?'3NF':is2?'2NF':'1NF';
-  return {attrs:attrs,keys:keys,prime:prime,nonprime:nonprime,rows:rows,partials:partials,is2NF:is2,is3NF:is3,isBCNF:isB,highest:highest};
-}
-var LOGIC={analyze:analyze,parseFDs:parseFDs,parseAttrs:parseAttrs,closure:closure,candidateKeys:candidateKeys};
+var LOGIC={closure:closure,closureTrace:closureTrace,candidateKeys:candidateKeys,parseFDs:parseFDs,parseAttrs:parseAttrs};
 var PRESETS=[
- {n:'R(A,B,C,D): AB→C, B→D  (partial dependency)',attrs:'ABCD',fds:'AB->C\nB->D'},
- {n:'R(A,B,C): A→B, B→C  (transitive)',attrs:'ABC',fds:'A->B\nB->C'},
- {n:'R(A,B,C): AB→C, C→B  (3NF par BCNF nahi)',attrs:'ABC',fds:'AB->C\nC->B'},
- {n:'R(A,B,C): A→B, A→C  (BCNF)',attrs:'ABC',fds:'A->B\nA->C'},
- {n:'R(A,B,C,D,E): AB→C, C→D, B→E',attrs:'ABCDE',fds:'AB->C\nC->D\nB->E'}
+ {n:'Basic: A→B, B→C, CD→E',attrs:'ABCDE',fds:'A->B\nB->C\nCD->E',x:'AD'},
+ {n:'GATE style: AB→C, BC→AD, D→E, CF→B',attrs:'ABCDEF',fds:'AB->C\nBC->AD\nD->E\nCF->B',x:'AB'},
+ {n:'Cycle: A→B→C→D→A',attrs:'ABCD',fds:'A->B\nB->C\nC->D\nD->A',x:'A'},
+ {n:'Do keys: AB→C, C→B',attrs:'ABC',fds:'AB->C\nC->B',x:'AC'}
 ];
 function mount(el,opts){
-  injectCss('.$ladder{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.$rung{flex:1;min-width:60px;text-align:center;padding:6px 4px;border-radius:9px;border:2px solid var(--line,#d7deee);background:var(--bg,#fff);font-weight:700;opacity:.6;transition:all .4s}.$rung.$yes{opacity:1;border-color:var(--green,#14a06b);background:color-mix(in srgb,var(--green,#14a06b) 25%,var(--bg,#fff))}.$rung.$no{opacity:1;border-color:var(--red,#d63b4f);background:color-mix(in srgb,var(--red,#d63b4f) 18%,var(--bg,#fff))}.$rung.$top{outline:3px solid var(--blue,#2f5bd8)}.$sec{margin:8px 0}.$sec h4{margin:0 0 4px;font-size:14px}');
+  injectCss('.$chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.$fd{display:flex;gap:8px;align-items:center;padding:4px 8px;border:1px solid var(--line,#d7deee);border-radius:8px;margin:3px 0;background:var(--bg,#fff);transition:all .3s;font-family:ui-monospace,Menlo,monospace;font-size:14px}.$fd.$cur{border-color:var(--org,#e8730c);background:color-mix(in srgb,var(--org,#e8730c) 18%,var(--bg,#fff))}.$fd.$done{border-color:var(--green,#14a06b)}.$fd small{font-family:system-ui;color:var(--mut,#5b6580);margin-left:auto;text-align:right}.$grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.$grid{grid-template-columns:1fr}}');
   el.innerHTML='';var root=h('div','w');el.appendChild(root);
-  root.appendChild(h('div','title','Normal Form detector — 1NF → BCNF'));
-  root.appendChild(h('div','sub','Relation aur FDs do. Steps: candidate keys → prime/non-prime → har FD ki jaanch → partial/transitive → verdict. (Maan ke chalte hain ki saare attributes atomic hain, yaani 1NF to hai hi.)'));
-  var ps=mkSelect(PRESETS.map(function(p,i){return {v:i,t:p.n};}),0,function(v){var p=PRESETS[v];ia.value=p.attrs;ifd.value=p.fds;recompute();});
+  root.appendChild(h('div','title','Attribute Closure X⁺ — step by step'));
+  root.appendChild(h('div','sub','Preset chuno ya khud attributes / FDs likho (single capital letters, FD ek line mein: AB->C). X ka closure chalke dekho.'));
+  var ps=mkSelect(PRESETS.map(function(p,i){return {v:i,t:p.n};}),0,function(v){var p=PRESETS[v];ia.value=p.attrs;ifd.value=p.fds;ix.value=p.x;recompute();});
   var r1=h('div','row');r1.appendChild(ps);root.appendChild(r1);
-  var ia=h('input','inp mono');ia.value=PRESETS[0].attrs;ia.size=10;ia.setAttribute('aria-label','Attributes');
-  var ifd=h('textarea','ta');ifd.rows=3;ifd.value=PRESETS[0].fds;ifd.setAttribute('aria-label','FDs');
-  var r2=h('div','row');var c1=h('div','col');c1.appendChild(h('span','lab','R ke attributes'));c1.appendChild(ia);r2.appendChild(c1);root.appendChild(r2);
-  var c2=h('div','col');c2.appendChild(h('span','lab','FDs (ek line mein ek, jaise AB->C)'));c2.appendChild(ifd);root.appendChild(c2);
+  var ia=h('input','inp mono');ia.value=PRESETS[0].attrs;ia.size=10;ia.setAttribute('aria-label','Relation attributes');
+  var ix=h('input','inp mono');ix.value=PRESETS[0].x;ix.size=8;ix.setAttribute('aria-label','X attributes');
+  var ifd=h('textarea','ta');ifd.rows=4;ifd.value=PRESETS[0].fds;ifd.setAttribute('aria-label','FDs');
+  var r2=h('div','row');
+  [['R ke attributes',ia],['X (closure kiska?)',ix]].forEach(function(p){var c=h('div','col');c.appendChild(h('span','lab',p[0]));c.appendChild(p[1]);r2.appendChild(c);});
+  root.appendChild(r2);var c3=h('div','col');c3.appendChild(h('span','lab','FDs (ek line mein ek)'));c3.appendChild(ifd);root.appendChild(c3);
   var err=h('div','bad','');root.appendChild(err);
-  var barHost=h('div','');root.appendChild(barHost);var cap=h('div','cap','');root.appendChild(cap);var out=h('div','');root.appendChild(out);
-  var A=null;
-  var pl=player(barHost,{n:function(){return A?6:1;},show:show});
-  function recompute(){var attrs=parseAttrs(ia.value),pf=parseFDs(ifd.value),msgs=pf.errs.slice();var bad=checkFDs(attrs,pf.fds);if(bad.length)msgs.push('Ye attributes R mein nahi: '+bad.join(', '));if(!attrs.length)msgs.push('Attributes likho.');if(!pf.fds.length)msgs.push('Kam se kam ek FD do.');if(attrs.length>8)msgs.push('Max 8 attributes.');
-    err.textContent=msgs.join(' | ');A=msgs.length?null:analyze(attrs,pf.fds);if(A)A.fds=pf.fds;pl.stop();pl.go(0);}
-  var CAPS=['Step 1: Relation aur FDs. Ab sabse pehle candidate keys nikalenge.','Step 2: <b>Candidate keys</b> — jinka closure poora R de aur minimal ho. (Closure se check kiya.)','Step 3: <b>Prime</b> attribute = kisi bhi candidate key ka hissa. Baaki <b>non-prime</b>.','Step 4: <b>BCNF test</b> — har non-trivial FD X→A ke liye X superkey hona chahiye.','Step 5: <b>3NF test</b> — X superkey ho <i>ya</i> A prime ho. Phir 2NF: partial / transitive dependency dhoondo.','Step 6: <b>Verdict</b> — sabse oonchi normal form jo saare tests pass kare.'];
-  function show(i){
-    if(!A){cap.innerHTML='Input theek karo.';out.innerHTML='';return;}
-    cap.innerHTML=CAPS[i];out.innerHTML='';
-    function sec(title,html,isNew){var s=h('div','sec'+(isNew?' new':''));s.innerHTML='<h4>'+title+'</h4>'+html;out.appendChild(s);}
-    sec('Relation & FDs','R('+A.attrs.join(', ')+')<br>'+A.fds.map(function(f){return '<span class="'+P+'tag">'+esc(fmtFD(f))+'</span>';}).join(' '),i===0);
-    if(i>=1)sec('Candidate keys',A.keys.map(function(k){return '<span class="'+P+'chip '+P+'g">'+k.join('')+'</span> <small>('+k.join('')+')⁺ = '+fmtS(closure(k,A.fds))+'</small>';}).join('<br>'),i===1);
-    if(i>=2)sec('Prime / Non-prime','Prime: '+A.prime.map(function(x){return '<span class="'+P+'chip '+P+'g">'+x+'</span>';}).join(' ')+' &nbsp; Non-prime: '+(A.nonprime.length?A.nonprime.map(function(x){return '<span class="'+P+'chip">'+x+'</span>';}).join(' '):'koi nahi'),i===2);
-    if(i>=3){var t='<div class="'+P+'wrap"><table class="'+P+'t"><tr><th>FD</th><th>LHS superkey?</th>'+(i>=4?'<th>RHS prime?</th><th>3NF</th>':'')+'<th>BCNF</th>'+(i>=4?'<th>Dosh</th>':'')+'</tr>';
-      A.rows.forEach(function(r){t+='<tr><td>'+esc(r.l.join('')+' → '+r.a)+'</td><td class="'+P+(r.superkey?'g':'x')+'">'+(r.superkey?'haan':'nahi')+'</td>'+(i>=4?'<td>'+(r.aPrime?'haan':'nahi')+'</td><td class="'+P+(r.nf3?'g':'x')+'">'+(r.nf3?'✓':'✗')+'</td>':'')+'<td class="'+P+(r.bcnf?'g':'x')+'">'+(r.bcnf?'✓':'✗')+'</td>'+(i>=4?'<td>'+(r.kind==='partial'?'<b>partial</b> (key ka hissa → non-prime)':r.kind==='transitive'?'<b>transitive</b> (non-key → non-prime)':'—')+'</td>':'')+'</tr>';});
-      sec('Har FD ki jaanch','<div class="'+P+'sub">Sirf non-trivial FDs (RHS ko alag-alag tod ke)</div>'+t+'</table></div>',i===3||i===4);}
-    if(i>=4){var pt='';if(A.partials.length)pt=A.partials.map(function(p){return 'key <b>'+p.key.join('')+'</b> ka hissa <b>'+p.S.join('')+'</b> → non-prime '+p.attrs.join(',')+' (partial)';}).join('<br>');else pt='Koi partial dependency nahi → <span class="'+P+'ok">2NF OK</span>';
-      sec('Partial dependency (2NF test)',pt,i===4);}
-    if(i>=5){var lad='<div class="'+P+'ladder">'+[['1NF',true],['2NF',A.is2NF],['3NF',A.is3NF],['BCNF',A.isBCNF]].map(function(x){return '<div class="'+P+'rung '+P+(x[1]?'yes':'no')+(x[0]===A.highest?' '+P+'top':'')+'">'+x[0]+'<br>'+(x[1]?'✓':'✗')+'</div>';}).join('')+'</div>';
-      var why=[];if(!A.is2NF)why.push('2NF fail: partial dependency hai ('+A.partials.map(function(p){return p.S.join('')+'→'+p.attrs.join('');}).join(', ')+').');
-      if(A.is2NF&&!A.is3NF)why.push('3NF fail: transitive dependency — '+A.rows.filter(function(r){return !r.nf3;}).map(function(r){return r.l.join('')+'→'+r.a;}).join(', ')+' (LHS superkey nahi aur RHS non-prime).');
-      if(A.is3NF&&!A.isBCNF)why.push('BCNF fail: '+A.rows.filter(function(r){return !r.bcnf;}).map(function(r){return r.l.join('')+'→'+r.a;}).join(', ')+' ka LHS superkey nahi, par RHS prime hai (isliye 3NF bach gaya).');
-      if(A.isBCNF)why.push('Har FD ka LHS superkey hai → BCNF.');
-      sec('Verdict: sabse oonchi NF = <span class="'+P+'ok">'+A.highest+'</span>',lad+why.join('<br>'),true);}
+  var pl;var S={steps:[],attrs:[],fds:[],X:[],ok:false};
+  var bodyHost=h('div','');var barHost=h('div','');
+  var cap=h('div','cap','');var chips=h('div','chips');var fdl=h('div','');var keyBox=h('div','try','');
+  root.appendChild(barHost);root.appendChild(cap);
+  var g=h('div','grid');var a=h('div','');a.appendChild(h('div','lab','Attributes (hara = X⁺ mein aa gaya)'));a.appendChild(chips);var b=h('div','');b.appendChild(h('div','lab','FDs'));b.appendChild(fdl);g.appendChild(a);g.appendChild(b);root.appendChild(g);root.appendChild(keyBox);
+  pl=player(barHost,{n:function(){return S.ok?S.steps.length:1;},show:show});
+  function recompute(){
+    var attrs=parseAttrs(ia.value),pf=parseFDs(ifd.value),X=parseAttrs(ix.value),msgs=pf.errs.slice();
+    var bad=checkFDs(attrs,pf.fds);if(bad.length)msgs.push('FD mein ye attributes R mein nahi hain: '+bad.join(', '));
+    var xb=minusS(X,attrs);if(xb.length)msgs.push('X mein R se bahar attributes: '+xb.join(', '));
+    if(!attrs.length)msgs.push('Attributes likho.');if(!X.length)msgs.push('X khaali hai.');
+    err.textContent=msgs.join(' | ');S.ok=!msgs.length;
+    if(S.ok){S.attrs=attrs;S.fds=pf.fds;S.X=X;S.steps=closureTrace(X,pf.fds);}
+    pl.stop();pl.go(0);
   }
-  var tmr;[ia,ifd].forEach(function(x){x.addEventListener('input',function(){clearTimeout(tmr);tmr=setTimeout(recompute,250);});});
+  function show(i){
+    if(!S.ok){cap.innerHTML='Input theek karo (upar laal message dekho).';chips.innerHTML='';fdl.innerHTML='';keyBox.style.display='none';return;}
+    var st=S.steps[i],fired={};
+    for(var k=1;k<=i;k++){var s=S.steps[k];if(s.type==='fd'&&s.added.length)fired[s.i]=1;}
+    chips.innerHTML='';S.attrs.forEach(function(x){var inSet=st.set.indexOf(x)>=0;var c=h('span','chip'+(st.added.indexOf(x)>=0?' o':inSet?' g':' dim'),x);if(S.X.indexOf(x)>=0&&st.type==='init')c.className+=' '+P+'p';chips.appendChild(c);});
+    fdl.innerHTML='';S.fds.forEach(function(f,j){var d=h('div','fd'+(st.type==='fd'&&st.i===j?' cur':fired[j]?' done':''),esc(fmtFD(f)));var sm=h('small','','');
+      if(st.type==='fd'&&st.i===j)sm.innerHTML=st.applicable?(st.added.length?'LHS ⊆ X⁺ ✓ → '+st.added.join(',')+' add':'LHS ⊆ X⁺ ✓ par kuch naya nahi'):'LHS X⁺ mein poora nahi ✗';
+      else if(fired[j])sm.textContent='use ho chuka';d.appendChild(sm);fdl.appendChild(d);});
+    var cur='X⁺ = '+fmtSet(st.set);
+    if(st.type==='init')cap.innerHTML='Shuruaat: <b>X⁺ = X = '+fmtSet(S.X)+'</b>. Ab FDs ko baar-baar lagao jab tak kuch naya na mile.';
+    else if(st.type==='fd'){var f=S.fds[st.i];cap.innerHTML='<b>Round '+st.round+'</b> — FD <b>'+esc(fmtFD(f))+'</b>: '+(st.applicable?'LHS '+fmtSet(f.l)+' poora X⁺ ke andar hai ✓. '+(st.added.length?'To RHS ke naye attributes <b>'+st.added.join(', ')+'</b> add. ':'Par RHS pehle se hai, kuch naya nahi. '):'LHS '+fmtSet(f.l)+' abhi X⁺ mein poora nahi hai, skip. ')+'<br><b>'+cur+'</b>';}
+    else{var full=st.set.length===S.attrs.length;var ck=S.X.length&&!S.X.some(function(_,q){var sub=S.X.filter(function(__,z){return z!==q;});return sub.length&&closure(sub,S.fds).length===S.attrs.length;});
+      cap.innerHTML='Round '+st.rounds+' mein kuch naya nahi mila → <b>ruk jao</b>. <b>'+cur+'</b>.<br>'+(full?'X⁺ = poora R, isliye <span class="'+P+'ok">X superkey hai</span>'+(ck?' aur minimal hai → <span class="'+P+'ok">candidate key</span>.':' (par minimal nahi — X ka chhota hissa bhi key hai).'):'X⁺ poora R nahi hai → <span class="'+P+'bad">X key nahi hai</span>. Missing: '+fmtSet(minusS(S.attrs,st.set))+'.');}
+    var keys=candidateKeys(S.attrs,S.fds);var prime=[];keys.forEach(function(k){prime=unionS(prime,k);});
+    keyBox.style.display='';keyBox.innerHTML='<b>Try it:</b> X badlo aur dobara dekho. <br><b>Candidate key(s) of R:</b> '+keys.map(function(k){return '<span class="'+P+'tag">'+k.join('')+'</span>';}).join(' ')+' &nbsp; <b>Prime:</b> '+fmtSet(prime)+' &nbsp; <b>Non-prime:</b> '+fmtSet(minusS(S.attrs,prime));
+  }
+  var tmr;[ia,ix,ifd].forEach(function(x){x.addEventListener('input',function(){clearTimeout(tmr);tmr=setTimeout(recompute,250);});});
   recompute();
 }
 
-if(typeof module!=='undefined'&&module.exports){module.exports=LOGIC;}
-if(typeof window!=='undefined'&&typeof document!=='undefined'){if(window.Widgets&&window.Widgets.register){window.Widgets.register(NAME,mount);}else{(window.__widgetQueue=window.__widgetQueue||[]).push([NAME,mount]);}}
-})();
+export { LOGIC };
+registerWidget(NAME, mount);

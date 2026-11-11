@@ -1,5 +1,5 @@
-/* widget: sql-joins — self-contained, registers via window.Widgets.register */
-(function(){'use strict';
+/* widget: sql-joins — self-contained, registers via register() from widgets-core.js */
+import { register as registerWidget } from '../widgets-core.js';
 var NAME='sql-joins';
 var P='w-'+NAME+'-';
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -142,20 +142,29 @@ function mount(el,opts){
   var A=['1','2','3','4'],B=['1','3'],hasNull=false;
   var tcap=h('div','','');var tin=h('div','row');
   trap.innerHTML='<b>NULL ka trap: NOT IN</b><div class="'+P+'sub">A ke ids jo B mein nahi hain. B mein ek NULL aa jaye to kya hota hai?</div>';
-  var ia=h('input','inp mono');ia.value=A.join(',');ia.setAttribute('aria-label','A ids');var ib=h('input','inp mono');ib.value=B.join(',');ib.setAttribute('aria-label','B ids');
+  var ia=h('input','inp mono');ia.value=A.join(', ');ia.setAttribute('aria-label','A ids');var ib=h('input','inp mono');ib.value=B.join(', ');ib.setAttribute('aria-label','B ids');
   var cb=document.createElement('input');cb.type='checkbox';cb.id=P+'cb'+Math.random().toString(36).slice(2);var cl=document.createElement('label');cl.htmlFor=cb.id;cl.textContent=' B mein NULL daalo';
   [['A ids',ia],['B ids',ib]].forEach(function(p){var c=h('div','col');c.appendChild(h('span','lab',p[0]));c.appendChild(p[1]);tin.appendChild(c);});var cw=h('div','col');cw.appendChild(h('span','lab','Toggle'));var cc=h('div','');cc.appendChild(cb);cc.appendChild(cl);cw.appendChild(cc);tin.appendChild(cw);trap.appendChild(tin);
   var tout=h('div','wrap');trap.appendChild(tout);var tmsg=h('div','');trap.appendChild(tmsg);
   function parseList(s){return s.split(',').map(function(x){return nv(x);}).filter(function(x,i,a){return !(x===null&&s.trim()==='');});}
-  function trapRender(){var a=parseList(ia.value),b=parseList(ib.value);if(cb.checked)b=b.concat([null]);
+  function hasNullIn(b){return b.some(function(x){return x===null;});}
+  function trapRender(){var a=parseList(ia.value),b=parseList(ib.value);var hasNull=hasNullIn(b);
     var t='<table class="'+P+'t"><tr><th>A.id</th><th>id NOT IN B</th><th>NOT EXISTS</th></tr>';var rin=[],rex=[];
     a.forEach(function(x){var v=notIn(x,b),e=notExists(x,b);if(v==='T')rin.push(x);if(e==='T')rex.push(x);var nm={T:'TRUE ✓ (row aayi)',F:'FALSE (row gayi)',U:'UNKNOWN (row gayi)'};t+='<tr><td>'+(x===null?'NULL':esc(x))+'</td><td class="'+P+(v==='T'?'g':v==='U'?'o':'x')+'">'+nm[v]+'</td><td class="'+P+(e==='T'?'g':'x')+'">'+(e==='T'?'TRUE ✓':'FALSE')+'</td></tr>';});
     tout.innerHTML=t+'</table>';
-    tmsg.innerHTML='NOT IN result: <b>'+(rin.length?rin.join(', '):'(khaali)')+'</b> &nbsp;|&nbsp; NOT EXISTS result: <b>'+(rex.length?rex.join(', '):'(khaali)')+'</b>'+(cb.checked&&!rin.length&&rex.length?'<br><span class="'+P+'bad">Trap!</span> <code>x NOT IN (…, NULL)</code> = <code>x≠1 AND x≠3 AND x≠NULL</code> — aakhri part UNKNOWN, to poora UNKNOWN, WHERE sirf TRUE rows rakhta hai. NOT EXISTS (ya NOT IN ke andar IS NOT NULL filter) safe hai.':'');}
-  [ia,ib].forEach(function(x){x.addEventListener('input',trapRender);});cb.addEventListener('change',trapRender);
+    tmsg.innerHTML='NOT IN result: <b>'+(rin.length?rin.join(', '):'(khaali)')+'</b> &nbsp;|&nbsp; NOT EXISTS result: <b>'+(rex.length?rex.join(', '):'(khaali)')+'</b>'+(hasNull&&!rin.length&&rex.length?'<br><span class="'+P+'bad">Trap!</span> <code>x NOT IN (…, NULL)</code> = <code>x≠1 AND x≠3 AND x≠NULL</code> — aakhri part UNKNOWN, to poora UNKNOWN, WHERE sirf TRUE rows rakhta hai. NOT EXISTS (ya NOT IN ke andar IS NOT NULL filter) safe hai.':'');}
+  // B ids box ka text hi asli source hai: toggle ON => box mein ', NULL' judta hai, OFF => NULL hat jaata hai.
+  function setNullInB(on){
+    var toks=ib.value.split(',').map(function(x){return x.trim();}).filter(function(x){return x!=='';});
+    toks=toks.filter(function(x){return nv(x)!==null;});
+    if(on)toks.push('NULL');
+    ib.value=toks.join(', ');
+  }
+  ia.addEventListener('input',trapRender);
+  ib.addEventListener('input',function(){cb.checked=hasNullIn(parseList(ib.value));trapRender();});
+  cb.addEventListener('change',function(){setNullInB(cb.checked);trapRender();});
   buildEdit();refresh();trapRender();
 }
 
-if(typeof module!=='undefined'&&module.exports){module.exports=LOGIC;}
-if(typeof window!=='undefined'&&typeof document!=='undefined'){if(window.Widgets&&window.Widgets.register){window.Widgets.register(NAME,mount);}else{(window.__widgetQueue=window.__widgetQueue||[]).push([NAME,mount]);}}
-})();
+export { LOGIC };
+registerWidget(NAME, mount);

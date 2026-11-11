@@ -1,5 +1,4 @@
-(function(){
-"use strict";
+import { register as registerWidget } from '../widgets-core.js';
 var N="sampling", P="w-sampling-";
 var SVGNS="http://www.w3.org/2000/svg";
 function h(tag,a,k,isSvg){
@@ -77,11 +76,7 @@ function Player(onGo,getLen,opt){
   ui();
   return {el:el,start:start,go:go,stop:stop,idx:function(){return st.i;},refresh:ui,speed:function(){return st.speed;}};
 }
-function reg(fn){
-  if(typeof window==="undefined")return;
-  if(window.Widgets&&window.Widgets.register)window.Widgets.register(N,fn);
-  else (window.__widgetQueue=window.__widgetQueue||[]).push([N,fn]);
-}
+function reg(fn){ registerWidget(N, fn); }
 function pn(v,d){var x=Number(v);return isFinite(x)?x:d;}
 /* ===== core ===== */
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
@@ -181,6 +176,4 @@ reg(function(el,opts){
   root.appendChild(h("div",{class:c("mut"),text:"Population N = 60. Stratified me rang = strata (30/20/10 log), Cluster me har column ek cluster hai. Seeded random: same seed = same sample."}));
   el.appendChild(root);build();
 });
-if(typeof module!=="undefined"&&module.exports)module.exports={mulberry32:mulberry32,srswor:srswor,srswr:srswr,systematic:systematic,stratified:stratified,clusterS:clusterS,alloc:alloc,popModel:popModel};
-
-})();
+export { mulberry32, srswor, srswr, systematic, stratified, clusterS, alloc, popModel };

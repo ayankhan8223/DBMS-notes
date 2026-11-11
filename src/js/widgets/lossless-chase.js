@@ -1,6 +1,6 @@
-/* widget: fd-closure — self-contained, registers via window.Widgets.register */
-(function(){'use strict';
-var NAME='fd-closure';
+/* widget: lossless-chase — self-contained, registers via register() from widgets-core.js */
+import { register as registerWidget } from '../widgets-core.js';
+var NAME='lossless-chase';
 var P='w-'+NAME+'-';
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function h(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls.split(' ').map(function(c){return c?P+c:'';}).join(' ');if(html!=null)e.innerHTML=html;return e;}
@@ -86,62 +86,83 @@ function fmtS(s){return s.length?s.join(''):'∅';}
 function fmtSet(s){return '{'+s.join(', ')+'}';}
 function fmtFD(f){return f.l.join('')+' → '+f.r.join('');}
 function checkFDs(attrs,fds){var bad=[];fds.forEach(function(f){f.l.concat(f.r).forEach(function(a){if(attrs.indexOf(a)<0&&bad.indexOf(a)<0)bad.push(a);});});return bad;}
-var LOGIC={closure:closure,closureTrace:closureTrace,candidateKeys:candidateKeys,parseFDs:parseFDs,parseAttrs:parseAttrs};
+function chase(attrs,fds,decomp){
+  attrs=attrs.slice().sort();
+  var T=decomp.map(function(R,i){var row={};attrs.forEach(function(a){row[a]=R.indexOf(a)>=0?'a'+a:'b'+(i+1)+a;});return row;});
+  function snap(){return T.map(function(r){return Object.assign({},r);});}
+  var init=snap(),steps=[],changed=true,guard=0;
+  while(changed&&guard++<500){changed=false;
+    fds.forEach(function(f,fi){for(var i=0;i<T.length;i++)for(var j=i+1;j<T.length;j++){
+      if(!f.l.every(function(a){return T[i][a]===T[j][a];}))continue;
+      f.r.forEach(function(a){var x=T[i][a],y=T[j][a];if(x===y)return;var win,lose;
+        if(x[0]==='a'){win=x;lose=y;}else if(y[0]==='a'){win=y;lose=x;}else{win=x<y?x:y;lose=x<y?y:x;}
+        var cells=[];for(var r=0;r<T.length;r++)if(T[r][a]===lose){T[r][a]=win;cells.push([r,a]);}
+        changed=true;steps.push({fi:fi,i:i,j:j,attr:a,from:lose,to:win,cells:cells,table:snap()});});}});}
+  var lossless=T.some(function(r){return attrs.every(function(a){return r[a][0]==='a';});});
+  var allRow=-1;T.forEach(function(r,i){if(allRow<0&&attrs.every(function(a){return r[a][0]==='a';}))allRow=i;});
+  return {init:init,steps:steps,final:snap(),lossless:lossless,allRow:allRow,attrs:attrs};
+}
+function depPreservation(attrs,fds,decomp){
+  return fds.map(function(f){var Z=f.l.slice(),trace=[Z.slice()],ch=true;while(ch){ch=false;decomp.forEach(function(R,k){var add=interS(closure(interS(Z,R),fds),R);var nz=unionS(Z,add);if(nz.length!==Z.length){Z=nz;ch=true;trace.push({R:k,Z:Z.slice()});}});}
+    return {fd:f,Z:Z,preserved:subsetOf(f.r,Z),trace:trace};});
+}
+var LOGIC={chase:chase,depPreservation:depPreservation,parseFDs:parseFDs,parseAttrs:parseAttrs,closure:closure};
 var PRESETS=[
- {n:'Basic: A→B, B→C, CD→E',attrs:'ABCDE',fds:'A->B\nB->C\nCD->E',x:'AD'},
- {n:'GATE style: AB→C, BC→AD, D→E, CF→B',attrs:'ABCDEF',fds:'AB->C\nBC->AD\nD->E\nCF->B',x:'AB'},
- {n:'Cycle: A→B→C→D→A',attrs:'ABCD',fds:'A->B\nB->C\nC->D\nD->A',x:'A'},
- {n:'Do keys: AB→C, C→B',attrs:'ABC',fds:'AB->C\nC->B',x:'AC'}
+ {n:'R(A,B,C), A→B → AB, AC (lossless)',attrs:'ABC',fds:'A->B',dec:'AB, AC'},
+ {n:'R(A,B,C), A→B → AB, BC (lossy)',attrs:'ABC',fds:'A->B',dec:'AB, BC'},
+ {n:'R(A,B,C), AB→C, C→B → AC, BC (lossless, FD lost)',attrs:'ABC',fds:'AB->C\nC->B',dec:'AC, BC'},
+ {n:'Classic 5-way: AD, AB, BE, CDE, AE',attrs:'ABCDE',fds:'A->C\nB->C\nC->D\nDE->C\nCE->A',dec:'AD, AB, BE, CDE, AE'},
+ {n:'R(A,B,C,D): A→B, C→D → AB, CD (lossy)',attrs:'ABCD',fds:'A->B\nC->D',dec:'AB, CD'}
 ];
+function sym(s){return s[0]==='a'?'a<sub>'+s.slice(1)+'</sub>':'b<sub>'+s.slice(1)+'</sub>';}
 function mount(el,opts){
-  injectCss('.$chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.$fd{display:flex;gap:8px;align-items:center;padding:4px 8px;border:1px solid var(--line,#d7deee);border-radius:8px;margin:3px 0;background:var(--bg,#fff);transition:all .3s;font-family:ui-monospace,Menlo,monospace;font-size:14px}.$fd.$cur{border-color:var(--org,#e8730c);background:color-mix(in srgb,var(--org,#e8730c) 18%,var(--bg,#fff))}.$fd.$done{border-color:var(--green,#14a06b)}.$fd small{font-family:system-ui;color:var(--mut,#5b6580);margin-left:auto;text-align:right}.$grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.$grid{grid-template-columns:1fr}}');
+  injectCss('.$tb td{text-align:center;min-width:40px}.$ver{font-weight:700;font-size:15px;padding:8px 10px;border-radius:9px;margin:6px 0}.$ver.$y{background:color-mix(in srgb,var(--green,#14a06b) 22%,var(--bg,#fff));border:2px solid var(--green,#14a06b)}.$ver.$n{background:color-mix(in srgb,var(--red,#d63b4f) 18%,var(--bg,#fff));border:2px solid var(--red,#d63b4f)}');
   el.innerHTML='';var root=h('div','w');el.appendChild(root);
-  root.appendChild(h('div','title','Attribute Closure X⁺ — step by step'));
-  root.appendChild(h('div','sub','Preset chuno ya khud attributes / FDs likho (single capital letters, FD ek line mein: AB->C). X ka closure chalke dekho.'));
-  var ps=mkSelect(PRESETS.map(function(p,i){return {v:i,t:p.n};}),0,function(v){var p=PRESETS[v];ia.value=p.attrs;ifd.value=p.fds;ix.value=p.x;recompute();});
+  root.appendChild(h('div','title','Lossless join — Chase / Tableau method'));
+  root.appendChild(h('div','sub','Decomposition lossless hai ya nahi, tableau bana ke FDs lagao. Agar koi row poori <b>a</b> ban jaye → lossless. Neeche dependency preservation bhi check hota hai.'));
+  var ps=mkSelect(PRESETS.map(function(p,i){return {v:i,t:p.n};}),0,function(v){var p=PRESETS[v];ia.value=p.attrs;ifd.value=p.fds;idc.value=p.dec;recompute();});
   var r1=h('div','row');r1.appendChild(ps);root.appendChild(r1);
-  var ia=h('input','inp mono');ia.value=PRESETS[0].attrs;ia.size=10;ia.setAttribute('aria-label','Relation attributes');
-  var ix=h('input','inp mono');ix.value=PRESETS[0].x;ix.size=8;ix.setAttribute('aria-label','X attributes');
-  var ifd=h('textarea','ta');ifd.rows=4;ifd.value=PRESETS[0].fds;ifd.setAttribute('aria-label','FDs');
-  var r2=h('div','row');
-  [['R ke attributes',ia],['X (closure kiska?)',ix]].forEach(function(p){var c=h('div','col');c.appendChild(h('span','lab',p[0]));c.appendChild(p[1]);r2.appendChild(c);});
-  root.appendChild(r2);var c3=h('div','col');c3.appendChild(h('span','lab','FDs (ek line mein ek)'));c3.appendChild(ifd);root.appendChild(c3);
+  var ia=h('input','inp mono');ia.value=PRESETS[0].attrs;ia.size=10;ia.setAttribute('aria-label','Attributes');
+  var idc=h('input','inp mono');idc.value=PRESETS[0].dec;idc.size=22;idc.setAttribute('aria-label','Decomposition');
+  var ifd=h('textarea','ta');ifd.rows=3;ifd.value=PRESETS[0].fds;ifd.setAttribute('aria-label','FDs');
+  var r2=h('div','row');[['R ke attributes',ia],['Decomposition (comma se alag, jaise AB, BC)',idc]].forEach(function(p){var c=h('div','col');c.appendChild(h('span','lab',p[0]));c.appendChild(p[1]);r2.appendChild(c);});root.appendChild(r2);
+  var c2=h('div','col');c2.appendChild(h('span','lab','FDs'));c2.appendChild(ifd);root.appendChild(c2);
   var err=h('div','bad','');root.appendChild(err);
-  var pl;var S={steps:[],attrs:[],fds:[],X:[],ok:false};
-  var bodyHost=h('div','');var barHost=h('div','');
-  var cap=h('div','cap','');var chips=h('div','chips');var fdl=h('div','');var keyBox=h('div','try','');
-  root.appendChild(barHost);root.appendChild(cap);
-  var g=h('div','grid');var a=h('div','');a.appendChild(h('div','lab','Attributes (hara = X⁺ mein aa gaya)'));a.appendChild(chips);var b=h('div','');b.appendChild(h('div','lab','FDs'));b.appendChild(fdl);g.appendChild(a);g.appendChild(b);root.appendChild(g);root.appendChild(keyBox);
-  pl=player(barHost,{n:function(){return S.ok?S.steps.length:1;},show:show});
+  var barHost=h('div','');root.appendChild(barHost);var cap=h('div','cap','');root.appendChild(cap);var tab=h('div','wrap');root.appendChild(tab);var ver=h('div','');root.appendChild(ver);var dp=h('div','');root.appendChild(dp);
+  var S=null;
+  var pl=player(barHost,{n:function(){return S?S.res.steps.length+2:1;},show:show});
   function recompute(){
-    var attrs=parseAttrs(ia.value),pf=parseFDs(ifd.value),X=parseAttrs(ix.value),msgs=pf.errs.slice();
-    var bad=checkFDs(attrs,pf.fds);if(bad.length)msgs.push('FD mein ye attributes R mein nahi hain: '+bad.join(', '));
-    var xb=minusS(X,attrs);if(xb.length)msgs.push('X mein R se bahar attributes: '+xb.join(', '));
-    if(!attrs.length)msgs.push('Attributes likho.');if(!X.length)msgs.push('X khaali hai.');
-    err.textContent=msgs.join(' | ');S.ok=!msgs.length;
-    if(S.ok){S.attrs=attrs;S.fds=pf.fds;S.X=X;S.steps=closureTrace(X,pf.fds);}
-    pl.stop();pl.go(0);
-  }
+    var attrs=parseAttrs(ia.value),pf=parseFDs(ifd.value),msgs=pf.errs.slice();
+    var dec=String(idc.value).split(/[,;]+/).map(parseAttrs).filter(function(x){return x.length;});
+    var bad=checkFDs(attrs,pf.fds);if(bad.length)msgs.push('FD mein R se bahar attribute: '+bad.join(', '));
+    if(!attrs.length)msgs.push('Attributes likho.');if(dec.length<2)msgs.push('Kam se kam 2 relations ki decomposition do.');
+    dec.forEach(function(d){var b=minusS(d,attrs);if(b.length)msgs.push('Decomposition mein R se bahar: '+b.join(','));});
+    var cov=[];dec.forEach(function(d){cov=unionS(cov,d);});if(!msgs.length&&minusS(attrs,cov).length)msgs.push('Decomposition mein ye attributes chhoot gaye: '+minusS(attrs,cov).join(','));
+    if(attrs.length>8||dec.length>8)msgs.push('Max 8 attributes / 8 relations.');
+    err.textContent=msgs.join(' | ');S=null;if(!msgs.length){S={attrs:attrs,fds:pf.fds,dec:dec,res:chase(attrs,pf.fds,dec),dp:depPreservation(attrs,pf.fds,dec)};}
+    pl.stop();pl.go(0);}
   function show(i){
-    if(!S.ok){cap.innerHTML='Input theek karo (upar laal message dekho).';chips.innerHTML='';fdl.innerHTML='';keyBox.style.display='none';return;}
-    var st=S.steps[i],fired={};
-    for(var k=1;k<=i;k++){var s=S.steps[k];if(s.type==='fd'&&s.added.length)fired[s.i]=1;}
-    chips.innerHTML='';S.attrs.forEach(function(x){var inSet=st.set.indexOf(x)>=0;var c=h('span','chip'+(st.added.indexOf(x)>=0?' o':inSet?' g':' dim'),x);if(S.X.indexOf(x)>=0&&st.type==='init')c.className+=' '+P+'p';chips.appendChild(c);});
-    fdl.innerHTML='';S.fds.forEach(function(f,j){var d=h('div','fd'+(st.type==='fd'&&st.i===j?' cur':fired[j]?' done':''),esc(fmtFD(f)));var sm=h('small','','');
-      if(st.type==='fd'&&st.i===j)sm.innerHTML=st.applicable?(st.added.length?'LHS ⊆ X⁺ ✓ → '+st.added.join(',')+' add':'LHS ⊆ X⁺ ✓ par kuch naya nahi'):'LHS X⁺ mein poora nahi ✗';
-      else if(fired[j])sm.textContent='use ho chuka';d.appendChild(sm);fdl.appendChild(d);});
-    var cur='X⁺ = '+fmtSet(st.set);
-    if(st.type==='init')cap.innerHTML='Shuruaat: <b>X⁺ = X = '+fmtSet(S.X)+'</b>. Ab FDs ko baar-baar lagao jab tak kuch naya na mile.';
-    else if(st.type==='fd'){var f=S.fds[st.i];cap.innerHTML='<b>Round '+st.round+'</b> — FD <b>'+esc(fmtFD(f))+'</b>: '+(st.applicable?'LHS '+fmtSet(f.l)+' poora X⁺ ke andar hai ✓. '+(st.added.length?'To RHS ke naye attributes <b>'+st.added.join(', ')+'</b> add. ':'Par RHS pehle se hai, kuch naya nahi. '):'LHS '+fmtSet(f.l)+' abhi X⁺ mein poora nahi hai, skip. ')+'<br><b>'+cur+'</b>';}
-    else{var full=st.set.length===S.attrs.length;var ck=S.X.length&&!S.X.some(function(_,q){var sub=S.X.filter(function(__,z){return z!==q;});return sub.length&&closure(sub,S.fds).length===S.attrs.length;});
-      cap.innerHTML='Round '+st.rounds+' mein kuch naya nahi mila → <b>ruk jao</b>. <b>'+cur+'</b>.<br>'+(full?'X⁺ = poora R, isliye <span class="'+P+'ok">X superkey hai</span>'+(ck?' aur minimal hai → <span class="'+P+'ok">candidate key</span>.':' (par minimal nahi — X ka chhota hissa bhi key hai).'):'X⁺ poora R nahi hai → <span class="'+P+'bad">X key nahi hai</span>. Missing: '+fmtSet(minusS(S.attrs,st.set))+'.');}
-    var keys=candidateKeys(S.attrs,S.fds);var prime=[];keys.forEach(function(k){prime=unionS(prime,k);});
-    keyBox.style.display='';keyBox.innerHTML='<b>Try it:</b> X badlo aur dobara dekho. <br><b>Candidate key(s) of R:</b> '+keys.map(function(k){return '<span class="'+P+'tag">'+k.join('')+'</span>';}).join(' ')+' &nbsp; <b>Prime:</b> '+fmtSet(prime)+' &nbsp; <b>Non-prime:</b> '+fmtSet(minusS(S.attrs,prime));
+    tab.innerHTML='';ver.innerHTML='';dp.innerHTML='';
+    if(!S){cap.innerHTML='Input theek karo.';return;}
+    var R=S.res,n=R.steps.length,last=i===n+1,step=i>=1&&i<=n?R.steps[i-1]:null;
+    var T=i===0?R.init:(i===1?R.steps.length?R.steps[0].table:R.init:null);
+    T=i===0?R.init:(i<=n?R.steps[i-1].table:R.final);
+    if(i===0)cap.innerHTML='<b>Initial tableau</b>: har relation ki ek row. Jo attribute us relation mein hai wahan <b>a</b>, baaki jagah <b>b</b> (row number ke saath). Ab FDs lagao.';
+    else if(step){var f=S.fds[step.fi];cap.innerHTML='FD <b>'+esc(fmtFD(f))+'</b>: rows <b>R'+(step.i+1)+'</b> aur <b>R'+(step.j+1)+'</b> ke '+f.l.join(',')+' columns same hain → column <b>'+step.attr+'</b> barabar karo: '+sym(step.from)+' → '+sym(step.to)+(step.to[0]==='a'?' (a ko priority)':' (chhota b rakha)')+'.';}
+    else cap.innerHTML=(n?'Ab koi FD kuch naya nahi badal sakti → chase khatam. ':'Koi FD apply nahi hui (kisi do rows ka LHS same nahi). ')+(R.lossless?'Row <b>R'+(R.allRow+1)+'</b> poori <b>a</b> hai → <b>lossless</b>.':'Koi bhi row poori <b>a</b> nahi → <b>lossy</b>.');
+    var hl={};if(step){step.cells.forEach(function(c){hl[c[0]+c[1]]='o';});S.fds[step.fi].l.forEach(function(a){if(!hl[step.i+a])hl[step.i+a]='b';if(!hl[step.j+a])hl[step.j+a]='b';});}
+    var t='<table class="'+P+'t '+P+'tb"><tr><th></th>'+R.attrs.map(function(a){return '<th>'+a+'</th>';}).join('')+'</tr>';
+    T.forEach(function(row,ri){var full=last&&ri===R.allRow;t+='<tr class="'+(full?P+'g':'')+'"><th>R'+(ri+1)+' ('+S.dec[ri].join('')+')</th>'+R.attrs.map(function(a){var c=hl[ri+a];return '<td class="'+(c?P+c:'')+'">'+sym(row[a])+'</td>';}).join('')+'</tr>';});
+    tab.innerHTML=t+'</table>';
+    if(last)ver.innerHTML='<div class="'+P+'ver '+P+(R.lossless?'y':'n')+'">'+(R.lossless?'✓ Lossless join decomposition (ek row poori a).':'✗ Lossy decomposition — koi row poori a nahi.')+'</div>';
+    var lostN=S.dp.filter(function(d){return !d.preserved;}).length;
+    var h2='<div class="'+P+'sec"><b>Dependency preservation check</b><div class="'+P+'sub">Har FD X→Y ke liye Z=X se shuru; baar-baar Z = Z ∪ ((Z∩Ri)⁺ ∩ Ri) har Ri par. Agar Y ⊆ Z → FD preserved.</div><div class="'+P+'wrap"><table class="'+P+'t"><tr><th>FD</th><th>Z (final)</th><th>Preserved?</th></tr>';
+    S.dp.forEach(function(d){h2+='<tr><td>'+esc(fmtFD(d.fd))+'</td><td>'+fmtS(d.Z)+'</td><td class="'+P+(d.preserved?'g':'x')+'">'+(d.preserved?'haan':'nahi')+'</td></tr>';});
+    dp.innerHTML=h2+'</table></div>'+(lostN?'<span class="'+P+'bad">Dependency preserved nahi</span> ('+lostN+' FD kho gayi — join karke hi check ho sakti hai).':'<span class="'+P+'ok">Saari FDs preserved.</span>')+' <small>Lossless aur preserving dono alag-alag properties hain.</small></div>';
   }
-  var tmr;[ia,ix,ifd].forEach(function(x){x.addEventListener('input',function(){clearTimeout(tmr);tmr=setTimeout(recompute,250);});});
+  var tmr;[ia,idc,ifd].forEach(function(x){x.addEventListener('input',function(){clearTimeout(tmr);tmr=setTimeout(recompute,250);});});
   recompute();
 }
 
-if(typeof module!=='undefined'&&module.exports){module.exports=LOGIC;}
-if(typeof window!=='undefined'&&typeof document!=='undefined'){if(window.Widgets&&window.Widgets.register){window.Widgets.register(NAME,mount);}else{(window.__widgetQueue=window.__widgetQueue||[]).push([NAME,mount]);}}
-})();
+export { LOGIC };
+registerWidget(NAME, mount);
