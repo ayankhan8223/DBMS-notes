@@ -27,6 +27,7 @@ const NAMED = {
   lceil: '⌈', rceil: '⌉', lfloor: '⌊', rfloor: '⌋',
   frac12: '½',
   supseteq: '⊇', nsupe: '⊉', notin: '∉',
+  darr: '↓',
 };
 
 function decode(s) {

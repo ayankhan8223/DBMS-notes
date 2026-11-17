@@ -38,7 +38,7 @@ var BASE=
 ".ROOT table.T th{background:var(--card,#f6f8ff)}"+
 ".ROOT .TW{overflow-x:auto;max-width:100%}"+
 ".ROOT .PILL{display:inline-block;padding:1px 8px;border-radius:99px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff);font-size:12.5px;margin:1px 2px}"+
-".ROOT code,.ROOT .MONO{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}"+
+".ROOT code,.ROOT .MONO{font-family:var(--mono);font-size:12.5px}"+
 ".ROOT .WARN{color:var(--red,#d63b4f);font-weight:600}"+
 ".ROOT .OK{color:var(--green,#14a06b);font-weight:600}"+
 "@media (prefers-reduced-motion:reduce){.ROOT *{transition:none!important;animation:none!important}}";
@@ -128,12 +128,12 @@ var CSS=
 ".ROOT .$tb.$sel rect.bg{stroke:var(--blue,#2f5bd8);stroke-width:4}"+
 ".ROOT .$tb.$pulse rect.bg{fill:rgba(47,91,216,.14);stroke:var(--blue,#2f5bd8);stroke-width:3.5}"+
 ".ROOT .$tb.$gone{opacity:0;pointer-events:none}"+
-".ROOT .$tb text{font:12px ui-monospace,Menlo,monospace;fill:var(--ink,#1b2438)}"+
+".ROOT .$tb text{font:12px var(--mono);fill:var(--ink,#1b2438)}"+
 ".ROOT .$tb text.nm{font:700 13px system-ui;fill:#fff}"+
 ".ROOT .$tb text.pk{font-weight:800}.ROOT .$tb text.m{fill:var(--org,#e8730c);font-weight:700}.ROOT .$tb text.fk{fill:var(--pur,#7048e8)}"+
 ".ROOT .$ln{stroke:var(--mut,#5b6580);stroke-width:2;transition:opacity .4s,stroke .3s}"+
 ".ROOT .$ln.$pulse{stroke:var(--blue,#2f5bd8);stroke-width:4}"+
-".ROOT pre.$sql{background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:8px;padding:8px 10px;font:12px/1.5 ui-monospace,Menlo,monospace;overflow-x:auto;margin:6px 0;white-space:pre}"+
+".ROOT pre.$sql{background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:8px;padding:8px 10px;font:12px/1.5 var(--mono);overflow-x:auto;margin:6px 0;white-space:pre}"+
 ".ROOT .$tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}"+
 ".ROOT .$panel{background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:10px;padding:8px 12px;margin:8px 0}";
 reg(function(el,opts){

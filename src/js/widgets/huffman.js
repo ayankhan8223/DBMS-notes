@@ -38,7 +38,7 @@ var BASE=
 ".ROOT table.T th{background:var(--card,#f6f8ff)}"+
 ".ROOT .TW{overflow-x:auto;max-width:100%}"+
 ".ROOT .PILL{display:inline-block;padding:1px 8px;border-radius:99px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff);font-size:12.5px;margin:1px 2px}"+
-".ROOT code,.ROOT .MONO{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}"+
+".ROOT code,.ROOT .MONO{font-family:var(--mono);font-size:12.5px}"+
 ".ROOT .WARN{color:var(--red,#d63b4f);font-weight:600}"+
 ".ROOT .OK{color:var(--green,#14a06b);font-weight:600}"+
 "@media (prefers-reduced-motion:reduce){.ROOT *{transition:none!important;animation:none!important}}";
@@ -108,7 +108,7 @@ function parseSyms(t){
 }
 var CSS=
 ".ROOT .$q{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:38px;margin:6px 0}"+
-".ROOT .$qc{border:2px solid var(--line,#d7deee);border-radius:99px;padding:2px 10px;background:var(--bg,#fff);font:600 13px ui-monospace,Menlo,monospace;transition:all .35s}"+
+".ROOT .$qc{border:2px solid var(--line,#d7deee);border-radius:99px;padding:2px 10px;background:var(--bg,#fff);font:600 13px var(--mono);transition:all .35s}"+
 ".ROOT .$qc.$pick{border-color:var(--org,#e8730c);background:rgba(232,115,12,.15);transform:scale(1.08)}"+
 ".ROOT .$qc.$nw{border-color:var(--green,#14a06b);background:rgba(20,160,107,.15)}"+
 ".ROOT .$nd{transition:transform .6s cubic-bezier(.4,.1,.2,1),opacity .4s}"+
@@ -118,10 +118,10 @@ var CSS=
 ".ROOT .$nd.$nw circle{stroke:var(--green,#14a06b);stroke-width:3.5;fill:rgba(20,160,107,.15)}"+
 ".ROOT .$nd.$path circle{stroke:var(--pur,#7048e8);stroke-width:3.5;fill:rgba(112,72,232,.15)}"+
 ".ROOT .$nd text{fill:var(--ink,#1b2438);font:700 12px system-ui;text-anchor:middle}"+
-".ROOT .$nd text.s{font:800 13px ui-monospace,Menlo,monospace;fill:var(--green,#14a06b)}"+
+".ROOT .$nd text.s{font:800 13px var(--mono);fill:var(--green,#14a06b)}"+
 ".ROOT .$ed{stroke:var(--mut,#5b6580);stroke-width:1.6;fill:none;transition:d .6s,stroke .3s}"+
 ".ROOT .$ed.$path{stroke:var(--pur,#7048e8);stroke-width:3.2}"+
-".ROOT .$el{fill:var(--red,#d63b4f);font:800 12px ui-monospace,Menlo,monospace;text-anchor:middle;transition:transform .6s}"+
+".ROOT .$el{fill:var(--red,#d63b4f);font:800 12px var(--mono);text-anchor:middle;transition:transform .6s}"+
 ".ROOT tr.$clk{cursor:pointer}.ROOT tr.$clk:hover td{background:var(--card,#f6f8ff)}"+
 ".ROOT .$in3{width:min(440px,86vw)}";
 reg(function(el,opts){

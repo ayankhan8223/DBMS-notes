@@ -38,7 +38,7 @@ var BASE=
 ".ROOT table.T th{background:var(--card,#f6f8ff)}"+
 ".ROOT .TW{overflow-x:auto;max-width:100%}"+
 ".ROOT .PILL{display:inline-block;padding:1px 8px;border-radius:99px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff);font-size:12.5px;margin:1px 2px}"+
-".ROOT code,.ROOT .MONO{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}"+
+".ROOT code,.ROOT .MONO{font-family:var(--mono);font-size:12.5px}"+
 ".ROOT .WARN{color:var(--red,#d63b4f);font-weight:600}"+
 ".ROOT .OK{color:var(--green,#14a06b);font-weight:600}"+
 "@media (prefers-reduced-motion:reduce){.ROOT *{transition:none!important;animation:none!important}}";
@@ -103,13 +103,13 @@ var CSS=
 ".ROOT .$ax{stroke:var(--ink,#1b2438);stroke-width:1.5}"+
 ".ROOT .$tk{stroke:var(--mut,#5b6580);stroke-width:1}"+
 ".ROOT .$tl{fill:var(--mut,#5b6580);font:11px system-ui;text-anchor:middle}"+
-".ROOT .$vl{font:600 11px ui-monospace,Menlo,monospace;text-anchor:middle}"+
+".ROOT .$vl{font:600 11px var(--mono);text-anchor:middle}"+
 ".ROOT .$lnk{stroke:var(--line,#d7deee);stroke-width:1.2;stroke-dasharray:3 3}"+
 ".ROOT .$tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}"+
 ".ROOT .$bins{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}"+
 ".ROOT .$bin{flex:1 1 120px;min-width:110px;border:2px solid var(--line,#d7deee);border-radius:10px;background:var(--bg,#fff);padding:6px}"+
 ".ROOT .$bin h4{margin:0 0 4px;font-size:12.5px;color:var(--mut,#5b6580)}"+
-".ROOT .$chip{display:inline-block;min-width:34px;text-align:center;padding:2px 6px;margin:2px;border-radius:6px;background:var(--card,#f6f8ff);border:1px solid var(--line,#d7deee);font:600 13px ui-monospace,Menlo,monospace;transition:background .4s,color .4s,transform .4s}"+
+".ROOT .$chip{display:inline-block;min-width:34px;text-align:center;padding:2px 6px;margin:2px;border-radius:6px;background:var(--card,#f6f8ff);border:1px solid var(--line,#d7deee);font:600 13px var(--mono);transition:background .4s,color .4s,transform .4s}"+
 ".ROOT .$chip.$ch{background:var(--org,#e8730c);color:#fff;border-color:var(--org,#e8730c);transform:scale(1.08)}"+
 ".ROOT .$in3{width:min(420px,86vw)}"+
 ".ROOT .$in2{width:80px}";

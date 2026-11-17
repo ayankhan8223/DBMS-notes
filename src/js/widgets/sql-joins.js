@@ -18,8 +18,8 @@ var BASE=[
 '.$btn.$pri{background:var(--blue,#2f5bd8);color:#fff;border-color:var(--blue,#2f5bd8)}',
 '.$btn.$on{background:color-mix(in srgb,var(--blue,#2f5bd8) 18%,var(--bg,#fff));border-color:var(--blue,#2f5bd8)}',
 '.$sel,.$inp,.$ta{font:inherit;font-size:14px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff);color:var(--ink,#1b2438);border-radius:8px;padding:5px 8px;min-height:34px;max-width:100%}',
-'.$ta{width:100%;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical}',
-'.$inp.$mono{font-family:ui-monospace,Menlo,Consolas,monospace}',
+'.$ta{width:100%;font-family:var(--mono);resize:vertical}',
+'.$inp.$mono{font-family:var(--mono)}',
 '.$cap{background:var(--bg,#fff);border-left:4px solid var(--blue,#2f5bd8);border-radius:8px;padding:8px 10px;margin:8px 0;min-height:46px;font-size:14px}',
 '.$wrap{overflow-x:auto;max-width:100%;padding-bottom:2px}',
 '.$t{border-collapse:collapse;font-size:13px;background:var(--bg,#fff);margin:2px 0}',
@@ -34,7 +34,7 @@ var BASE=[
 '.$t .$p,.$t tr.$p td{background:color-mix(in srgb,var(--pur,#7048e8) 22%,var(--bg,#fff))}',
 '.$t .$dim{opacity:.45}',
 '.$null{font-style:italic;color:var(--mut,#5b6580)}',
-'.$chip{display:inline-block;min-width:30px;text-align:center;padding:3px 9px;border-radius:999px;border:2px solid var(--line,#d7deee);background:var(--bg,#fff);font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace;transition:all .35s}',
+'.$chip{display:inline-block;min-width:30px;text-align:center;padding:3px 9px;border-radius:999px;border:2px solid var(--line,#d7deee);background:var(--bg,#fff);font-weight:700;font-family:var(--mono);transition:all .35s}',
 '.$chip.$g{background:color-mix(in srgb,var(--green,#14a06b) 28%,var(--bg,#fff));border-color:var(--green,#14a06b)}',
 '.$chip.$o{background:color-mix(in srgb,var(--org,#e8730c) 35%,var(--bg,#fff));border-color:var(--org,#e8730c);transform:scale(1.15)}',
 '.$chip.$p{border-color:var(--pur,#7048e8);background:color-mix(in srgb,var(--pur,#7048e8) 18%,var(--bg,#fff))}',
@@ -43,7 +43,7 @@ var BASE=[
 '.$ok{color:var(--green,#14a06b);font-weight:700}',
 '.$bad{color:var(--red,#d63b4f);font-weight:700}',
 '.$tag{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 7px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff)}',
-'.$code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:8px;padding:6px 9px;overflow-x:auto;white-space:pre-wrap;word-break:break-word}',
+'.$code{font-family:var(--mono);font-size:13px;background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:8px;padding:6px 9px;overflow-x:auto;white-space:pre-wrap;word-break:break-word}',
 '.$try{border:1px dashed var(--org,#e8730c);border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--bg,#fff)}',
 '.$new{animation:$pop .5s ease}',
 '.$slide{animation:$slide .6s ease}',
@@ -99,7 +99,7 @@ function cmpEq(a,b){if(a===null||b===null)return 'U';return a===b?'T':'F';}
 function andAll(v){if(v.indexOf('F')>=0)return 'F';if(v.indexOf('U')>=0)return 'U';return 'T';}
 var LOGIC={joinTables:joinTables,notIn:notIn,notExists:notExists,nv:nv,cmpNe:cmpNe,cmpEq:cmpEq,andAll:andAll};
 function mount(el,opts){
-  injectCss('.$ex{background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:10px;padding:8px 11px;margin:9px 0;font-size:14px}.$ex .$h{font-weight:700;margin-bottom:3px}.$ex p{margin:3px 0}.$ex ul,.$ex ol{margin:4px 0 2px 18px;padding:0}.$ex li{margin:2px 0}.$ex pre{margin:5px 0;padding:6px 9px;border-radius:8px;background:color-mix(in srgb,var(--blue,#2f5bd8) 8%,var(--card,#f6f8ff));font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}.$c2{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:600px){.$c2{grid-template-columns:1fr}}.$okc{color:var(--green,#14a06b);font-weight:700}.$noc{color:var(--red,#d63b4f);font-weight:700}.$unk{color:var(--org,#e8730c);font-weight:700}.$key{border-left:4px solid var(--blue,#2f5bd8)}.$edit input{width:68px;min-height:28px;padding:2px 5px;font-size:13px}.$edit td{padding:2px 3px}.$xb{padding:0 7px;min-height:26px}.$two{display:flex;flex-wrap:wrap;gap:14px}.$venn{max-width:230px;width:100%}.$ttabs{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}.$vrow{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}.$u{background:color-mix(in srgb,var(--org,#e8730c) 30%,var(--bg,#fff))}');
+  injectCss('.$ex{background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:10px;padding:8px 11px;margin:9px 0;font-size:14px}.$ex .$h{font-weight:700;margin-bottom:3px}.$ex p{margin:3px 0}.$ex ul,.$ex ol{margin:4px 0 2px 18px;padding:0}.$ex li{margin:2px 0}.$ex pre{margin:5px 0;padding:6px 9px;border-radius:8px;background:color-mix(in srgb,var(--blue,#2f5bd8) 8%,var(--card,#f6f8ff));font:12.5px/1.4 var(--mono);white-space:pre-wrap}.$c2{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:600px){.$c2{grid-template-columns:1fr}}.$okc{color:var(--green,#14a06b);font-weight:700}.$noc{color:var(--red,#d63b4f);font-weight:700}.$unk{color:var(--org,#e8730c);font-weight:700}.$key{border-left:4px solid var(--blue,#2f5bd8)}.$edit input{width:68px;min-height:28px;padding:2px 5px;font-size:13px}.$edit td{padding:2px 3px}.$xb{padding:0 7px;min-height:26px}.$two{display:flex;flex-wrap:wrap;gap:14px}.$venn{max-width:230px;width:100%}.$ttabs{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}.$vrow{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}.$u{background:color-mix(in srgb,var(--org,#e8730c) 30%,var(--bg,#fff))}');
   el.innerHTML='';var root=h('div','w');el.appendChild(root);
   root.appendChild(h('div','title','SQL Joins — dono tables badlo, result dekho'));
   root.appendChild(h('div','sub','Neeche ke dono tables edit karo (id ko khaali ya NULL chhodo to NULL maana jaayega; <b>NULL kabhi kisi se match nahi hota</b>). Join type chuno, phir Step se rows banti dekho.'));

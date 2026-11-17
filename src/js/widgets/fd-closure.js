@@ -18,8 +18,8 @@ var BASE=[
 '.$btn.$pri{background:var(--blue,#2f5bd8);color:#fff;border-color:var(--blue,#2f5bd8)}',
 '.$btn.$on{background:color-mix(in srgb,var(--blue,#2f5bd8) 18%,var(--bg,#fff));border-color:var(--blue,#2f5bd8)}',
 '.$sel,.$inp,.$ta{font:inherit;font-size:14px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff);color:var(--ink,#1b2438);border-radius:8px;padding:5px 8px;min-height:34px;max-width:100%}',
-'.$ta{width:100%;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical}',
-'.$inp.$mono{font-family:ui-monospace,Menlo,Consolas,monospace}',
+'.$ta{width:100%;font-family:var(--mono);resize:vertical}',
+'.$inp.$mono{font-family:var(--mono)}',
 '.$cap{background:var(--bg,#fff);border-left:4px solid var(--blue,#2f5bd8);border-radius:8px;padding:8px 10px;margin:8px 0;min-height:46px;font-size:14px}',
 '.$wrap{overflow-x:auto;max-width:100%;padding-bottom:2px}',
 '.$t{border-collapse:collapse;font-size:13px;background:var(--bg,#fff);margin:2px 0}',
@@ -34,7 +34,7 @@ var BASE=[
 '.$t .$p,.$t tr.$p td{background:color-mix(in srgb,var(--pur,#7048e8) 22%,var(--bg,#fff))}',
 '.$t .$dim{opacity:.45}',
 '.$null{font-style:italic;color:var(--mut,#5b6580)}',
-'.$chip{display:inline-block;min-width:30px;text-align:center;padding:3px 9px;border-radius:999px;border:2px solid var(--line,#d7deee);background:var(--bg,#fff);font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace;transition:all .35s}',
+'.$chip{display:inline-block;min-width:30px;text-align:center;padding:3px 9px;border-radius:999px;border:2px solid var(--line,#d7deee);background:var(--bg,#fff);font-weight:700;font-family:var(--mono);transition:all .35s}',
 '.$chip.$g{background:color-mix(in srgb,var(--green,#14a06b) 28%,var(--bg,#fff));border-color:var(--green,#14a06b)}',
 '.$chip.$o{background:color-mix(in srgb,var(--org,#e8730c) 35%,var(--bg,#fff));border-color:var(--org,#e8730c);transform:scale(1.15)}',
 '.$chip.$p{border-color:var(--pur,#7048e8);background:color-mix(in srgb,var(--pur,#7048e8) 18%,var(--bg,#fff))}',
@@ -43,7 +43,7 @@ var BASE=[
 '.$ok{color:var(--green,#14a06b);font-weight:700}',
 '.$bad{color:var(--red,#d63b4f);font-weight:700}',
 '.$tag{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 7px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff)}',
-'.$code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:8px;padding:6px 9px;overflow-x:auto;white-space:pre-wrap;word-break:break-word}',
+'.$code{font-family:var(--mono);font-size:13px;background:var(--bg,#fff);border:1px solid var(--line,#d7deee);border-radius:8px;padding:6px 9px;overflow-x:auto;white-space:pre-wrap;word-break:break-word}',
 '.$try{border:1px dashed var(--org,#e8730c);border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--bg,#fff)}',
 '.$new{animation:$pop .5s ease}',
 '.$slide{animation:$slide .6s ease}',
@@ -94,7 +94,7 @@ var PRESETS=[
  {n:'Do keys: AB→C, C→B',attrs:'ABC',fds:'AB->C\nC->B',x:'AC'}
 ];
 function mount(el,opts){
-  injectCss('.$chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.$fd{display:flex;gap:8px;align-items:center;padding:4px 8px;border:1px solid var(--line,#d7deee);border-radius:8px;margin:3px 0;background:var(--bg,#fff);transition:all .3s;font-family:ui-monospace,Menlo,monospace;font-size:14px}.$fd.$cur{border-color:var(--org,#e8730c);background:color-mix(in srgb,var(--org,#e8730c) 18%,var(--bg,#fff))}.$fd.$done{border-color:var(--green,#14a06b)}.$fd small{font-family:system-ui;color:var(--mut,#5b6580);margin-left:auto;text-align:right}.$grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.$grid{grid-template-columns:1fr}}');
+  injectCss('.$chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.$fd{display:flex;gap:8px;align-items:center;padding:4px 8px;border:1px solid var(--line,#d7deee);border-radius:8px;margin:3px 0;background:var(--bg,#fff);transition:all .3s;font-family:var(--mono);font-size:14px}.$fd.$cur{border-color:var(--org,#e8730c);background:color-mix(in srgb,var(--org,#e8730c) 18%,var(--bg,#fff))}.$fd.$done{border-color:var(--green,#14a06b)}.$fd small{font-family:system-ui;color:var(--mut,#5b6580);margin-left:auto;text-align:right}.$grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.$grid{grid-template-columns:1fr}}');
   el.innerHTML='';var root=h('div','w');el.appendChild(root);
   root.appendChild(h('div','title','Attribute Closure X⁺ — step by step'));
   root.appendChild(h('div','sub','Preset chuno ya khud attributes / FDs likho (single capital letters, FD ek line mein: AB->C). X ka closure chalke dekho.'));

@@ -38,7 +38,7 @@ var BASE=
 ".ROOT table.T th{background:var(--card,#f6f8ff)}"+
 ".ROOT .TW{overflow-x:auto;max-width:100%}"+
 ".ROOT .PILL{display:inline-block;padding:1px 8px;border-radius:99px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff);font-size:12.5px;margin:1px 2px}"+
-".ROOT code,.ROOT .MONO{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}"+
+".ROOT code,.ROOT .MONO{font-family:var(--mono);font-size:12.5px}"+
 ".ROOT .WARN{color:var(--red,#d63b4f);font-weight:600}"+
 ".ROOT .OK{color:var(--green,#14a06b);font-weight:600}"+
 "@media (prefers-reduced-motion:reduce){.ROOT *{transition:none!important;animation:none!important}}";
@@ -177,7 +177,7 @@ var CSS=
 ".ROOT .$blk.$act{fill:rgba(47,91,216,.16);stroke:var(--blue,#2f5bd8);stroke-width:2.5}"+
 ".ROOT .$blk.$dact{fill:rgba(20,160,107,.2);stroke:var(--green,#14a06b);stroke-width:2.5}"+
 ".ROOT .$blk.$vis{fill:rgba(232,115,12,.22)}"+
-".ROOT .$tx{fill:var(--ink,#1b2438);font:12px ui-monospace,Menlo,monospace}"+
+".ROOT .$tx{fill:var(--ink,#1b2438);font:12px var(--mono)}"+
 ".ROOT .$tx.$hit{font-weight:800;fill:var(--org,#e8730c)}"+
 ".ROOT .$lbl{fill:var(--mut,#5b6580);font:600 11px system-ui}"+
 ".ROOT .$ar{stroke:var(--line,#d7deee);stroke-width:1;fill:none}"+

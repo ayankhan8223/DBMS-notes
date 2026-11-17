@@ -38,7 +38,7 @@ var BASE=
 ".ROOT table.T th{background:var(--card,#f6f8ff)}"+
 ".ROOT .TW{overflow-x:auto;max-width:100%}"+
 ".ROOT .PILL{display:inline-block;padding:1px 8px;border-radius:99px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff);font-size:12.5px;margin:1px 2px}"+
-".ROOT code,.ROOT .MONO{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}"+
+".ROOT code,.ROOT .MONO{font-family:var(--mono);font-size:12.5px}"+
 ".ROOT .WARN{color:var(--red,#d63b4f);font-weight:600}"+
 ".ROOT .OK{color:var(--green,#14a06b);font-weight:600}"+
 "@media (prefers-reduced-motion:reduce){.ROOT *{transition:none!important;animation:none!important}}";
@@ -114,7 +114,7 @@ function direct(fn,parts){var all=[].concat.apply([],parts);
 function viaPartials(fn,parts){var P=parts.map(FN[fn].part);return {partials:P,result:FN[fn].comb(P)};}
 var CSS=
 ".ROOT .$cube{position:relative;margin:6px 0;min-height:60px}"+
-".ROOT .$cell{position:absolute;width:62px;height:26px;line-height:24px;text-align:center;font:600 12px ui-monospace,Menlo,monospace;border:1px solid var(--blue,#2f5bd8);border-radius:4px;color:var(--ink,#1b2438);transition:transform .6s cubic-bezier(.4,.1,.2,1),opacity .45s,background .4s;animation:wop-pop .5s ease-out}"+
+".ROOT .$cell{position:absolute;width:62px;height:26px;line-height:24px;text-align:center;font:600 12px var(--mono);border:1px solid var(--blue,#2f5bd8);border-radius:4px;color:var(--ink,#1b2438);transition:transform .6s cubic-bezier(.4,.1,.2,1),opacity .45s,background .4s;animation:wop-pop .5s ease-out}"+
 ".ROOT .$cell.$out{opacity:0;background:#999!important;border-color:#999;pointer-events:none}"+
 "@keyframes wop-pop{from{opacity:0;transform:scale(.4)}}"+
 ".ROOT .$cell.$hid{color:transparent}"+

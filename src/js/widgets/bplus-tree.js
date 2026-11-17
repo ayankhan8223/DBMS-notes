@@ -38,7 +38,7 @@ var BASE=
 ".ROOT table.T th{background:var(--card,#f6f8ff)}"+
 ".ROOT .TW{overflow-x:auto;max-width:100%}"+
 ".ROOT .PILL{display:inline-block;padding:1px 8px;border-radius:99px;border:1px solid var(--line,#d7deee);background:var(--bg,#fff);font-size:12.5px;margin:1px 2px}"+
-".ROOT code,.ROOT .MONO{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}"+
+".ROOT code,.ROOT .MONO{font-family:var(--mono);font-size:12.5px}"+
 ".ROOT .WARN{color:var(--red,#d63b4f);font-weight:600}"+
 ".ROOT .OK{color:var(--green,#14a06b);font-weight:600}"+
 "@media (prefers-reduced-motion:reduce){.ROOT *{transition:none!important;animation:none!important}}";
@@ -284,7 +284,7 @@ var CSS=
 ".ROOT .$cvt{display:block}"+
 ".ROOT .$nd{transition:transform .55s cubic-bezier(.4,.1,.2,1),opacity .4s}"+
 ".ROOT .$nd rect.k{fill:var(--bg,#fff);stroke:var(--ink,#1b2438);stroke-width:1.3;transition:fill .3s,stroke .3s}"+
-".ROOT .$nd text{fill:var(--ink,#1b2438);font:600 13px ui-monospace,Menlo,Consolas,monospace;text-anchor:middle;dominant-baseline:central}"+
+".ROOT .$nd text{fill:var(--ink,#1b2438);font:600 13px var(--mono);text-anchor:middle;dominant-baseline:central}"+
 ".ROOT .$nd.$leafn rect.k{fill:var(--card,#f6f8ff)}"+
 ".ROOT .$nd.$hl rect.k{stroke:var(--blue,#2f5bd8);stroke-width:2.5;fill:rgba(47,91,216,.13)}"+
 ".ROOT .$nd.$bad rect.k{stroke:var(--red,#d63b4f);stroke-width:2.5;fill:rgba(214,59,79,.15)}"+
